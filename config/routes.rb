@@ -3,11 +3,16 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'home#index'
 
   get 'webhook' => 'fbmessengers#get_webhook'
   post 'webhook' => 'fbmessengers#post_webhook'
   get 'oauthcallback' => 'fbmessengers#oauthcallback'
+
+  get 'oauth_callbacks' => 'oauth_callbacks#create'
+  post 'oauth_callbacks' => 'oauth_callbacks#create'
+
+  resources :home, only: :index
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
