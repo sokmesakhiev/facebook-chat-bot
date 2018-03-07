@@ -45,3 +45,4 @@ end
 # gem 'debugger', group: [:development, :test]
 gem 'dotenv-rails', '~> 2.2.1'
 gem 'google_drive', '~> 2.1.9'
+gem 'haml', '~>5.0.4'

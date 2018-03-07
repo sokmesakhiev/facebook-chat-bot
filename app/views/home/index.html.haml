@@ -1,0 +1,9 @@
+
+%h1 Google Spreadsheet
+/ %div
+/   %a{href: @bot_drive.authorize_url} Spreadsheet Authorization
+
+%button#auth{:disabled => "disabled", :type => "button"} Spreadsheet Authenticate
+#result
+/ The Google API Loader script.
+%script{:src => "https://apis.google.com/js/api.js?onload=LoadMe", :type => "text/javascript"}
