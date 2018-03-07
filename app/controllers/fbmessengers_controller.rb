@@ -4,9 +4,10 @@ class FbmessengersController < ApplicationController
   end
 
   def get_webhook
-  	if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === FACEBOOK::CONFIG["validationToken"])
+  	if (params['hub.mode'] === 'subscribe' && params['hub.verify_token'] === FACEBOOK::CONFIG["validationToken"])
 	    puts "Validating webhook"
-	    res.status(200).send(req.query['hub.challenge'])
+      render :text => params['hub.challenge']
+	    # res.status(200).send(params['hub.challenge'])
 	  else
 	    puts "Failed validation. Make sure the validation tokens match."
 	    head :forbidden
