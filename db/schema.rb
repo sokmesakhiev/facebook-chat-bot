@@ -11,6 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20180309101040) do
+
+  create_table "bots", force: true do |t|
+    t.string "name"
+  end
+
+  create_table "choices", force: true do |t|
+    t.integer "survey_id"
+    t.string  "name"
+    t.string  "label"
+  end
+
+  create_table "surveys", force: true do |t|
+    t.integer "bot_id"
+    t.string  "question_type"
+    t.string  "name"
+    t.string  "label"
+    t.string  "relevant"
+    t.string  "hint"
+    t.string  "constraint"
+    t.string  "constraint_message"
+    t.string  "calculation"
+    t.boolean "required",           default: false
+    t.string  "required_message"
+  end
 
 end

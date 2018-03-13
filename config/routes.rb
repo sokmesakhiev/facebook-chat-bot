@@ -13,6 +13,11 @@ Rails.application.routes.draw do
   post 'oauth_callbacks' => 'oauth_callbacks#create'
 
   resources :home, only: :index
+  resources :bots do
+    collection do
+      post :import
+    end
+  end
 
   require 'sidekiq/web'
   Sidekiq::Web.use Rack::Auth::Basic do |username, password|

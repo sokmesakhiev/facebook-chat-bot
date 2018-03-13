@@ -1,0 +1,6 @@
+%h1= @bot.name
+%h2 Import xlsForm
+
+= form_tag import_bots_path, multipart: true do
+  = file_field_tag :file
+  = submit_tag "Import"
