@@ -30,6 +30,15 @@ gem "typhoeus"
 group :development, :test do
   gem 'byebug'
   gem 'pry-rails', '0.3.6'
+  gem 'rspec', '3.7.0'
+  gem 'rspec-rails', '~> 3.7'
+end
+
+group :test do
+  gem 'shoulda-matchers',       '~> 3.1.2'
+  gem 'database_cleaner',       '~> 1.6.2'
+  gem 'factory_bot_rails',      '~> 4.0'
+  gem 'ffaker',                 '~> 2.8.0'
 end
 
 # Use ActiveModel has_secure_password
