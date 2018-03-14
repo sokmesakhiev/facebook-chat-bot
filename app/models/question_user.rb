@@ -8,5 +8,5 @@
 #
 
 class QuestionUser < ApplicationRecord
-
+  belongs_to :question, foreign_key: :current_question_id
 end
