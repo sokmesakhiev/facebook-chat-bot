@@ -1,5 +1,13 @@
+# == Schema Information
+#
+# Table name: bots
+#
+#  id   :integer          not null, primary key
+#  name :string(255)
+#
+
 class Bot < ApplicationRecord
-  has_many :surveys, dependent: :destroy
+  has_many :questions, dependent: :destroy
 
   def import(file)
     xlsx = Roo::Spreadsheet.open(file.path, extension: :xlsx)

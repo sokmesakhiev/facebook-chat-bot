@@ -5,30 +5,42 @@ class BotChatService
 
   def initialize(bot)
     @bot = bot
+    @total = bot.surveys.length
     @current = 0
   end
 
-  def start
+  def first
     @current = 0
     current_question
   end
 
-  def next
-    @current++
-    current_question
+  def next(reponse={})
+    @current += 1 if current < @total - 1
+    return current_question if current_survey.relevant.blank?
+
+    # current_survey.relevant
+
+    # current_question
   end
 
   def previous
-    @current--
+    @current -= 1 if current > 0
+    current_question
+  end
+
+  def last
+    @current = @total - 1
     current_question
   end
 
   private
 
-  def current_question
-    survey = bot.surveys[current]
-    return { survey: nil, choices: nil } if survey.nil?
+  def current_survey
+    bot.surveys[current]
+  end
 
+  def current_question
+    survey = current_survey
     { survey: survey, choices: survey.choices }
   end
 end
