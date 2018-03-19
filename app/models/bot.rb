@@ -11,15 +11,15 @@ class Bot < ApplicationRecord
 
   def import(file)
     xlsx = Roo::Spreadsheet.open(file.path, extension: :xlsx)
-    # self.surveys.destroy_all
+    # self.questions.destroy_all
 
-    import_surveys(xlsx)
+    import_questions(xlsx)
     import_choices(xlsx)
   end
 
   private
 
-  def import_surveys(xlsx)
+  def import_questions(xlsx)
     spreadsheet = xlsx.sheet('survey')
     header = spreadsheet.row(1)
 
@@ -27,8 +27,11 @@ class Bot < ApplicationRecord
       row = Hash[[header, spreadsheet.row(i)].transpose]
       next if row['type'].blank?
 
-      arr = row['type'].split(' ')
-      self.surveys.create!(question_type: arr[0], name: arr[1] || row['name'], label: row['label'])
+      types = row['type'].split(' ')
+      self.questions.create!(question_type: types[0],
+                           select_name: types[1],
+                           name: row['name'],
+                           label: row['label'])
     end
   end
 
@@ -38,10 +41,11 @@ class Bot < ApplicationRecord
 
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      survey = self.surveys.find_by(name: row['list_name'])
-      next if survey.nil?
+      question = self.questions.find_by(select_name: row['list_name'])
+      next if question.nil?
 
-      survey.choices.create!(name: row['name'], label: row['label'])
+      row.delete('list_name')
+      question.choices.create!(row)
     end
   end
 end

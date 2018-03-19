@@ -29,17 +29,17 @@ class FbmessengersController < ApplicationController
         pageEntry["messaging"].each do |messagingEvent|
           if (messagingEvent["optin"])
             Message.receivedAuthentication(messagingEvent);
-          elsif (messagingEvent["message"]) 
+          elsif (messagingEvent["message"])
             Message.receivedMessage(messagingEvent);
-          elsif (messagingEvent["delivery"]) 
+          elsif (messagingEvent["delivery"])
             Message.receivedDeliveryConfirmation(messagingEvent);
-          elsif (messagingEvent["postback"]) 
+          elsif (messagingEvent["postback"])
             Message.receivedPostback(messagingEvent);
-          elsif (messagingEvent["read"]) 
+          elsif (messagingEvent["read"])
             Message.receivedMessageRead(messagingEvent);
-          elsif (messagingEvent["account_linking"]) 
+          elsif (messagingEvent["account_linking"])
             Message.receivedAccountLink(messagingEvent);
-          else 
+          else
             puts ("Webhook received unknown messagingEvent: #{messagingEvent}");
           end
         end

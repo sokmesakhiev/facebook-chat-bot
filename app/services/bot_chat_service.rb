@@ -5,8 +5,8 @@ class BotChatService
 
   def initialize(bot)
     @bot = bot
-    @total = bot.surveys.length
-    @current = 0
+    @total = bot.questions.length
+    @current = -1
   end
 
   def first
@@ -14,13 +14,14 @@ class BotChatService
     current_question
   end
 
-  def next(reponse={})
-    @current += 1 if current < @total - 1
-    return current_question if current_survey.relevant.blank?
+  def next(option={})
+    if option[:current].present?
+      @current = option[:current] + 1
+    else
+      @current += 1 if current < @total - 1
+    end
 
-    # current_survey.relevant
-
-    # current_question
+    current_question
   end
 
   def previous
@@ -33,14 +34,17 @@ class BotChatService
     current_question
   end
 
-  private
-
-  def current_survey
-    bot.surveys[current]
+  def find_current_index(id)
+    bot.questions.index{|q| q.id==id}
   end
 
+  def is_last(question_id)
+    bot.questions.length > 0 && bot.questions.last.id == question_id
+  end
+
+  private
+
   def current_question
-    survey = current_survey
-    { survey: survey, choices: survey.choices }
+    bot.questions[current]
   end
 end

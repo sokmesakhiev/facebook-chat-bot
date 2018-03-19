@@ -1,6 +1,6 @@
 module Message
   SERVER_URL = FACEBOOK::CONFIG["serverURL"]
-  def self.receivedMessage(event) 
+  def self.receivedMessage(event)
     senderID = event["sender"]["id"]
     recipientID = event["recipient"]["id"]
     timeOfMessage = event["timestamp"]
@@ -17,6 +17,7 @@ module Message
     messageText = message["text"]
     messageAttachments = message["attachments"]
     quickReply = message["quick_reply"]
+
     if isEcho
       sendResponseTextMessage(senderID, messageText)
       puts("Received echo for message #{messageId} and app #{appId} with metadata #{metadata}")
@@ -28,88 +29,46 @@ module Message
       sendTextMessage(senderID, "Quick reply tapped")
       return
     end
+
+    handle_message(messageText, senderID, recipientID)
+  end
+
+  def self.handle_message(messageText, user_session_id, page_id)
     if messageText
-      case messageText.strip.downcase
-        when 'hello', 'hi'
-          sendHiMessage(senderID)
-          sendAgeMessage(senderID)
+      survey = SurveyService.new(user_session_id, page_id)
 
-        when 'image'
-          sendImageMessage senderID
+      UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: messageText)
 
-        when 'gif'
-          sendGifMessage senderID
-
-        when 'audio'
-          sendAudioMessage senderID
-
-        when 'video'
-          sendVideoMessage senderID
-
-        when 'file'
-          sendFileMessage senderID
-
-        when 'button'
-          sendButtonMessage(senderID)
-
-        when 'generic'
-          sendGenericMessage senderID
-
-        when 'template'
-          sendGenericTemplate senderID
-
-        when 'receipt'
-          sendReceiptMessage senderID
-
-        when 'quick reply'
-          sendQuickReply(senderID)
-
-        when 'read receipt'
-          sendReadReceipt(senderID)
-
-        when 'typing on'
-          sendTypingOn(senderID)
-
-        when 'typing off'
-          sendTypingOff(senderID)
-
-        when 'account linking'
-          sendAccountLinking senderID
-
-        else
-          sendTextMessage(senderID, messageText)
+      if survey.last_question?
+        return sendTextMessage(user_session_id, "Thank you!")
       end
-    elsif (messageAttachments)
-      sendTextMessage(senderID, "Message with attachment received")
+
+      callSendAPI(survey.next_question)
+    else
+      sendTextMessage(user_session_id, "Please kindly response :)!")
     end
   end
 
-	def self.sendHiMessage(recipientId)
-    messageData = {
-      "recipient" => {
-        "id" => recipientId
-      },
-      "message" => {
-        "text" => "Welcome to our facebook page!"
-      }
-    }
-    callSendAPI(messageData)
+  def self.receivedPostback(event)
+    user_session_id = event["sender"]["id"]
+    page_id = event["recipient"]["id"]
+    survey = SurveyService.new(user_session_id, page_id)
+    payload = event["postback"]["payload"]
+
+    if payload == 'first_welcome'
+      return callSendAPI(survey.first_question)
+    end
+
+    UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: payload)
+
+    if survey.last_question?
+      return sendTextMessage(user_session_id, "Thank you!")
+    end
+
+    callSendAPI(survey.next_question)
   end
 
-  def self.sendAgeMessage(recipientId)
-    messageData = {
-      "recipient" => {
-        "id" => recipientId
-      },
-      "message" => {
-        "text" => "How old are you?"
-      }
-    }
-    callSendAPI(messageData)
-  end
-
-
-  def self.sendGenericTemplate(recipientId) 
+  def self.sendGenericTemplate(recipientId)
     messageData = {
       "recipient" => {
         "id "=> recipientId
@@ -150,7 +109,7 @@ module Message
   end
 
 
-  def self.sendImageMessage(recipientId) 
+  def self.sendImageMessage(recipientId)
     messageData = {
       "recipient"=> {
         "id"=> recipientId
@@ -169,7 +128,7 @@ module Message
   end
 
 
-  def self.sendGifMessage(recipientId) 
+  def self.sendGifMessage(recipientId)
     messageData = {
       "recipient"=> {
         "id"=> recipientId
@@ -225,7 +184,6 @@ module Message
     callSendAPI(messageData)
   end
 
-
   def self.sendFileMessage(recipientId)
     messageData = {
       "recipient" => {
@@ -243,7 +201,6 @@ module Message
 
     callSendAPI(messageData)
   end
-
 
   def self.sendTextMessage(recipientId, messageText)
     messageData = {
@@ -352,7 +309,7 @@ module Message
     callSendAPI(messageData)
   end
 
-  def self.sendReceiptMessage(recipientId) 
+  def self.sendReceiptMessage(recipientId)
     receiptId = "order" + Math.floor(Math.random()*1000)
 
     messageData = {
@@ -413,8 +370,7 @@ module Message
     callSendAPI(messageData)
   end
 
-
-  def self.sendQuickReply(recipientId) 
+  def self.sendQuickReply(recipientId)
     messageData = {
       "recipient" => {
         "id" => recipientId
@@ -473,7 +429,7 @@ module Message
   end
 
 
-  def self.sendTypingOff(recipientId) 
+  def self.sendTypingOff(recipientId)
     puts("Turning typing indicator off")
 
     messageData = {
@@ -511,7 +467,7 @@ module Message
   end
 
 
-  def self.callSendAPI(messageData) 
+  def self.callSendAPI(messageData)
     messageData["access_token"] = FACEBOOK::CONFIG["pageAccessToken"]
     # request({
     #   uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -542,5 +498,4 @@ module Message
       puts ("Failed calling Send API #{response.code}")
     end
   end
-
 end

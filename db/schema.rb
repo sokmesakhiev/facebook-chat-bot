@@ -15,6 +15,8 @@ ActiveRecord::Schema.define(version: 20180314074611) do
 
   create_table "bots", force: true do |t|
     t.string "name"
+    t.string "facebook_page_id"
+    t.string "facebook_page_access_token"
   end
 
   create_table "choices", force: true do |t|
