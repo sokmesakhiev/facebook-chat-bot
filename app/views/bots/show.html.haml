@@ -1,6 +1,10 @@
-%h1= @bot.name
-%h2 Import xlsForm
+.container
+  %h2= @bot.name
 
-= form_tag import_bots_path, multipart: true do
-  = file_field_tag :file
-  = submit_tag "Import"
+  .col-lg-12
+    = form_tag import_bots_path, multipart: true, class: 'form-group' do
+      .form-group
+        = label_tag :xls_file
+        = file_field_tag :file
+      = submit_tag "Import", class: 'btn btn-default btn-primary'
+      = link_to 'Back', bots_path, class: 'btn btn-default'

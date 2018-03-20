@@ -2,16 +2,19 @@
 #
 # Table name: bots
 #
-#  id   :integer          not null, primary key
-#  name :string(255)
+#  id                         :integer          not null, primary key
+#  name                       :string(255)
+#  facebook_page_id           :string(255)
+#  facebook_page_access_token :string(255)
 #
 
 class Bot < ApplicationRecord
   has_many :questions, dependent: :destroy
+  validates :name, presence: true
 
   def import(file)
     xlsx = Roo::Spreadsheet.open(file.path, extension: :xlsx)
-    # self.questions.destroy_all
+    self.questions.destroy_all
 
     import_questions(xlsx)
     import_choices(xlsx)

@@ -64,3 +64,5 @@ gem 'sidekiq', '~> 5.1.1'
 gem 'slim', '~> 3.0.9'
 gem 'sinatra', '~> 1.4.8'
 gem 'roo', '~> 2.7.1'
+
+gem 'bootstrap3-rails'

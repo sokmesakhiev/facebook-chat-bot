@@ -1,1 +1,21 @@
-hello index
+.container
+  .header
+    .col-lg-10
+      %h2 Bots
+    .col-lg-2
+      = link_to 'Create new', new_bot_path
+
+  %table.table
+    %tr
+      %th No
+      %th Name
+      %th Action
+
+    - @bots.each_with_index do |bot, index|
+      %tr
+        %td= index + 1
+        %td= link_to bot.name, bot_path(bot)
+        %td
+          = link_to 'Edit', edit_bot_path(bot)
+          = ' / '
+          = link_to 'Delete', bot_path(bot), data: { confirm: 'Are you sure?' }, method: :delete
