@@ -67,22 +67,27 @@ function LoadMe() {
 
   // A simple callback implementation.
   function pickerCallback(data) {
-    var url = 'nothing';
+    // var url = 'nothing';
     if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
       var doc = data[google.picker.Response.DOCUMENTS][0];
-      url = doc[google.picker.Document.URL];
-      saveSpreadsheetKey(doc.id);
+      // url = doc[google.picker.Document.URL];
+      saveSpreadsheetKey(doc.id, doc.name);
+      renderTitle(doc.name);
     }
-    var message = 'You picked: ' + url;
-    document.getElementById('result').innerHTML = message;
+    // var message = 'You picked: ' + url;
+    // document.getElementById('result').innerHTML = message;
   }
 
-  function saveSpreadsheetKey(key) {
+  function renderTitle(title) {
+    $('.title').html(title)
+  }
+
+  function saveSpreadsheetKey(key, title) {
     var authBtn = document.getElementById('auth');
     $.ajax({
       url: '/api/bots/' + authBtn.dataset.botId,
       type: 'PUT',
-      data: 'google_spreadsheet_key=' + key,
+      data: 'google_spreadsheet_key=' + key + '&google_spreadsheet_title=' + title,
       success: function(data) {
 
       }

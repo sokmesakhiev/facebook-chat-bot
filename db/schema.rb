@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20180314074611) do
     t.string "facebook_page_access_token"
     t.string "google_access_token"
     t.string "google_spreadsheet_key"
+    t.string "google_spreadsheet_title"
   end
 
   create_table "choices", force: true do |t|

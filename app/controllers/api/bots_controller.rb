@@ -13,7 +13,7 @@ module Api
     private
 
     def data_params
-      params.permit(:google_access_token, :google_spreadsheet_key)
+      params.permit(:google_access_token, :google_spreadsheet_key, :google_spreadsheet_title)
     end
   end
 end

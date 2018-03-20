@@ -12,4 +12,10 @@
 
   .col-lg-12
     %h2 Google Spreadsheet
-    = render 'picker'
+    - if @bot.google_access_token.present? && @bot.google_spreadsheet_key.present?
+      %h4
+        %span spreadsheet title:
+        %span.title= @bot.google_spreadsheet_title
+
+    .picker
+      = render 'picker'
