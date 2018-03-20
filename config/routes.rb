@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'home#index'
+  root 'bots#index'
 
   get 'webhook' => 'fbmessengers#get_webhook'
   post 'webhook' => 'fbmessengers#post_webhook'
@@ -14,9 +14,11 @@ Rails.application.routes.draw do
 
   resources :home, only: :index
   resources :bots do
-    collection do
-      post :import
-    end
+    post :import, on: :collection
+  end
+
+  scope '/api', as: :api, module: :api do
+    resources :bots
   end
 
   require 'sidekiq/web'

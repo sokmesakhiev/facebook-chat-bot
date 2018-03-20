@@ -1,6 +1,6 @@
 function LoadMe() {
   // The Browser API key obtained from the Google API Console.
-  var developerKey = "<%= ENV['API_KEY'] %>";
+  var developerKey = "<%= ENV['GOOGLE_API_KEY'] %>";
 
   // The Client ID obtained from the Google API Console. Replace with your own Client ID.
   var clientId = "<%= ENV['GOOGLE_CLIENT_ID'] %>"
@@ -34,20 +34,29 @@ function LoadMe() {
   }
 
   function handleAuthResult(authResult) {
-     console.log('handleAuthResult')
-     console.log(authResult)
     if (authResult && !authResult.error) {
       oauthToken = authResult.access_token;
-      console.log('oauthToken', oauthToken);
-      createPicker();
+      saveToken(oauthToken);
     }
+  }
+
+  function saveToken(oauthToken) {
+    var authBtn = document.getElementById('auth');
+    $.ajax({
+      url: '/api/bots/' + authBtn.dataset.botId,
+      type: 'PUT',
+      data: 'google_access_token=' + oauthToken,
+      success: function(data) {
+        createPicker();
+      }
+    });
   }
 
   // Create and render a Picker object for picking user Photos.
   function createPicker() {
     if (pickerApiLoaded && oauthToken) {
       var picker = new google.picker.PickerBuilder().
-          addView(google.picker.ViewId.DOCS).
+          addView(google.picker.ViewId.SPREADSHEETS).
           setOAuthToken(oauthToken).
           setDeveloperKey(developerKey).
           setCallback(pickerCallback).
@@ -62,9 +71,22 @@ function LoadMe() {
     if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
       var doc = data[google.picker.Response.DOCUMENTS][0];
       url = doc[google.picker.Document.URL];
+      saveSpreadsheetKey(doc.id);
     }
     var message = 'You picked: ' + url;
     document.getElementById('result').innerHTML = message;
+  }
+
+  function saveSpreadsheetKey(key) {
+    var authBtn = document.getElementById('auth');
+    $.ajax({
+      url: '/api/bots/' + authBtn.dataset.botId,
+      type: 'PUT',
+      data: 'google_spreadsheet_key=' + key,
+      success: function(data) {
+
+      }
+    });
   }
 
   onApiLoad();

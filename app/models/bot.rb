@@ -6,6 +6,8 @@
 #  name                       :string(255)
 #  facebook_page_id           :string(255)
 #  facebook_page_access_token :string(255)
+#  google_access_token        :string(255)
+#  google_spreadsheet_key     :string(255)
 #
 
 class Bot < ApplicationRecord

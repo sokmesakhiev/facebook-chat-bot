@@ -1,5 +1,7 @@
 .container
-  %h2= @bot.name
+  %div
+    %div{style: 'display: inline-block'}= link_to '<- Back', bots_path
+    %h2{style: 'display: inline-block'}= @bot.name
 
   .col-lg-12
     = form_tag import_bots_path, multipart: true, class: 'form-group' do
@@ -7,4 +9,7 @@
         = label_tag :xls_file
         = file_field_tag :file
       = submit_tag "Import", class: 'btn btn-default btn-primary'
-      = link_to 'Back', bots_path, class: 'btn btn-default'
+
+  .col-lg-12
+    %h2 Google Spreadsheet
+    = render 'picker'
