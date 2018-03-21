@@ -26,6 +26,10 @@ class Bot < ApplicationRecord
     BotWorker.perform_async(self.id)
   end
 
+  def authorized_spreadsheet?
+    self.google_access_token.present? && self.google_spreadsheet_key.present?
+  end
+
   private
 
   def import_questions(xlsx)

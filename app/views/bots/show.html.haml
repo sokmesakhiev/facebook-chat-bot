@@ -1,23 +1,34 @@
 .container
-  %div
-    %div{style: 'display: inline-block'}= link_to '<- Back', bots_path
-    %h2{style: 'display: inline-block'}= @bot.name
-
-
   .col-lg-12
-    %h2 Google Spreadsheet
-    - if @bot.google_access_token.present? && @bot.google_spreadsheet_key.present?
-      %h4
-        %span spreadsheet title:
-        %span.title= @bot.google_spreadsheet_title
+    %p= link_to 'Back', bots_path, class: 'btn btn-default'
 
-    .picker
-      = render 'picker'
+    .jumbotron
+      %h2{style: 'display: inline-block'}= @bot.name
+      %div
+        %span Facebook page id:
+        %span= @bot.facebook_page_id
+      .ellipsis
+        .inline-block Facebook page access token:
+        .ellipsis.inline-block= @bot.facebook_page_access_token
 
-    - if @bot.google_access_token.present? && @bot.google_spreadsheet_key.present?
-      %p.col-lg-12
+    .jumbotron
+      %h2 Google Spreadsheet
+      - if @bot.authorized_spreadsheet?
+        %p
+          %span Title:
+          %span.title= @bot.google_spreadsheet_title
+
+      .picker
+        = render 'picker'
+
+    - if @bot.authorized_spreadsheet?
+      .col-lg-12.jumbotron
+        %h2 Excel Form
+        - if @bot.questions.present?
+          %p Form already imported!
         = form_tag import_bots_path, multipart: true, class: 'form-group' do
           .form-group
             = label_tag :xls_file
-            = file_field_tag :file
-          = submit_tag "Import", class: 'btn btn-default'
+            = file_field_tag :file, required: true
+
+          = submit_tag "Import", class: 'btn btn-default btn-primary'
