@@ -9,5 +9,9 @@
 #
 
 class UserResponse < ApplicationRecord
+  belongs_to :question
 
+  after_create do
+    UserResponseWorker.perform_async(self.id)
+  end
 end

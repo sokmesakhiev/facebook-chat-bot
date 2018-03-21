@@ -13,6 +13,7 @@
 
 class Bot < ApplicationRecord
   has_many :questions, dependent: :destroy
+
   validates :name, presence: true
 
   def import(file)
@@ -21,6 +22,8 @@ class Bot < ApplicationRecord
 
     import_questions(xlsx)
     import_choices(xlsx)
+
+    BotWorker.perform_async(self.id)
   end
 
   private
