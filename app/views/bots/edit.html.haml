@@ -1,3 +1,4 @@
 .container
   %h2 Edit Bot
-  = render 'form'
+  = form_tag bot_path(@bot), method: :put, class: 'form-group' do
+    = render 'form'

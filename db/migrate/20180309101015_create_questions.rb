@@ -6,6 +6,9 @@ class CreateQuestions < ActiveRecord::Migration
       t.string :select_name
       t.string :name
       t.string :label
+      t.integer :dependent_id
+      t.string :operator
+      t.string :dependent_value
     end
   end
 end

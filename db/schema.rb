@@ -28,12 +28,6 @@ ActiveRecord::Schema.define(version: 20180314074611) do
     t.string  "label"
   end
 
-  create_table "dependent_fields", force: true do |t|
-    t.integer "question_id"
-    t.string  "operator"
-    t.string  "value"
-  end
-
   create_table "question_users", force: true do |t|
     t.string  "user_session_id"
     t.integer "current_question_id"
@@ -45,6 +39,9 @@ ActiveRecord::Schema.define(version: 20180314074611) do
     t.string  "select_name"
     t.string  "name"
     t.string  "label"
+    t.integer "dependent_id"
+    t.string  "operator"
+    t.string  "dependent_value"
   end
 
   create_table "user_responses", force: true do |t|

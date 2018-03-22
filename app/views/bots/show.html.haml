@@ -21,14 +21,13 @@
       .picker
         = render 'picker'
 
-    - if @bot.authorized_spreadsheet?
-      .col-lg-12.jumbotron
-        %h2 Excel Form
-        - if @bot.questions.present?
-          %p Form already imported!
-        = form_tag import_bots_path, multipart: true, class: 'form-group' do
-          .form-group
-            = label_tag :xls_file
-            = file_field_tag :file, required: true
+    .jumbotron
+      %h2 Excel Form
+      - if @bot.questions.present?
+        %p Form already imported!
+      = form_tag import_bots_path, multipart: true, class: 'form-group' do
+        .form-group
+          = label_tag :xls_file
+          = file_field_tag :file, required: true
 
-          = submit_tag "Import", class: 'btn btn-default btn-primary'
+        = submit_tag "Import", class: 'btn btn-default btn-primary'

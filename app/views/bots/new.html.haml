@@ -1,3 +1,4 @@
 .container
   %h2 New Bot
-  = render 'form'
+  = form_tag bots_path, class: 'form-group' do
+    = render 'form'
