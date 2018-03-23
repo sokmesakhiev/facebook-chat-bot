@@ -43,6 +43,8 @@ class SurveyService
   def skip_question(question)
     user_response = UserResponse.where(user_session_id: user_session_id, question_id: question.relevant.id).last
 
+    return true if user_response.nil?
+
     if question.operator == 'selected'
       arr = user_response.value.split(',')
       return !arr.include?(question.relevant_value)

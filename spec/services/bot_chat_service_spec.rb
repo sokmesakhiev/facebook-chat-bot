@@ -20,16 +20,16 @@ RSpec.describe BotChatService do
 
   context 'has skip logic surveys' do
     let!(:bot) { create(:bot, :with_skip_logic_surveys_and_choices) }
-    let!(:bot_service) { BotChatService.new(bot) }
+    # let!(:bot_service) { BotChatService.new(bot) }
 
     # it '#first' do
     # end
 
     describe '#next' do
-      it 'returns next question as favorite_topping' do
-        current_question = bot_service.next({likes_pizza: 'yes'})
-        expect(current_question[:survey][:name]).to eq 'favorite_topping'
-      end
+      # it 'returns next question as favorite_topping' do
+      #   current_question = bot_service.next({likes_pizza: 'yes'})
+      #   expect(current_question[:survey][:name]).to eq 'favorite_topping'
+      # end
 
       # it 'returns next question as favorite_cheese' do
       #   current_question = bot_service.next({favorite_topping: 'cheese'})

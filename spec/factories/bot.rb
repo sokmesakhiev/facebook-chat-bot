@@ -7,12 +7,12 @@ FactoryBot.define do
         surveys = [
           { question_type: 'text', name: 'username', label: 'What is your name?' },
           { question_type: 'num', name: 'age', label: 'How old are you?' },
-          { question_type: 'select_one', name: 'sex', label: 'What is your sex?' },
+          { question_type: 'select_one', select_name: 'sex', name: 'sex', label: 'What is your sex?' },
           { question_type: 'date', name: 'dob', label: 'When is your birth date?' },
-          { question_type: 'select_many', name: 'favorite_foods', label: 'What are your favorite foods?' }
+          { question_type: 'select_many', select_name: 'favorite_foods', name: 'favorite_foods', label: 'What are your favorite foods?' }
         ]
-        surveys.each do |survey|
-          bot.surveys.create!(survey)
+        surveys.each do |question|
+          bot.questions.create!(question)
         end
 
         choices = [
@@ -25,22 +25,26 @@ FactoryBot.define do
         ]
 
         choices.each do |choice|
-          survey = bot.surveys.find_by(name: choice[:list_name])
+          question = bot.questions.find_by(select_name: choice[:list_name])
           choice.delete(:list_name)
-          survey.choices.create!(choice)
+          question.choices.create!(choice)
         end
       end
     end
 
     trait :with_skip_logic_surveys_and_choices do
+      facebook_page_id            '1512165178836125'
+      facebook_page_access_token  'token'
+
       after(:create) do |bot, evaluator|
         surveys = [
-          { question_type: 'select_one yes_no', name: 'likes_pizza', label: 'Do you like pizza?', relevant: '' },
-          { question_type: 'select_multiple pizza_toppings', name: 'favorite_topping', label: 'Favorite toppings', relevant: '${likes_pizza} = "yes"' },
-          { question_type: 'text', name: 'favorite_cheese', label: 'What is your favorite type of cheese?', relevant: 'selected(${favorite_topping}, "cheese")' },
+          { id: 1, question_type: 'select_one', select_name: 'yes_no', name: 'likes_pizza', label: 'Do you like pizza?' },
+          { id: 2, question_type: 'select_multiple', select_name: 'pizza_toppings', name: 'favorite_topping', label: 'Favorite toppings', relevant_id: 1, operator: '==', relevant_value: 'yes' },
+          { id: 3, question_type: 'text', name: 'favorite_cheese', label: 'What is your favorite type of cheese?', relevant_id: 2, operator: 'selected', relevant_value: 'cheese' },
+          { id: 4, question_type: 'text', name: 'thank', label: 'Thank you!' }
         ]
-        surveys.each do |survey|
-          bot.surveys.create!(survey)
+        surveys.each do |question|
+          bot.questions.create!(question)
         end
 
         choices = [
@@ -52,12 +56,9 @@ FactoryBot.define do
         ]
 
         choices.each do |choice|
-          survey = bot.surveys.where('question_type LIKE ? OR name = ?', "%#{choice[:list_name]}%", choice[:list_name]).first
-          # binding.pry
-          next if survey.nil?
-
+          question = bot.questions.find_by(select_name: choice[:list_name])
           choice.delete(:list_name)
-          survey.choices.create!(choice)
+          question.choices.create!(choice)
         end
       end
     end
