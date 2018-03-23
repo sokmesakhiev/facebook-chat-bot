@@ -41,11 +41,27 @@ class Bot < ApplicationRecord
       next if row['type'].blank?
 
       types = row['type'].split(' ')
-      self.questions.create!(question_type: types[0],
-                           select_name: types[1],
-                           name: row['name'],
-                           label: row['label'])
+      question = self.questions.create!(
+        question_type: types[0],
+        select_name: types[1],
+        name: row['name'],
+        label: row['label'])
+      handle_relevant_field(question, row['relevant'])
     end
+  end
+
+  def handle_relevant_field(question, relevant)
+    return if relevant.blank?
+
+    relevant_field = relevant[/\$\{(\w+)\}/, 1]
+    params = {
+      relevant_id: self.questions.find_by(name: relevant_field).id,
+      operator: relevant[/(\>\=|\<\=|\!\=|[\+\-\*\>\<\=\|]|div|or|and|mod|selected)/, 1],
+      relevant_value: relevant[/[\‘\'\"](\w+)[\’\'\"]/, 1]
+    }
+    params[:operator] = '==' if params[:operator] == '='
+
+    question.update_attributes(params)
   end
 
   def import_choices(xlsx)
@@ -55,7 +71,7 @@ class Bot < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
       question = self.questions.find_by(select_name: row['list_name'])
-      next if question.nil?
+      next if row['list_name'].blank? || question.nil?
 
       row.delete('list_name')
       question.choices.create!(row)

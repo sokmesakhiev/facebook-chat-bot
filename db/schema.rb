@@ -39,9 +39,9 @@ ActiveRecord::Schema.define(version: 20180314074611) do
     t.string  "select_name"
     t.string  "name"
     t.string  "label"
-    t.integer "dependent_id"
+    t.integer "relevant_id"
     t.string  "operator"
-    t.string  "dependent_value"
+    t.string  "relevant_value"
   end
 
   create_table "user_responses", force: true do |t|
