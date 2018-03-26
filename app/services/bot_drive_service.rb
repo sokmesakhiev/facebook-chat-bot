@@ -15,19 +15,36 @@ class BotDriveService
   end
 
   def authorize_url
-    credentials.authorization_uri.to_s
+    credentials.authorization_uri.to_s + '&prompt=consent'
   end
 
   private
 
   def session
-    @session ||= GoogleDrive::Session.from_credentials(credentials)
+    @session ||= GoogleDrive::Session.from_access_token(access_token)
   end
 
-  def fetch_token
-    credentials.refresh_token = bot.google_access_token
-    res = credentials.fetch_access_token!
-    bot.update_attribute(:google_access_token, res['access_token'])
+  def access_token
+    # https://stackoverflow.com/questions/10827920/not-receiving-google-oauth-refresh-token
+    # https://github.com/instedd/hub/blob/master/app/models/google_spreadsheets_connector.rb#L50
+    if access_token_expired?
+      credentials.refresh_token = bot.google_refresh_token
+      res = credentials.fetch_access_token!
+      bot.google_access_token = res['access_token']
+      bot.google_token_expires_at = res['expires_in'].seconds.from_now
+      bot.google_refresh_token = res['refresh_token'] if res['refresh_token'].present?
+      bot.save
+    end
+
+    bot.google_access_token
+  end
+
+  def access_token_expired?
+    if bot.google_token_expires_at
+      Time.now > bot.google_token_expires_at - 1.minute
+    else
+      false
+    end
   end
 
   def set_credentials
@@ -40,8 +57,5 @@ class BotDriveService
       ],
       redirect_uri: ENV['GOOGLE_CALLBACK_URL']
     )
-
-    fetch_token
-    session
   end
 end

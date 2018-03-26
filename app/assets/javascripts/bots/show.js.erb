@@ -21,11 +21,37 @@ function LoadMe() {
     var authBtn = document.getElementById('auth');
     authBtn.disabled = false;
     authBtn.addEventListener('click', function() {
-      gapi.auth2.authorize({
+      // var auth2 = gapi.auth2.authorize({
+      //   client_id: clientId,
+      //   scope: scope,
+      //   // prompt: 'consent'
+      // }, handleAuthResult);
+
+      var auth2 = gapi.auth2.init({
         client_id: clientId,
         scope: scope
-      }, handleAuthResult);
+      });
+      auth2.grantOfflineAccess().then(signInCallback);
     });
+  }
+
+  function signInCallback(authResult) {
+    console.log(authResult)
+    if (authResult['code']) {
+      // Send the code to the server
+      var authBtn = document.getElementById('auth');
+      $.ajax({
+        url: '/oauth_callbacks',
+        type: 'POST',
+        data: 'code=' + authResult['code'] + '&bot_id=' + authBtn.dataset.botId,
+        success: function(result) {
+          console.log('result==', result);
+          handleAuthResult(result);
+        }
+      });
+    } else {
+      // There was an error.
+    }
   }
 
   function onPickerApiLoad() {
