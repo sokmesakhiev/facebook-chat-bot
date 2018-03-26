@@ -1,148 +1,147 @@
 module Message
-  SERVER_URL = FACEBOOK::CONFIG["serverURL"]
-  def self.receivedMessage(event)
-    senderID = event["sender"]["id"]
-    recipientID = event["recipient"]["id"]
-    timeOfMessage = event["timestamp"]
-    message = event["message"]
+  SERVER_URL = FACEBOOK::CONFIG['serverURL']
+  def self.received_message(event)
+    sender_id = event['sender']['id']
+    recipient_id = event['recipient']['id']
+    time_of_message = event['timestamp']
+    message = event['message']
 
-    puts("Received message for user #{senderID} and page #{recipientID} at #{timeOfMessage} with message:")
+    puts("Received message for user #{sender_id} and page #{recipient_id} at #{time_of_message} with message:")
     puts(message)
 
-    isEcho = message["is_echo"]
-    messageId = message["mid"]
-    appId = message["app_id"]
-    metadata = message["metadata"]
+    is_echo = message['is_echo']
+    message_id = message['mid']
+    app_id = message['app_id']
+    metadata = message['metadata']
 
-    messageText = message["text"]
-    messageAttachments = message["attachments"]
-    quickReply = message["quick_reply"]
+    message_text = message['text']
+    # message_attachments = message['attachments']
+    quick_reply = message['quick_reply']
 
-    if isEcho
-      sendResponseTextMessage(senderID, messageText)
-      puts("Received echo for message #{messageId} and app #{appId} with metadata #{metadata}")
+    if is_echo
+      send_response_text_message(sender_id, message_text)
+      puts("Received echo for message #{message_id} and app #{app_id} with metadata #{metadata}")
       return
-    elsif quickReply
-      quickReplyPayload = quickReply["payload"]
-      puts("Quick reply for message #{messageId} with payload #{quickReplyPayload}")
+    elsif quick_reply
+      quick_reply_payload = quick_reply['payload']
+      puts("Quick reply for message #{message_id} with payload #{quick_reply_payload}")
 
-      sendTextMessage(senderID, "Quick reply tapped")
+      send_text_message(sender_id, 'Quick reply tapped')
       return
     end
 
-    handle_message(messageText, senderID, recipientID)
+    handle_message(message_text, sender_id, recipient_id)
   end
 
-  def self.handle_message(messageText, user_session_id, page_id)
-    sendTypingOn(user_session_id)
+  def self.handle_message(message_text, user_session_id, page_id)
+    send_typing_on(user_session_id)
 
-    if messageText
+    if message_text
       survey = SurveyService.new(user_session_id, page_id)
 
-      UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: messageText)
+      UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: message_text)
 
-      return sendTextMessage(user_session_id, "Thank you!") if survey.last_question?
+      return send_text_message(user_session_id, 'Thank you!') if survey.last_question?
 
-      callSendAPI(survey.next_question)
+      call_send_api(survey.next_question)
     else
-      sendTextMessage(user_session_id, "Please kindly response :)!")
+      send_text_message(user_session_id, 'Please kindly response :)!')
     end
   end
 
-  def self.receivedPostback(event)
-    user_session_id = event["sender"]["id"]
-    page_id = event["recipient"]["id"]
+  def self.received_postback(event)
+    user_session_id = event['sender']['id']
+    page_id = event['recipient']['id']
     survey = SurveyService.new(user_session_id, page_id)
-    payload = event["postback"]["payload"]
+    payload = event['postback']['payload']
 
-    sendTypingOn(user_session_id)
+    send_typing_on(user_session_id)
 
-    return callSendAPI(survey.first_question) if payload == 'first_welcome'
+    return call_send_api(survey.first_question) if payload == 'first_welcome'
 
     UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: payload)
 
-    return sendTextMessage(user_session_id, "Thank you!") if survey.last_question?
+    return send_text_message(user_session_id, 'Thank you!') if survey.last_question?
 
-    callSendAPI(survey.next_question)
+    call_send_api(survey.next_question)
   end
 
-  def self.sendTextMessage(recipientId, messageText)
-    messageData = {
-      "recipient" => {
-        "id" => recipientId
+  def self.send_text_message(recipient_id, message_text)
+    message_data = {
+      'recipient' => {
+        'id' => recipient_id
       },
-      "message" => {
-        "text" => messageText,
-        "metadata" => "DEVELOPER_DEFINED_METADATA"
+      'message' => {
+        'text' => message_text,
+        'metadata' => 'DEVELOPER_DEFINED_METADATA'
       }
     }
 
-    callSendAPI(messageData)
+    call_send_api(message_data)
   end
 
-  def self.sendTypingOn(recipientId)
-    puts("Turning typing indicator on")
+  def self.send_typing_on(recipient_id)
+    puts('Turning typing indicator on')
 
-    messageData = {
-      "recipient" => {
-        "id" => recipientId
+    message_data = {
+      'recipient' => {
+        'id' => recipient_id
       },
-      "sender_action" => "typing_on"
+      'sender_action' => 'typing_on'
     }
 
-    callSendAPI(messageData)
+    call_send_api(message_data)
   end
 
+  def self.send_typing_off(recipient_id)
+    puts('Turning typing indicator off')
 
-  def self.sendTypingOff(recipientId)
-    puts("Turning typing indicator off")
-
-    messageData = {
-      "recipient" => {
-        "id" => recipientId
+    message_data = {
+      'recipient' => {
+        'id' => recipient_id
       },
-      "sender_action" => "typing_off"
+      'sender_action' => 'typing_off'
     }
 
-    callSendAPI(messageData)
+    call_send_api(message_data)
   end
 
-  def self.callSendAPI(messageData)
-    messageData["access_token"] = FACEBOOK::CONFIG["pageAccessToken"]
+  def self.call_send_api(message_data)
+    message_data['access_token'] = FACEBOOK::CONFIG['pageAccessToken']
     # request({
     #   uri: 'https://graph.facebook.com/v2.6/me/messages',
     #   qs: { access_token: FACEBOOK::CONFIG["pageAccessToken"] },
     #   method: 'POST',
-    #   json: messageData,
+    #   json: message_data,
     # })
     request = Typhoeus::Request.new(
       'https://graph.facebook.com/v2.6/me/messages',
       method: :POST,
-      body: "this is a request body",
-      params: messageData,
-      headers: { Accept: "application/json" }
+      body: 'this is a request body',
+      params: message_data,
+      headers: { Accept: 'application/json' }
     )
 
     request.run
     response = request.response
-    if(response.code == 200)
+    if response.code == 200
       result = JSON.parse response.response_body
-      recipientId = result["recipient_id"]
-      messageId = result["message_id"]
-      if (messageId)
-        puts "Successfully sent message with id #{messageId}to recipient #{recipientId}"
+      recipient_id = result['recipient_id']
+      message_id = result['message_id']
+      if message_id
+        puts "Successfully sent message with id #{message_id}to recipient #{recipient_id}"
       else
-        puts "Successfully called Send API for recipient #{recipientId}"
+        puts "Successfully called Send API for recipient #{recipient_id}"
       end
     else
-      puts ("Failed calling Send API #{response.code}")
+      puts "Failed calling Send API #{response.code}"
     end
   end
 
-  # def self.sendGenericTemplate(recipientId)
-  #   messageData = {
+  # def self.sendGenericTemplate(recipient_id)
+  #   message_data = {
   #     "recipient" => {
-  #       "id "=> recipientId
+  #       "id "=> recipient_id
   #     },
   #     "message" => {
   #       "attachment" => {
@@ -176,14 +175,13 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-
-  # def self.sendImageMessage(recipientId)
-  #   messageData = {
+  # def self.sendImageMessage(recipient_id)
+  #   message_data = {
   #     "recipient"=> {
-  #       "id"=> recipientId
+  #       "id"=> recipient_id
   #     },
   #     "message"=> {
   #       "attachment"=> {
@@ -194,15 +192,14 @@ module Message
   #       }
   #     }
   #   }
-  #   puts messageData
-  #   callSendAPI(messageData)
+  #   puts message_data
+  #   call_send_api(message_data)
   # end
 
-
-  # def self.sendGifMessage(recipientId)
-  #   messageData = {
+  # def self.sendGifMessage(recipient_id)
+  #   message_data = {
   #     "recipient"=> {
-  #       "id"=> recipientId
+  #       "id"=> recipient_id
   #     },
   #     "message"=> {
   #       "attachment"=> {
@@ -214,14 +211,13 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-
-  # def self.sendAudioMessage(recipientId)
-  #   messageData = {
+  # def self.sendAudioMessage(recipient_id)
+  #   message_data = {
   #     "recipient"=> {
-  #       "id"=> recipientId
+  #       "id"=> recipient_id
   #     },
   #     "message"=> {
   #       "attachment"=> {
@@ -233,14 +229,13 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-
-  # def self.sendVideoMessage(recipientId)
-  #   messageData = {
+  # def self.sendVideoMessage(recipient_id)
+  #   message_data = {
   #     "recipient"=> {
-  #       "id"=> recipientId
+  #       "id"=> recipient_id
   #     },
   #     "message"=> {
   #       "attachment"=> {
@@ -252,13 +247,13 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-  # def self.sendFileMessage(recipientId)
-  #   messageData = {
+  # def self.sendFileMessage(recipient_id)
+  #   message_data = {
   #     "recipient" => {
-  #       "id" => recipientId
+  #       "id" => recipient_id
   #     },
   #     "message" => {
   #       "attachment" => {
@@ -270,27 +265,27 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-  # def self.sendResponseTextMessage(recipientId, messageText)
-  #   messageData = {
-  #     "recipient" => {
-  #       "id" => recipientId
-  #     },
-  #     "message" => {
-  #       "text" => "You have response " + messageText,
-  #       "metadata" => "DEVELOPER_DEFINED_METADATA"
-  #     }
-  #   }
+  def self.send_response_text_message(recipient_id, message_text)
+    message_data = {
+      'recipient' => {
+        'id' => recipient_id
+      },
+      'message' => {
+        'text' => 'You have response ' + message_text,
+        'metadata' => 'DEVELOPER_DEFINED_METADATA'
+      }
+    }
 
-  #   callSendAPI(messageData)
-  # end
+    call_send_api(message_data)
+  end
 
-  # def self.sendButtonMessage(recipientId)
-  #   messageData = {
+  # def self.sendButtonMessage(recipient_id)
+  #   message_data = {
   #     "recipient" => {
-  #       "id" => recipientId
+  #       "id" => recipient_id
   #     },
   #     "message" => {
   #       "attachment" => {
@@ -316,13 +311,13 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-  # def self.sendGenericMessage(recipientId)
-  #   messageData = {
+  # def self.sendGenericMessage(recipient_id)
+  #   message_data = {
   #     "recipient" => {
-  #       "id" => recipientId
+  #       "id" => recipient_id
   #     },
   #     "message" => {
   #       "attachment" => {
@@ -363,15 +358,15 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-  # def self.sendReceiptMessage(recipientId)
+  # def self.sendReceiptMessage(recipient_id)
   #   receiptId = "order" + Math.floor(Math.random()*1000)
 
-  #   messageData = {
+  #   message_data = {
   #     "recipient" => {
-  #       "id" => recipientId
+  #       "id" => recipient_id
   #     },
   #     "message" =>{
   #       "attachment" => {
@@ -424,13 +419,13 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-  # def self.sendQuickReply(recipientId)
-  #   messageData = {
+  # def self.sendQuick_reply(recipient_id)
+  #   message_data = {
   #     "recipient" => {
-  #       "id" => recipientId
+  #       "id" => recipient_id
   #     },
   #     "message" => {
   #       "text" => "What's your favorite movie genre?",
@@ -454,27 +449,26 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-
-  # def self.sendReadReceipt(recipientId)
+  # def self.sendReadReceipt(recipient_id)
   #   puts("Sending a read receipt to mark message as seen")
 
-  #   messageData = {
+  #   message_data = {
   #     "recipient" => {
-  #       "id" => recipientId
+  #       "id" => recipient_id
   #     },
   #     "sender_action" => "mark_seen"
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 
-  # def self.sendAccountLinking(recipientId)
-  #   return messageData = {
+  # def self.sendAccountLinking(recipient_id)
+  #   return message_data = {
   #     "recipient" => {
-  #       "id" => recipientId
+  #       "id" => recipient_id
   #     },
   #     "message" => {
   #       "attachment" => {
@@ -491,6 +485,6 @@ module Message
   #     }
   #   }
 
-  #   callSendAPI(messageData)
+  #   call_send_api(message_data)
   # end
 end

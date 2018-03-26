@@ -21,12 +21,12 @@ class UserResponseWorker
   def find_row_num(ws, user_session_id)
     user_session_ids = (2..ws.num_rows).map { |row| ws[row, 1] }
     last_row_num     = ws.num_rows > 0 ? ws.num_rows : 1
-    row_index        = user_session_ids.index{ |id| id == user_session_id }
+    row_index        = user_session_ids.index { |id| id == user_session_id }
     row_index.present? ? (row_index + 2) : (last_row_num + 1)
   end
 
   def find_col_num(bot, question_id)
-    index = bot.questions.index{ |q| q.id == question_id }
+    index = bot.questions.index { |q| q.id == question_id }
     index + 2
   end
 end

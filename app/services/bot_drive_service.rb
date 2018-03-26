@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "googleauth"
+require 'googleauth'
 
 class BotDriveService
   attr_accessor :credentials, :bot
@@ -35,10 +35,11 @@ class BotDriveService
       client_id: ENV['GOOGLE_CLIENT_ID'],
       client_secret: ENV['GOOGLE_CLIENT_SECRET'],
       scope: [
-        "https://www.googleapis.com/auth/drive",
-        "https://spreadsheets.google.com/feeds/",
+        'https://www.googleapis.com/auth/drive',
+        'https://spreadsheets.google.com/feeds/'
       ],
-      redirect_uri: ENV['GOOGLE_CALLBACK_URL'])
+      redirect_uri: ENV['GOOGLE_CALLBACK_URL']
+    )
 
     fetch_token
     session

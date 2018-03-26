@@ -35,7 +35,7 @@ class SurveyService
   end
 
   def last_question?
-    @question_user.current_question_id.present? && @bot_service.is_last(@question_user.current_question_id)
+    @question_user.current_question_id.present? && @bot_service.last?(@question_user.current_question_id)
   end
 
   private
@@ -67,12 +67,12 @@ class SurveyService
 
   def text_template(question)
     {
-      "recipient" => {
-        "id" => user_session_id
+      'recipient' => {
+        'id' => user_session_id
       },
-      "message" => {
-        "text" => question.label,
-        "metadata" => "DEVELOPER_DEFINED_METADATA"
+      'message' => {
+        'text' => question.label,
+        'metadata' => 'DEVELOPER_DEFINED_METADATA'
       }
     }
   end
@@ -80,23 +80,23 @@ class SurveyService
   def select_one_template(question)
     buttons = question.choices.map do |choice|
       {
-        "type" => "postback",
-        "title" => choice.label,
-        "payload" => choice.name
+        'type' => 'postback',
+        'title' => choice.label,
+        'payload' => choice.name
       }
     end
 
     {
-      "recipient" => {
-        "id" => user_session_id
+      'recipient' => {
+        'id' => user_session_id
       },
-      "message" => {
-        "attachment" => {
-          "type" => "template",
-          "payload" => {
-            "template_type" => "button",
-            "text" => question.label,
-            "buttons" => buttons.take(3)
+      'message' => {
+        'attachment' => {
+          'type' => 'template',
+          'payload' => {
+            'template_type' => 'button',
+            'text' => question.label,
+            'buttons' => buttons.take(3)
           }
         }
       }

@@ -10,7 +10,7 @@ class BotWorker
     ws[1, 1] = 'user_session_id'
 
     bot.questions.each_with_index do |question, index|
-      ws[1, index+2] = question.name
+      ws[1, index + 2] = question.name
     end
 
     ws.save

@@ -14,11 +14,11 @@ class BotChatService
     current_question
   end
 
-  def next(option={})
+  def next(option = {})
     if option[:current].present?
       @current = option[:current] + 1
-    else
-      @current += 1 if current < @total - 1
+    elsif current < @total - 1
+      @current += 1
     end
 
     current_question
@@ -35,11 +35,11 @@ class BotChatService
   end
 
   def find_current_index(id)
-    bot.questions.index{|q| q.id==id}
+    bot.questions.index { |q| q.id == id }
   end
 
-  def is_last(question_id)
-    bot.questions.length > 0 && bot.questions.last.id == question_id
+  def last?(question_id)
+    !bot.questions.empty? && bot.questions.last.id == question_id
   end
 
   private
