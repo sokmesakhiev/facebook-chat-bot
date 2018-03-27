@@ -29,6 +29,9 @@ gem 'spring',        group: :development
 gem 'byebug'
 gem "typhoeus"
 
+gem 'omniauth'
+gem 'omniauth-facebook', '~> 1.4.1'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -40,4 +43,3 @@ gem "typhoeus"
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-
