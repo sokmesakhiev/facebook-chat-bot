@@ -17,6 +17,7 @@ function LoadMe() {
     gapi.load('picker', onPickerApiLoad);
   }
 
+  // https://developers.google.com/identity/sign-in/web/server-side-flow
   function onAuthApiLoad() {
     var authBtn = document.getElementById('auth');
     authBtn.disabled = false;
