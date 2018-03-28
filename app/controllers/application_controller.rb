@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  protect_from_forgery except: %i[post_webhook get_webhook]
-  helper_method :current_user
+  protect_from_forgery except: %i[post_webhook get_webhook], prepend: true
+  before_action :authenticate_user!
 
   def set_constance
     # @bodyParser = require('body-parser'),
@@ -16,10 +16,5 @@ class ApplicationController < ActionController::Base
     #   puts 'Missing config values'
     #   head :forbidden
     # end
-  end
-
-  private
-  def current_user
-    @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
 end
