@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :users
+
   # resolve session
   post ':controller(/:action(/:id(.:format)))'
   get ':controller(/:action(/:id(.:format)))'

@@ -15,6 +15,7 @@
 
 class Bot < ApplicationRecord
   has_many :questions, dependent: :destroy
+  belongs_to :user
 
   validates :name, presence: true
 

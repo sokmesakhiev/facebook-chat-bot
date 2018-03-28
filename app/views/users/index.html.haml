@@ -1,0 +1,31 @@
+.container.main
+  %center
+    #div{style: "width:80%;", align: "right"}
+      %a.btn.icon-btn.btn-primary{:href => "/users/new"}
+        %span.glyphicon.btn-glyphicon.glyphicon-plus.img-circle.text-primary>
+        Create new
+  %br
+  .clear
+  %table.table-bordered.table.central{style: "width:80%;", align: "center"}
+    %thead
+      %tr
+        %th{width: 60} #
+        %th Email
+        %th Role
+        %th Actions
+    %tbody
+      - @users.each do |user|
+        %tr
+          %td= link_to user.id, edit_user_path(user.id)
+          %td= link_to user.email, edit_user_path(user.id)
+          %td= user.role
+          %td
+            %a.btn.btn-info.btn-xs{:href => edit_user_path(user.id)}
+              %span.glyphicon.glyphicon-edit
+              Edit
+
+            - if user.id != current_user.id
+              %a.btn.btn-danger.btn-xs{:rel => "nofollow", :href => user_path(user.id), "data-method" => "delete",  data: { confirm: 'Are you sure you want to delete the user?' }}
+                %span.glyphicon.glyphicon-remove
+                Delete
+

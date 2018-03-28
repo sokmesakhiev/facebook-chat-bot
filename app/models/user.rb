@@ -5,6 +5,16 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, :omniauth_providers => [:facebook]
 
+  ROLES = %w[admin operator].freeze
+
+  has_many :bots
+
+  validates :role, inclusion: { in: ROLES }
+
+  def admin?
+    role == 'admin'
+  end
+
   def self.from_omniauth(auth)
     where(auth.slice(:provider, :uid)).first_or_initialize.tap do |user|
       user.provider = auth.provider
@@ -17,12 +27,12 @@ class User < ActiveRecord::Base
   end
 
   def self.create_from_omniauth(params)
-      # user = find_or_create_by(email: params.info.email, uid: params.uid)
-      # user.update({
-      #   token: params.credentials.token,
-      #   name: params.info.name,
-      #   avatar: params.info.image
-      # })
-      # user
-    end
+    # user = find_or_create_by(email: params.info.email, uid: params.uid)
+    # user.update({
+    #   token: params.credentials.token,
+    #   name: params.info.name,
+    #   avatar: params.info.image
+    # })
+    # user
+  end
 end

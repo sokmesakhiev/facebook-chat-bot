@@ -17,7 +17,7 @@ class BotsController < ApplicationController
   end
 
   def show
-    @bot = Bot.first
+    @bot = Bot.find(params[:id])
   end
 
   def edit

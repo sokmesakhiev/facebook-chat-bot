@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180328084836) do
+ActiveRecord::Schema.define(version: 20180328100226) do
 
   create_table "bots", force: true do |t|
     t.string   "name"
+    t.integer  "user_id"
     t.string   "facebook_page_id"
     t.string   "facebook_page_access_token"
     t.string   "google_access_token"
@@ -80,6 +81,7 @@ ActiveRecord::Schema.define(version: 20180328084836) do
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
+    t.string   "role"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
