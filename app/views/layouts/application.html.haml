@@ -7,4 +7,13 @@
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
   %body{id: css_id_name}
+    #user-widget
+      - if current_user
+        Welcome
+        = succeed "!" do
+          %strong= current_user.name
+        = link_to "Sign out", signout_path, id: "sign_out"
+      - else
+        = link_to "Sign in with Facebook", "/auth/facebook", id: "sign_in"
+
     = yield

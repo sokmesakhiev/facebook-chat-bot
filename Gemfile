@@ -68,3 +68,6 @@ gem 'roo', '~> 2.7.1'
 
 gem 'bootstrap-sass', '~> 3.3.1'
 gem 'autoprefixer-rails'
+
+gem 'omniauth'
+gem 'omniauth-facebook', '~> 1.4.1'

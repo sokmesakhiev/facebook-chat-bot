@@ -19,6 +19,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :sessions, only: [:create, :destroy]
+
+  match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
+  match 'auth/failure', to: redirect('/'), via: [:get, :post]
+  match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
+
   scope '/api', as: :api, module: :api do
     resources :bots
   end
