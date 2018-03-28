@@ -19,14 +19,14 @@ module Message
     quick_reply = message['quick_reply']
 
     if is_echo
-      send_response_text_message(sender_id, message_text)
+      send_response_text_message(sender_id, recipient_id, message_text)
       puts("Received echo for message #{message_id} and app #{app_id} with metadata #{metadata}")
       return
     elsif quick_reply
       quick_reply_payload = quick_reply['payload']
       puts("Quick reply for message #{message_id} with payload #{quick_reply_payload}")
 
-      send_text_message(sender_id, 'Quick reply tapped')
+      send_text_message(sender_id, recipient_id, 'Quick reply tapped')
       return
     end
 
@@ -34,18 +34,18 @@ module Message
   end
 
   def self.handle_message(message_text, user_session_id, page_id)
-    send_typing_on(user_session_id)
+    send_typing_on(user_session_id, page_id)
 
     if message_text
       survey = SurveyService.new(user_session_id, page_id)
 
       UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: message_text)
 
-      return send_text_message(user_session_id, 'Thank you!') if survey.last_question?
+      return send_text_message(user_session_id, page_id, 'Thank you!') if survey.last_question?
 
       call_send_api(survey.next_question)
     else
-      send_text_message(user_session_id, 'Please kindly response :)!')
+      send_text_message(user_session_id, page_id, 'Please kindly response :)!')
     end
   end
 
@@ -55,18 +55,19 @@ module Message
     survey = SurveyService.new(user_session_id, page_id)
     payload = event['postback']['payload']
 
-    send_typing_on(user_session_id)
+    send_typing_on(user_session_id, page_id)
 
     return call_send_api(survey.first_question) if payload == 'first_welcome'
 
     UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: payload)
 
-    return send_text_message(user_session_id, 'Thank you!') if survey.last_question?
+    return send_text_message(user_session_id, page_id, 'Thank you!') if survey.last_question?
 
     call_send_api(survey.next_question)
   end
 
-  def self.send_text_message(recipient_id, message_text)
+  def self.send_text_message(recipient_id, page_id, message_text)
+    bot = Bot.find_by(facebook_page_id: page_id)
     message_data = {
       'recipient' => {
         'id' => recipient_id
@@ -74,46 +75,61 @@ module Message
       'message' => {
         'text' => message_text,
         'metadata' => 'DEVELOPER_DEFINED_METADATA'
-      }
+      },
+      'access_token' => bot.facebook_page_access_token
     }
 
     call_send_api(message_data)
   end
 
-  def self.send_typing_on(recipient_id)
+  def self.send_typing_on(recipient_id, page_id)
     puts('Turning typing indicator on')
+    bot = Bot.find_by(facebook_page_id: page_id)
 
     message_data = {
       'recipient' => {
         'id' => recipient_id
       },
-      'sender_action' => 'typing_on'
+      'sender_action' => 'typing_on',
+      'access_token' => bot.facebook_page_access_token
     }
 
     call_send_api(message_data)
   end
 
-  def self.send_typing_off(recipient_id)
+  def self.send_typing_off(recipient_id, page_id)
     puts('Turning typing indicator off')
+    bot = Bot.find_by(facebook_page_id: page_id)
 
     message_data = {
       'recipient' => {
         'id' => recipient_id
       },
-      'sender_action' => 'typing_off'
+      'sender_action' => 'typing_off',
+      'access_token' => bot.facebook_page_access_token
+    }
+
+    call_send_api(message_data)
+  end
+
+  def self.send_response_text_message(recipient_id, page_id, message_text)
+    bot = Bot.find_by(facebook_page_id: page_id)
+
+    message_data = {
+      'recipient' => {
+        'id' => recipient_id
+      },
+      'message' => {
+        'text' => 'You have response ' + message_text,
+        'metadata' => 'DEVELOPER_DEFINED_METADATA'
+      },
+      'access_token' => bot.facebook_page_access_token
     }
 
     call_send_api(message_data)
   end
 
   def self.call_send_api(message_data)
-    message_data['access_token'] = FACEBOOK::CONFIG['pageAccessToken']
-    # request({
-    #   uri: 'https://graph.facebook.com/v2.6/me/messages',
-    #   qs: { access_token: FACEBOOK::CONFIG["pageAccessToken"] },
-    #   method: 'POST',
-    #   json: message_data,
-    # })
     request = Typhoeus::Request.new(
       'https://graph.facebook.com/v2.6/me/messages',
       method: :POST,
@@ -267,20 +283,6 @@ module Message
 
   #   call_send_api(message_data)
   # end
-
-  def self.send_response_text_message(recipient_id, message_text)
-    message_data = {
-      'recipient' => {
-        'id' => recipient_id
-      },
-      'message' => {
-        'text' => 'You have response ' + message_text,
-        'metadata' => 'DEVELOPER_DEFINED_METADATA'
-      }
-    }
-
-    call_send_api(message_data)
-  end
 
   # def self.sendButtonMessage(recipient_id)
   #   message_data = {

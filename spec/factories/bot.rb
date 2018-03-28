@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :bot do
     name  { FFaker::Name.name }
+    facebook_page_id            '1512165178836125'
+    facebook_page_access_token  'token'
 
     trait :with_simple_surveys_and_choices do
       after(:create) do |bot, evaluator|
@@ -33,9 +35,6 @@ FactoryBot.define do
     end
 
     trait :with_skip_logic_surveys_and_choices do
-      facebook_page_id            '1512165178836125'
-      facebook_page_access_token  'token'
-
       after(:create) do |bot, evaluator|
         surveys = [
           { id: 1, question_type: 'select_one', select_name: 'yes_no', name: 'likes_pizza', label: 'Do you like pizza?' },

@@ -2,7 +2,7 @@ class FbmessengersController < ApplicationController
   def oauthcallback; end
 
   def get_webhook
-    if params['hub.mode'] == 'subscribe' && params['hub.verify_token'] == FACEBOOK::CONFIG['validationToken']
+    if params['hub.mode'] == 'subscribe' && params['hub.verify_token'] == ENV['FACEBOOK_VALIDATION_TOKEN']
       puts 'Validating webhook'
       render text: params['hub.challenge']
       # res.status(200).send(params['hub.challenge'])

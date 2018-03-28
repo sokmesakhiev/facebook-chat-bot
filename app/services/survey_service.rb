@@ -8,8 +8,8 @@ class SurveyService
     @facebook_page_id = page_id
     @question_user = QuestionUser.find_or_create_by(user_session_id: user_id)
 
-    bot = Bot.find_by(facebook_page_id: page_id)
-    @bot_service = BotChatService.new(bot)
+    @bot = Bot.find_by(facebook_page_id: page_id)
+    @bot_service = BotChatService.new(@bot)
   end
 
   def first_question
@@ -73,7 +73,8 @@ class SurveyService
       'message' => {
         'text' => question.label,
         'metadata' => 'DEVELOPER_DEFINED_METADATA'
-      }
+      },
+      'access_token' => @bot.facebook_page_access_token
     }
   end
 
@@ -99,7 +100,8 @@ class SurveyService
             'buttons' => buttons.take(3)
           }
         }
-      }
+      },
+      'access_token' => @bot.facebook_page_access_token
     }
   end
 

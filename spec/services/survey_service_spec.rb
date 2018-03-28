@@ -73,7 +73,8 @@ def text_template_for_question(question_id)
     "message" => {
       "text" => question.label,
       "metadata" => "DEVELOPER_DEFINED_METADATA"
-    }
+    },
+    "access_token" => 'token'
   }
 end
 
@@ -101,6 +102,7 @@ def select_template_for_question(question_id)
           "buttons" => buttons.take(3)
         }
       }
-    }
+    },
+    "access_token" => 'token'
   }
 end
