@@ -39,11 +39,4 @@ class BotsController < ApplicationController
 
     redirect_to bots_path
   end
-
-  def import
-    @bot = Bot.first
-    @bot.import(params[:file])
-
-    redirect_to bots_path, notice: 'Form imported.'
-  end
 end

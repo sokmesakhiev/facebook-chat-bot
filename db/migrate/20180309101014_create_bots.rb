@@ -9,6 +9,8 @@ class CreateBots < ActiveRecord::Migration
       t.string :google_refresh_token
       t.string :google_spreadsheet_key
       t.string :google_spreadsheet_title
+
+      t.timestamps null: false
     end
   end
 end

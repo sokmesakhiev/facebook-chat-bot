@@ -22,13 +22,5 @@
         = render 'picker'
 
     .jumbotron
-      %h2 Excel Form
-      - if @bot.questions.present?
-        %p Form already imported!
-      = form_tag import_bots_path, multipart: true, class: 'form-group' do
-        .form-group
-          = label_tag :xls_file
-          = file_field_tag :file, required: true
-
-        = submit_tag "Import", class: 'btn btn-default btn-primary'
-        = link_to "Download Sample", "/survey.xlsx", class: 'btn btn-default btn-primary'
+      %h2 Bot Survey
+      = link_to "Survey", bot_surveys_path(@bot), class: 'btn btn-default btn-primary'

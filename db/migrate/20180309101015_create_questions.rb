@@ -9,6 +9,8 @@ class CreateQuestions < ActiveRecord::Migration
       t.integer :relevant_id
       t.string :operator
       t.string :relevant_value
+
+      t.timestamps null: false
     end
   end
 end

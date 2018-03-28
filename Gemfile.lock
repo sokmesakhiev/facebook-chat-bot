@@ -34,8 +34,11 @@ GEM
       rake (>= 10.4, < 13.0)
     arel (5.0.1.20140414130214)
     ast (2.4.0)
-    bootstrap3-rails (3.2.0)
-      rails (>= 4.0.0)
+    autoprefixer-rails (8.2.0)
+      execjs
+    bootstrap-sass (3.3.5)
+      autoprefixer-rails (>= 5.0.0.1)
+      sass (>= 3.2.19)
     builder (3.2.3)
     byebug (10.0.0)
     coderay (1.1.2)
@@ -253,7 +256,8 @@ PLATFORMS
 
 DEPENDENCIES
   annotate (~> 2.7.2)
-  bootstrap3-rails
+  autoprefixer-rails
+  bootstrap-sass (~> 3.3.1)
   byebug
   coffee-rails (~> 4.0.0)
   database_cleaner (~> 1.6.2)

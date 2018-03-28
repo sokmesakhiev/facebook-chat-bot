@@ -14,7 +14,9 @@ Rails.application.routes.draw do
 
   resources :home, only: :index
   resources :bots do
-    post :import, on: :collection
+    resources :surveys, on: :member, controller: 'bots/surveys' do
+      post :import, on: :collection
+    end
   end
 
   scope '/api', as: :api, module: :api do

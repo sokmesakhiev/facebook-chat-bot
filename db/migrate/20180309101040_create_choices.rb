@@ -4,6 +4,8 @@ class CreateChoices < ActiveRecord::Migration
       t.integer :question_id
       t.string :name
       t.string :label
+
+      t.timestamps null: false
     end
   end
 end

@@ -14,42 +14,52 @@
 ActiveRecord::Schema.define(version: 20180314074611) do
 
   create_table "bots", force: true do |t|
-    t.string "name"
-    t.string "facebook_page_id"
-    t.string "facebook_page_access_token"
-    t.string "google_access_token"
-    t.string "google_token_expires_at"
-    t.string "google_refresh_token"
-    t.string "google_spreadsheet_key"
-    t.string "google_spreadsheet_title"
+    t.string   "name"
+    t.string   "facebook_page_id"
+    t.string   "facebook_page_access_token"
+    t.string   "google_access_token"
+    t.string   "google_token_expires_at"
+    t.string   "google_refresh_token"
+    t.string   "google_spreadsheet_key"
+    t.string   "google_spreadsheet_title"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "choices", force: true do |t|
-    t.integer "question_id"
-    t.string  "name"
-    t.string  "label"
+    t.integer  "question_id"
+    t.string   "name"
+    t.string   "label"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "question_users", force: true do |t|
-    t.string  "user_session_id"
-    t.integer "current_question_id"
+    t.string   "user_session_id"
+    t.integer  "current_question_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
   end
 
   create_table "questions", force: true do |t|
-    t.integer "bot_id"
-    t.string  "question_type"
-    t.string  "select_name"
-    t.string  "name"
-    t.string  "label"
-    t.integer "relevant_id"
-    t.string  "operator"
-    t.string  "relevant_value"
+    t.integer  "bot_id"
+    t.string   "question_type"
+    t.string   "select_name"
+    t.string   "name"
+    t.string   "label"
+    t.integer  "relevant_id"
+    t.string   "operator"
+    t.string   "relevant_value"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "user_responses", force: true do |t|
-    t.string  "user_session_id"
-    t.integer "question_id"
-    t.string  "value"
+    t.string   "user_session_id"
+    t.integer  "question_id"
+    t.string   "value"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
 end
