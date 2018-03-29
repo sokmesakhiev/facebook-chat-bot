@@ -1,27 +1,36 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  load_and_authorize_resource
-
   def index
     @users = User.all
+
+    authorize @users
   end
 
   def show
     @user = User.find(params[:id])
+
+    authorize @user
   end
 
   def new
     @user = User.new
+
+    authorize @user
   end
 
   def edit
     @user = User.find(params[:id])
+
+    authorize @user
   end
 
   def update
     params = convert_role_params
     @user = User.find(params[:id])
+
+    authorize @user
+
     if @user.update_attributes!(filter_params)
       redirect_to accounts_path, notice: 'Account has been updated successfully'
     else
@@ -33,6 +42,9 @@ class UsersController < ApplicationController
   def create
     params = convert_role_params
     @user = User.new(filter_params)
+
+    authorize @user
+
     @User.password = params[:account][:password]
     @User.password_confirmation = params[:account][:password_confirmation]
     if @User.valid?
@@ -50,6 +62,9 @@ class UsersController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
+
+    authorize @user
+
     if @User.destroy!
       redirect_to accounts_path, notice: 'Account has been deleted'
     else

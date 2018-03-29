@@ -4,6 +4,7 @@
 #
 #  id                         :integer          not null, primary key
 #  name                       :string(255)
+#  user_id                    :integer
 #  facebook_page_id           :string(255)
 #  facebook_page_access_token :string(255)
 #  google_access_token        :string(255)
@@ -11,6 +12,8 @@
 #  google_refresh_token       :string(255)
 #  google_spreadsheet_key     :string(255)
 #  google_spreadsheet_title   :string(255)
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
 #
 
 class Bot < ApplicationRecord

@@ -6,6 +6,8 @@
 #  user_session_id :string(255)
 #  question_id     :integer
 #  value           :string(255)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
 #
 
 class UserResponse < ApplicationRecord
