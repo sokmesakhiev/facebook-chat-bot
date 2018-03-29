@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # devise_for :users
-  devise_for :users, controllers: { omniauth_callbacks: 'auth/callbacks' }, path_names: { sign_in: "login", sign_out: "logout"}
+  devise_for :users, path: '/', controllers: { omniauth_callbacks: 'auth/callbacks' }
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -26,8 +27,6 @@ Rails.application.routes.draw do
   # resolve session
   post ':controller(/:action(/:id(.:format)))'
   get ':controller(/:action(/:id(.:format)))'
-
-  # resources :sessions, only: [:create, :destroy]
 
   # match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
   # match 'auth/failure', to: redirect('/'), via: [:get, :post]
