@@ -4,14 +4,12 @@ class BotsController < ApplicationController
   end
 
   def new
-    @bot = Bot.new
-
+    @bot = current_user.bots.new
     authorize @bot
   end
 
   def create
-    @bot = Bot.new(name: params[:name])
-
+    @bot = current_user.bots.new(data_params)
     authorize @bot
 
     if @bot.save
@@ -22,23 +20,20 @@ class BotsController < ApplicationController
   end
 
   def show
-    @bot = Bot.find(params[:id])
-
+    @bot = current_user.bots.find(params[:id])
     authorize @bot
   end
 
   def edit
-    @bot = Bot.find(params[:id])
-
+    @bot = current_user.bots.find(params[:id])
     authorize @bot
   end
 
   def update
-    @bot = Bot.find(params[:id])
-
+    @bot = current_user.bots.find(params[:id])
     authorize @bot
 
-    if @bot.update_attributes(name: params[:name])
+    if @bot.update_attributes(data_params)
       redirect_to bots_path
     else
       render :edit
@@ -46,12 +41,16 @@ class BotsController < ApplicationController
   end
 
   def destroy
-    @bot = Bot.find(params[:id])
-
+    @bot = current_user.bots.find(params[:id])
     authorize @bot
-
     @bot.destroy
 
     redirect_to bots_path
+  end
+
+  private
+
+  def data_params
+    params.permit(:name, :facebook_page_id, :facebook_page_access_token)
   end
 end

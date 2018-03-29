@@ -3,31 +3,38 @@
 class UsersController < ApplicationController
   def index
     @users = User.all
-
     authorize @users
   end
 
   def show
     @user = User.find(params[:id])
-
     authorize @user
   end
 
   def new
     @user = User.new
-
     authorize @user
+  end
+
+  def create
+    @user = User.new(data_params)
+    authorize @user
+
+    if @user.save
+      redirect_to users_path, notice: 'User has been created successfully'
+    else
+      flash.now[:alert] = 'Failed to save user'
+      render :new, errors: @user.errors
+    end
   end
 
   def edit
     @user = User.find(params[:id])
-
     authorize @user
   end
 
   def update
     @user = User.find(params[:id])
-
     authorize @user
 
     if @user.update_attributes!(data_params)
@@ -38,26 +45,8 @@ class UsersController < ApplicationController
     end
   end
 
-  def create
-    @user = User.new(data_params)
-    authorize @user
-
-    if !@user.valid?
-      flash.now[:alert] = 'Failed to save user'
-      render :new, errors: @user.errors
-    end
-
-    if @user.save!
-      redirect_to users_path, notice: 'User has been created successfully'
-    else
-      flash.now[:alert] = 'Failed to save user'
-      render :new
-    end
-  end
-
   def destroy
     @user = User.find(params[:id])
-
     authorize @user
 
     if @user.destroy!
@@ -70,6 +59,8 @@ class UsersController < ApplicationController
   private
 
   def data_params
-    params.require(:user).permit(:email, :password, :password_confirmation, :role)
+    param = params.require(:user).permit(:name, :email, :password, :password_confirmation, :role)
+    param[:name] = param[:email].split('@').first if params[:name].blank?
+    param
   end
 end

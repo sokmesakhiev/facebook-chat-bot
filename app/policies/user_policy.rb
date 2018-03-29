@@ -12,7 +12,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def new?
-    index?
+    create?
   end
 
   def update?
@@ -20,7 +20,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def edit?
-    index?
+    update?
   end
 
   def destroy?
