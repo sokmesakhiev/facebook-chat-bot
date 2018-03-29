@@ -17,9 +17,8 @@ Rails.application.routes.draw do
 
   resources :home, only: :index
   resources :bots do
-    resources :surveys, on: :member, controller: 'bots/surveys' do
-      post :import, on: :collection
-    end
+    post :import, on: :member
+    delete :delete_survey, on: :member
   end
 
   resources :users

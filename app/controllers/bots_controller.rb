@@ -4,7 +4,7 @@ class BotsController < ApplicationController
   end
 
   def new
-    @bot = current_user.bots.new
+    @bot = Bot.new
     authorize @bot
   end
 
@@ -20,37 +20,51 @@ class BotsController < ApplicationController
   end
 
   def show
-    @bot = current_user.bots.find(params[:id])
+    @bot = Bot.find(params[:id])
     authorize @bot
   end
 
   def edit
-    @bot = current_user.bots.find(params[:id])
+    @bot = Bot.find(params[:id])
     authorize @bot
   end
 
   def update
-    @bot = current_user.bots.find(params[:id])
+    @bot = Bot.find(params[:id])
     authorize @bot
 
     if @bot.update_attributes(data_params)
-      redirect_to bots_path
+      redirect_to bot_path(@bot)
     else
       render :edit
     end
   end
 
   def destroy
-    @bot = current_user.bots.find(params[:id])
+    @bot = Bot.find(params[:id])
     authorize @bot
     @bot.destroy
 
-    redirect_to bots_path
+    redirect_to bots_path(@bot)
+  end
+
+  def import
+    @bot = Bot.find(params[:id])
+    @bot.import(params[:file])
+
+    redirect_to bot_path(@bot), notice: 'Form imported.'
+  end
+
+  def delete_survey
+    @bot = Bot.find(params[:id])
+    @bot.questions.destroy_all
+
+    redirect_to bot_path(@bot)
   end
 
   private
 
   def data_params
-    params.permit(:name, :facebook_page_id, :facebook_page_access_token)
+    params.require(:bot).permit(:name, :facebook_page_id, :facebook_page_access_token)
   end
 end

@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, :omniauth_providers => [:facebook]
 
-  ROLES = %w[admin operator].freeze
+  ROLES = %w[admin user].freeze
 
   has_many :bots
 

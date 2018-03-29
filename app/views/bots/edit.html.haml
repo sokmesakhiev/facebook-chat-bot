@@ -1,4 +1,12 @@
 .container
-  %h2 Edit Bot
-  = form_tag bot_path(@bot), method: :put, class: 'form-group' do
-    = render 'form'
+  %h2 Facebook Page Setup
+  = form_for @bot do |f|
+    .form-group
+      = f.label :facebook_page_id
+      = f.text_field :facebook_page_id, class: 'form-control input-md', required: true
+    .form-group
+      = f.label :facebook_page_access_token
+      = f.text_field :facebook_page_access_token, class: 'form-control input-md', required: true
+    .form-action
+      = f.submit 'Save', class: 'btn btn-default btn-primary'
+      = link_to "Cancel", bot_path(@bot), class: 'btn btn-default'

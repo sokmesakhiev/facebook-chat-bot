@@ -5,7 +5,7 @@
         %button.close{"aria-label" => "Close", "data-dismiss" => "modal", :type => "button"}
           %span{"aria-hidden" => "true"} ×
         %h4#myModalLabel.modal-title Import Form
-      = form_tag import_bot_surveys_path, multipart: true, class: 'form-group' do
+      = form_tag import_bot_path(@bot), multipart: true, class: 'form-group' do
         .modal-body
           .form-group
             = label_tag :xls_file

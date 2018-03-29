@@ -1,3 +1,4 @@
+// https://developers.google.com/picker/docs/
 function LoadMe() {
   // The Browser API key obtained from the Google API Console.
   var developerKey = "<%= ENV['GOOGLE_API_KEY'] %>";
@@ -22,12 +23,6 @@ function LoadMe() {
     var authBtn = document.getElementById('auth');
     authBtn.disabled = false;
     authBtn.addEventListener('click', function() {
-      // var auth2 = gapi.auth2.authorize({
-      //   client_id: clientId,
-      //   scope: scope,
-      //   // prompt: 'consent'
-      // }, handleAuthResult);
-
       var auth2 = gapi.auth2.init({
         client_id: clientId,
         scope: scope
@@ -94,19 +89,15 @@ function LoadMe() {
 
   // A simple callback implementation.
   function pickerCallback(data) {
-    // var url = 'nothing';
     if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
       var doc = data[google.picker.Response.DOCUMENTS][0];
-      // url = doc[google.picker.Document.URL];
       saveSpreadsheetKey(doc.id, doc.name);
-      renderTitle(doc.name);
     }
-    // var message = 'You picked: ' + url;
-    // document.getElementById('result').innerHTML = message;
   }
 
   function renderTitle(title) {
-    $('.title').html(title)
+    var dom = document.getElementById('title');
+    dom.innerHTML = title
   }
 
   function saveSpreadsheetKey(key, title) {
@@ -116,7 +107,7 @@ function LoadMe() {
       type: 'PUT',
       data: 'google_spreadsheet_key=' + key + '&google_spreadsheet_title=' + title,
       success: function(data) {
-
+        renderTitle(title);
       }
     });
   }

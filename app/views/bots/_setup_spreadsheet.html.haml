@@ -1,0 +1,15 @@
+.jumbotron
+  %h2 Google Spreadsheet
+  .card
+    .card-body
+      .paragraph
+        - if @bot.authorized_spreadsheet?
+          %span You have authorized with spreadsheet:
+          %b#title= @bot.google_spreadsheet_title
+        - else
+          Select your google spreadsheet for having result online.
+
+      .picker
+        %button#auth.btn.btn-default.btn-primary{disabled: 'disabled', type: 'button', 'data-bot-id' => @bot.id} Authenticate
+
+%script{:src => "https://apis.google.com/js/api.js?onload=LoadMe", :type => "text/javascript"}
