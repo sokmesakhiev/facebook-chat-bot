@@ -1,4 +1,6 @@
-.container.main
+= render 'shared/header'
+
+.container.main.space-top
   %center
     #div{style: "width:80%;", align: "right"}
       %a.btn.icon-btn.btn-primary{:href => "/users/new"}
@@ -21,10 +23,8 @@
           %td= user.role
           %td
             %a.btn.btn-info.btn-xs{:href => edit_user_path(user.id)}
-              %span.glyphicon.glyphicon-edit
               Edit
 
             - if user.id != current_user.id
               %a.btn.btn-danger.btn-xs{:rel => "nofollow", :href => user_path(user.id), "data-method" => "delete",  data: { confirm: 'Are you sure you want to delete the user?' }}
-                %span.glyphicon.glyphicon-remove
                 Delete

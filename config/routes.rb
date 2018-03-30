@@ -1,12 +1,11 @@
 Rails.application.routes.draw do
-  # devise_for :users
   devise_for :users, path: '/', controllers: { omniauth_callbacks: 'auth/callbacks' }
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'bots#index'
+  root 'home#index'
 
   get 'webhook' => 'fbmessengers#get_webhook'
   post 'webhook' => 'fbmessengers#post_webhook'
@@ -15,7 +14,7 @@ Rails.application.routes.draw do
   get 'oauth_callbacks' => 'oauth_callbacks#create'
   post 'oauth_callbacks' => 'oauth_callbacks#create'
 
-  resources :home, only: :index
+  resource :home, only: :index
   resources :bots do
     post :import, on: :member
     delete :delete_survey, on: :member
