@@ -1,25 +1,27 @@
 = render 'shared/header'
 
 .container.space-top
-  .header
-    .col-lg-10
-      %h2 Bots
-    .col-lg-2
+  %center
+    #div{style: "width:80%;", align: "right"}
       %button.btn.btn-default.btn-primary{'data-target' => '#create-new', 'data-toggle' => 'modal', type: 'button'} Create new
+  %br
 
-  %table.table
+  %table.table-bordered.table.central{style: "width:80%;", align: "center"}
     %tr
-      %th No
+      %th{width: 60} #
       %th Name
-      %th Action
+      - if current_user.admin?
+        %th Created by
+      %th Actions
 
     - @bots.each_with_index do |bot, index|
       %tr
         %td= index + 1
         %td= link_to bot.name, bot_path(bot)
+        - if current_user.admin?
+          %td= bot.user.name
         %td
-          = link_to 'Configure', bot_path(bot)
-          = ' / '
-          = link_to 'Delete', bot_path(bot), data: { confirm: 'Are you sure?' }, method: :delete
+          = link_to 'Configure', bot_path(bot), class: 'btn btn-info btn-xs'
+          = link_to 'Delete', bot_path(bot), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-danger btn-xs'
 
 = render 'new_modal'
