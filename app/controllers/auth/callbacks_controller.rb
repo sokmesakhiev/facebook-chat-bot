@@ -6,7 +6,7 @@ module Auth
       if user.present?
         sign_in_and_redirect user, event: :authentication
       else
-        redirect_to root_path
+        redirect_to new_user_session_path, alert: "Your account doesn't exist!"
       end
     end
 

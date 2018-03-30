@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
 
   ROLES = %w[user admin].freeze
 
-  has_many :bots
+  has_many :bots, dependent: :destroy
 
   before_validation(on: :create) do
     pwd = SecureRandom.hex(8)

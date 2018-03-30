@@ -1,10 +1,12 @@
 = render 'shared/header'
+= render 'shared/alert'
 
 .container.space-top
-  %center
-    #div{style: "width:80%;", align: "right"}
-      %button.btn.btn-default.btn-primary{'data-target' => '#create-new', 'data-toggle' => 'modal', type: 'button'} Create new
-  %br
+  - unless current_user.admin?
+    %center
+      #div{style: "width:80%;", align: "right"}
+        %button.btn.btn-default.btn-primary{'data-target' => '#create-new', 'data-toggle' => 'modal', type: 'button'} Create new
+    %br
 
   %table.table-bordered.table.central{style: "width:80%;", align: "center"}
     %tr

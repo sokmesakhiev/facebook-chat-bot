@@ -13,9 +13,9 @@ class BotsController < ApplicationController
     authorize @bot
 
     if @bot.save
-      redirect_to bots_path
+      redirect_to bots_path, notice: 'Bot created successfully!'
     else
-      render :new
+      redirect_to bots_path, alert: @bot.errors.full_messages
     end
   end
 
@@ -34,7 +34,7 @@ class BotsController < ApplicationController
     authorize @bot
 
     if @bot.update_attributes(data_params)
-      redirect_to bot_path(@bot)
+      redirect_to bot_path(@bot), notice: 'Bot updated successfully!'
     else
       render :edit
     end
@@ -43,9 +43,13 @@ class BotsController < ApplicationController
   def destroy
     @bot = Bot.find(params[:id])
     authorize @bot
-    @bot.destroy
 
-    redirect_to bots_path(@bot)
+    if @bot.destroy
+      redirect_to bots_path(@bot), notice: 'Bot deleted successfully!'
+    else
+      redirect_to bots_path(@bot), alert: @bot.errors.full_messages
+    end
+
   end
 
   def import

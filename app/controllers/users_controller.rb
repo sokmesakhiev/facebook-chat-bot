@@ -6,42 +6,25 @@ class UsersController < ApplicationController
     authorize @users
   end
 
-  def show
-    @user = User.find(params[:id])
-    authorize @user
-  end
-
-  def new
-    @user = User.new
-    authorize @user
-  end
-
   def create
     @user = User.new(data_params)
     authorize @user
 
     if @user.save
-      redirect_to users_path, notice: 'User has been created successfully'
+      redirect_to users_path, notice: 'User created successfully!'
     else
-      flash.now[:alert] = 'Failed to save user'
-      render :new, errors: @user.errors
+      redirect_to users_path, alert: @user.errors.full_messages
     end
-  end
-
-  def edit
-    @user = User.find(params[:id])
-    authorize @user
   end
 
   def update
     @user = User.find(params[:id])
     authorize @user
 
-    if @user.update_attributes!(data_params)
-      redirect_to users_path, notice: 'User has been updated successfully'
+    if @user.update_attributes(data_params)
+      redirect_to users_path, notice: 'User updated successfully!'
     else
-      flash.now[:alert] = 'Failed to update user'
-      render :new
+      redirect_to users_path, alert: @user.errors.full_messages
     end
   end
 
@@ -49,18 +32,18 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     authorize @user
 
-    if @user.destroy!
-      redirect_to users_path, notice: 'User has been deleted'
+    if @user.destroy
+      redirect_to users_path, notice: 'User deleted successfully!'
     else
-      redirect_to users_path, notice: 'Could not delete user'
+      redirect_to users_path, alert: @user.errors.full_messages
     end
   end
 
   private
 
   def data_params
-    param = params.require(:user).permit(:name, :email, :role)
-    param[:name] = param[:email].split('@').first if params[:name].blank?
+    param = params.require(:user).permit(:email, :role)
+    param[:name] = param[:email].split('@').first
     param
   end
 end

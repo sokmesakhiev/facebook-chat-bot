@@ -4,6 +4,8 @@
   .col-lg-12
     %p= link_to 'Back', bots_path, class: 'btn btn-default'
 
+    %h2{style: 'display: inline-block'}= @bot.name
+
     = render 'setup_facebook'
     = render 'setup_survey'
     = render 'setup_spreadsheet'
