@@ -1,16 +1,23 @@
-class Auth::CallbacksController < ApplicationController
-  def facebook
-    # user = User.create_from_omniauth(omniauth_params)
-    # sign_in_and_redirect user, event: :authentication if user.persisted?
-  end
+module Auth
+  class CallbacksController < ActionController::Base
+    def facebook
+      user = User.from_omniauth(omniauth_params)
 
-  def failure
-    redirect_to :root
-  end
+      if user.present?
+        sign_in_and_redirect user, event: :authentication
+      else
+        redirect_to root_path
+      end
+    end
 
-  private
+    def failure
+      redirect_to :root
+    end
 
-  def omniauth_params
-    request.env["omniauth.auth"]
+    private
+
+    def omniauth_params
+      request.env['omniauth.auth']
+    end
   end
 end

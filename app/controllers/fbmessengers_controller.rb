@@ -13,17 +13,11 @@ class FbmessengersController < ApplicationController
   end
 
   def post_webhook
-    data = params
-
     # // Make sure this is a page subscription
-    return if data['object'] != 'page'
+    return if params['object'] != 'page'
 
-    # // Iterate over each entry
-    # // There may be multiple if batched
-    data['entry'].each do |page_entry|
-      # pageID = page_entry['id']
-      # timeOfEvent = page_entry['time']
-
+    # // Iterate over each entry, there may be multiple if batched
+    params['entry'].each do |page_entry|
       # // Iterate over each messaging event
       page_entry['messaging'].each do |messaging_event|
         if messaging_event['optin']

@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable,
-         :omniauthable, :omniauth_providers => [:facebook]
+         :omniauthable, omniauth_providers: [:facebook]
 
   ROLES = %w[admin user].freeze
 
@@ -40,24 +40,17 @@ class User < ActiveRecord::Base
     role == 'admin'
   end
 
-  def self.from_omniauth(auth)
-    where(auth.slice(:provider, :uid)).first_or_initialize.tap do |user|
-      user.provider = auth.provider
-      user.uid = auth.uid
-      user.name = auth.info.name
-      user.oauth_token = auth.credentials.token
-      user.oauth_expires_at = Time.at(auth.credentials.expires_at)
-      user.save!
-    end
-  end
+  def self.from_omniauth(params)
+    user = User.find_by(email: params['info']['email'])
 
-  def self.create_from_omniauth(params)
-    # user = find_or_create_by(email: params.info.email, uid: params.uid)
-    # user.update({
-    #   token: params.credentials.token,
-    #   name: params.info.name,
-    #   avatar: params.info.image
-    # })
-    # user
+    return nil if user.nil?
+
+    user.update(
+      oauth_token: params['credentials']['token'],
+      name: params['info']['name'],
+      uid: params['uid']
+    )
+
+    user
   end
 end
