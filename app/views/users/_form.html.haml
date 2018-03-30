@@ -2,17 +2,7 @@
   .form-group
     = f.label :email, class: 'col-md-4 control-label'
     .col-md-4
-      = f.email_field :email, class: 'form-control input-md'
-
-  .form-group
-    = f.label :password, class: 'col-md-4 control-label'
-    .col-md-4
-      = f.password_field :password, class: 'form-control input-md'
-
-  .form-group
-    = f.label :password_confirmation, class: 'col-md-4 control-label'
-    .col-md-4
-      = f.password_field :password_confirmation, class: 'form-control input-md'
+      = f.email_field :email, class: 'form-control input-md', autofocus: true
 
   .form-group
     = f.label :password_confirmation, class: 'col-md-4 control-label'

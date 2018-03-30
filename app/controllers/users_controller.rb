@@ -59,7 +59,7 @@ class UsersController < ApplicationController
   private
 
   def data_params
-    param = params.require(:user).permit(:name, :email, :password, :password_confirmation, :role)
+    param = params.require(:user).permit(:name, :email, :role)
     param[:name] = param[:email].split('@').first if params[:name].blank?
     param
   end

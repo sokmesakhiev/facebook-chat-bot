@@ -21,7 +21,8 @@
         - if current_user.admin?
           %td= bot.user.name
         %td
-          = link_to 'Configure', bot_path(bot), class: 'btn btn-info btn-xs'
+          - unless current_user.admin?
+            = link_to 'Configure', bot_path(bot), class: 'btn btn-info btn-xs'
           = link_to 'Delete', bot_path(bot), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-danger btn-xs'
 
 = render 'new_modal'

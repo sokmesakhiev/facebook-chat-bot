@@ -30,9 +30,15 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable,
          :omniauthable, omniauth_providers: [:facebook]
 
-  ROLES = %w[admin user].freeze
+  ROLES = %w[user admin].freeze
 
   has_many :bots
+
+  before_validation(on: :create) do
+    pwd = SecureRandom.hex(8)
+    self.password = pwd
+    self.password_confirmation = pwd
+  end
 
   validates :role, inclusion: { in: ROLES }
 
