@@ -23,8 +23,9 @@ ActiveRecord::Schema.define(version: 20180328100226) do
     t.string   "google_refresh_token"
     t.string   "google_spreadsheet_key"
     t.string   "google_spreadsheet_title"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.boolean  "published",                  default: true
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
   end
 
   create_table "choices", force: true do |t|

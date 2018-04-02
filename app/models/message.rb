@@ -39,7 +39,7 @@ module Message
     if message_text
       survey = SurveyService.new(user_session_id, page_id)
 
-      return if survey.bot.nil?
+      return if survey.bot.nil? || !survey.bot.published?
 
       UserResponse.create(user_session_id: user_session_id, question_id: survey.current_question_id, value: message_text)
 
@@ -56,7 +56,7 @@ module Message
     page_id = event['recipient']['id']
     survey = SurveyService.new(user_session_id, page_id)
 
-    return if survey.bot.nil?
+    return if survey.bot.nil? || !survey.bot.published?
 
     payload = event['postback']['payload']
 
@@ -74,7 +74,7 @@ module Message
   def self.send_text_message(recipient_id, page_id, message_text)
     bot = Bot.find_by(facebook_page_id: page_id)
 
-    return if bot.nil?
+    return if bot.nil? || !bot.published?
 
     message_data = {
       'recipient' => {
@@ -93,7 +93,7 @@ module Message
   def self.send_typing_on(recipient_id, page_id)
     bot = Bot.find_by(facebook_page_id: page_id)
 
-    return if bot.nil?
+    return if bot.nil? || !bot.published?
 
     message_data = {
       'recipient' => {
@@ -109,7 +109,7 @@ module Message
   def self.send_typing_off(recipient_id, page_id)
     bot = Bot.find_by(facebook_page_id: page_id)
 
-    return if bot.nil?
+    return if bot.nil? || !bot.published?
 
     message_data = {
       'recipient' => {
@@ -125,7 +125,7 @@ module Message
   def self.send_response_text_message(recipient_id, page_id, message_text)
     bot = Bot.find_by(facebook_page_id: page_id)
 
-    return if bot.nil?
+    return if bot.nil? || !bot.published?
 
     message_data = {
       'recipient' => {

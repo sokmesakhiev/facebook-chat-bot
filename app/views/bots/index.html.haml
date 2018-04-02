@@ -23,8 +23,15 @@
         - if current_user.admin?
           %td= bot.user.name
         %td
-          - unless current_user.admin?
-            = link_to 'Configure', bot_path(bot), class: 'btn btn-info btn-xs'
-          = link_to 'Delete', bot_path(bot), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-danger btn-xs'
+          - if bot.published?
+            - unless current_user.admin?
+              = link_to 'Configure', bot_path(bot), class: 'btn btn-info btn-xs'
+
+            %button.deactivate.btn.btn-danger.btn-xs{ 'data-bot' => bot.to_json }
+              Deactivate
+
+          - else
+            %button.activate.btn.btn-info.btn-xs{ 'data-bot' => bot.to_json }
+              Activate
 
 = render 'new_modal'

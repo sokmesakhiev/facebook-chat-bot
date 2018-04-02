@@ -32,16 +32,26 @@ class BotsController < ApplicationController
     end
   end
 
-  def destroy
+  def activate
     @bot = Bot.find(params[:id])
-    authorize @bot
+    authorize @bot, :update?
 
-    if @bot.destroy
-      redirect_to bots_path(@bot), notice: 'Bot deleted successfully!'
+    if @bot.update_attributes(published: true)
+      redirect_to bots_path, notice: 'Bot activated successfully!'
     else
-      redirect_to bots_path(@bot), alert: @bot.errors.full_messages
+      redirect_to bots_path, alert: @bot.errors.full_messages
     end
+  end
 
+  def deactivate
+    @bot = Bot.find(params[:id])
+    authorize @bot, :update?
+
+    if @bot.update_attributes(published: false)
+      redirect_to bots_path, notice: 'Bot deactivated successfully!'
+    else
+      redirect_to bots_path, alert: @bot.errors.full_messages
+    end
   end
 
   def import

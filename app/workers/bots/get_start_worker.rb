@@ -10,7 +10,7 @@ module Bots
       request = Typhoeus::Request.new(
         'https://graph.facebook.com/v2.6/me/messenger_profile',
         method: :POST,
-        body: { "get_started": {"payload": "first_welcome"} },
+        body: { "get_started": { "payload": 'first_welcome' } },
         params: { access_token: bot.facebook_page_access_token },
         headers: { Accept: 'application/json' }
       )

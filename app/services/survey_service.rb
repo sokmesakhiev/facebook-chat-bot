@@ -9,7 +9,7 @@ class SurveyService
     @question_user = QuestionUser.find_or_create_by(user_session_id: user_id)
     @bot = Bot.find_by(facebook_page_id: page_id)
 
-    return if @bot.nil?
+    return if @bot.nil? || !bot.published?
 
     @bot_service = BotChatService.new(@bot)
   end

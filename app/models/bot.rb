@@ -36,6 +36,10 @@ class Bot < ApplicationRecord
     self.google_access_token.present? && self.google_spreadsheet_key.present?
   end
 
+  def published?
+    self.published
+  end
+
   private
 
   def import_questions(xlsx)

@@ -16,8 +16,12 @@ Rails.application.routes.draw do
 
   resource :home, only: :index
   resources :bots do
-    post :import, on: :member
-    delete :delete_survey, on: :member
+    member do
+      post :import
+      delete :delete_survey
+      put :deactivate
+      put :activate
+    end
   end
 
   resources :users
