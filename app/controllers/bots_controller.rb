@@ -8,7 +8,7 @@ class BotsController < ApplicationController
     authorize @bot
 
     if @bot.save
-      redirect_to bots_path, notice: 'Bot created successfully!'
+      redirect_to bot_path(@bot), notice: 'Bot created successfully!'
     else
       redirect_to bots_path, alert: @bot.errors.full_messages
     end
@@ -24,6 +24,8 @@ class BotsController < ApplicationController
     authorize @bot
 
     if @bot.update_attributes(data_params)
+      ::Bots::GetStartWorker.perform_async(@bot.id)
+
       redirect_to bot_path(@bot), notice: 'Bot updated successfully!'
     else
       redirect_to bot_path(@bot), alert: @bot.errors.full_messages

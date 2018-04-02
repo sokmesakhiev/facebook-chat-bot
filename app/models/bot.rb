@@ -29,7 +29,7 @@ class Bot < ApplicationRecord
     import_questions(xlsx)
     import_choices(xlsx)
 
-    BotWorker.perform_async(self.id)
+    Bots::ImportHeaderWorker.perform_async(self.id)
   end
 
   def authorized_spreadsheet?
