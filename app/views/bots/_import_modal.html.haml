@@ -9,7 +9,7 @@
         .modal-body
           .form-group
             = label_tag :xls_file
-            = file_field_tag :file, required: true
+            = file_field_tag :file, required: true, accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
 
         .modal-footer
           %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close

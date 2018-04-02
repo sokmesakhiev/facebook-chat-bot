@@ -107,10 +107,32 @@ function LoadMe() {
       type: 'PUT',
       data: 'google_spreadsheet_key=' + key + '&google_spreadsheet_title=' + title,
       success: function(data) {
-        renderTitle(title);
+        location.reload();
       }
     });
   }
 
   onApiLoad();
 }
+
+
+"use strict";
+
+$(document).on('turbolinks:load', function() {
+  init();
+
+  function init() {
+    _onOpenFacebookModal();
+  }
+
+  function _onOpenFacebookModal() {
+    $('#facebook-modal').on('shown.bs.modal', function (event) {
+      var button = $(event.relatedTarget);
+      var bot = button.data('bot');
+      var modal = $(this);
+
+      modal.find('.modal-content #bot_facebook_page_id').val(bot.facebook_page_id);
+      modal.find('.modal-content #bot_facebook_page_access_token').val(bot.facebook_page_access_token);
+    })
+  }
+})

@@ -1,15 +1,20 @@
 .jumbotron
   %h2 Facebook Page
-  %p Description why need set up facebook page id, and secret
+  %p Connect your bot to facebook page!
 
-  .card
-    .card-body
-      .paragraph
-        %div
-          %span Facebook page id:
-          %span= @bot.facebook_page_id
-        %div.ellipsis
-          %span Facebook page access token:
-          %span.inline-block= @bot.facebook_page_access_token
+  - if @bot.facebook_page_id.present?
+    .card
+      .card-body
+        .paragraph
+          %div
+            %span Facebook page id:
+            %span= @bot.facebook_page_id
+          %div.ellipsis
+            %span Facebook page access token:
+            %span.inline-block= @bot.facebook_page_access_token
 
-      = link_to 'Setup', edit_bot_path(@bot), class: 'btn btn-default btn-primary'
+        %button.btn.btn-default.btn-primary{'data-target' => '#facebook-modal', 'data-toggle' => 'modal', type: 'button', 'data-bot' => @bot.to_json} Reconnect
+  - else
+    %button.btn.btn-default.btn-primary{'data-target' => '#facebook-modal', 'data-toggle' => 'modal', type: 'button', 'data-bot' => @bot.to_json} Connect
+
+= render 'facebook_modal'

@@ -24,11 +24,6 @@ class BotsController < ApplicationController
     authorize @bot
   end
 
-  def edit
-    @bot = Bot.find(params[:id])
-    authorize @bot
-  end
-
   def update
     @bot = Bot.find(params[:id])
     authorize @bot
@@ -36,7 +31,7 @@ class BotsController < ApplicationController
     if @bot.update_attributes(data_params)
       redirect_to bot_path(@bot), notice: 'Bot updated successfully!'
     else
-      render :edit
+      redirect_to bot_path(@bot), alert: @bot.errors.full_messages
     end
   end
 
@@ -56,14 +51,14 @@ class BotsController < ApplicationController
     @bot = Bot.find(params[:id])
     @bot.import(params[:file])
 
-    redirect_to bot_path(@bot), notice: 'Form imported.'
+    redirect_to bot_path(@bot), notice: 'Form imported successfully!'
   end
 
   def delete_survey
     @bot = Bot.find(params[:id])
     @bot.questions.destroy_all
 
-    redirect_to bot_path(@bot)
+    redirect_to bot_path(@bot), notice: 'Survey deleted successfully!'
   end
 
   private

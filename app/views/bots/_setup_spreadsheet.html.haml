@@ -1,15 +1,17 @@
 .jumbotron
   %h2 Google Spreadsheet
-  .card
-    .card-body
-      .paragraph
-        - if @bot.authorized_spreadsheet?
-          %span You have authorized with spreadsheet:
-          %b#title= @bot.google_spreadsheet_title
-        - else
-          Select your google spreadsheet for having result online.
+  %p Connect your bot to google spreadsheet!
 
-      .picker
-        %button#auth.btn.btn-default.btn-primary{disabled: 'disabled', type: 'button', 'data-bot-id' => @bot.id} Authenticate
+  - if @bot.authorized_spreadsheet?
+    .card
+      .card-body
+        .paragraph
+          %span Your spreadsheet:
+          %b#title= @bot.google_spreadsheet_title
+
+        .picker
+          %button#auth.btn.btn-default.btn-primary{ type: 'button', 'data-bot-id' => @bot.id } Reconnect
+  - else
+    %button#auth.btn.btn-default.btn-primary{ type: 'button', 'data-bot-id' => @bot.id } Connect
 
 %script{:src => "https://apis.google.com/js/api.js?onload=LoadMe", :type => "text/javascript"}
