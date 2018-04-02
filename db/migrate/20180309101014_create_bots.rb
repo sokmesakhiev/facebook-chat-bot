@@ -6,7 +6,7 @@ class CreateBots < ActiveRecord::Migration
       t.string :facebook_page_id
       t.string :facebook_page_access_token
       t.string :google_access_token
-      t.string :google_token_expires_at
+      t.datetime :google_token_expires_at
       t.string :google_refresh_token
       t.string :google_spreadsheet_key
       t.string :google_spreadsheet_title

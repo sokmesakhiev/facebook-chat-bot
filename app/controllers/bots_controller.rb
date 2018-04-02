@@ -3,11 +3,6 @@ class BotsController < ApplicationController
     @bots = policy_scope(Bot)
   end
 
-  def new
-    @bot = Bot.new
-    authorize @bot
-  end
-
   def create
     @bot = current_user.bots.new(data_params)
     authorize @bot

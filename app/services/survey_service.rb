@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 class SurveyService
-  attr_accessor :user_session_id, :facebook_page_id
+  attr_accessor :user_session_id, :facebook_page_id, :bot
 
   def initialize(user_id, page_id)
     @user_session_id = user_id
     @facebook_page_id = page_id
     @question_user = QuestionUser.find_or_create_by(user_session_id: user_id)
-
     @bot = Bot.find_by(facebook_page_id: page_id)
+
+    return if @bot.nil?
+
     @bot_service = BotChatService.new(@bot)
   end
 

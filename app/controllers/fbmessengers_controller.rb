@@ -1,4 +1,6 @@
 class FbmessengersController < ApplicationController
+  skip_before_filter :authenticate_user!
+
   def oauthcallback; end
 
   def get_webhook

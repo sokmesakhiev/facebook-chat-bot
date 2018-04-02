@@ -36,8 +36,8 @@ class User < ActiveRecord::Base
 
   before_validation(on: :create) do
     pwd = SecureRandom.hex(8)
-    self.password = pwd
-    self.password_confirmation = pwd
+    self.password ||= pwd
+    self.password_confirmation ||= pwd
   end
 
   validates :role, inclusion: { in: ROLES }
