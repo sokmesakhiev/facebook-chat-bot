@@ -34,11 +34,11 @@ class Bot < ApplicationRecord
   end
 
   def authorized_spreadsheet?
-    self.google_access_token.present? && self.google_spreadsheet_key.present?
+    google_access_token.present? && google_spreadsheet_key.present?
   end
 
   def authorized_facbook?
-    self.facebook_page_id.present? && self.facebook_page_access_token.present?
+    facebook_page_id.present? && facebook_page_access_token.present?
   end
 
   def published?

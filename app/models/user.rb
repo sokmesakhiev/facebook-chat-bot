@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
   end
 
   def published?
-    self.published
+    published
   end
 
   def self.from_omniauth(params)
@@ -66,7 +66,6 @@ class User < ActiveRecord::Base
   end
 
   def fb_graph
-    access_token = self.oauth_token
-    Koala::Facebook::API.new(access_token)
+    Koala::Facebook::API.new(oauth_token)
   end
 end
