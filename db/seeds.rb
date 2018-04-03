@@ -7,4 +7,3 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 User.create(name: 'Admin', email: 'admin@instedd.org', password: 'My-admin', password_confirmation: 'My-admin', role: 'admin')
-User.create(name: 'Operator', email: 'operator@instedd.org', password: 'My-operator', password_confirmation: 'My-operator', role: 'user')

@@ -12,6 +12,7 @@
 #  google_refresh_token       :string(255)
 #  google_spreadsheet_key     :string(255)
 #  google_spreadsheet_title   :string(255)
+#  published                  :boolean          default(FALSE)
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #
@@ -34,6 +35,10 @@ class Bot < ApplicationRecord
 
   def authorized_spreadsheet?
     self.google_access_token.present? && self.google_spreadsheet_key.present?
+  end
+
+  def authorized_facbook?
+    self.facebook_page_id.present? && self.facebook_page_access_token.present?
   end
 
   def published?

@@ -6,7 +6,8 @@ gem 'rails', '~> 4.1.16'
 
 gem 'mysql2', '~> 0.3.18'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0.4'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
@@ -66,7 +67,7 @@ gem 'slim', '~> 3.0.9'
 gem 'sinatra', '~> 1.4.8'
 gem 'roo', '~> 2.7.1'
 
-gem 'bootstrap-sass', '~> 3.3.1'
+gem 'bootstrap-sass', '~> 3.3.6'
 gem 'autoprefixer-rails'
 
 gem 'devise', '~> 4.4.3'

@@ -2,7 +2,9 @@
   %h2 Survey
 
   %p
-    Please use xlsForm, if you don't have it, so download
+    Please use
+    = link_to 'XLSForm', 'http://xlsform.org', target: '_blank'
+    , if you don't have it, so download
     = link_to 'sample here', '/survey.xlsx'
     !
   - if @bot.questions.present?
@@ -18,7 +20,7 @@
             %button.btn.btn-default.btn-primary{"data-target" => "#preview", "data-toggle" => "modal", :type => "button"} Preview
   - elsif !current_user.admin?
     %button.btn.btn-default.btn-primary{"data-target" => "#import", "data-toggle" => "modal", :type => "button"}
-      %span Import xlsForm
+      %span Import XLSForm
 
 = render 'import_modal'
 = render 'preview_modal'

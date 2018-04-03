@@ -123,6 +123,7 @@ $(document).on('turbolinks:load', function() {
   function init() {
     _onOpenFacebookModal();
     _onCloseFacebookModal();
+    _onClickBtnPageToken();
   }
 
   function _onOpenFacebookModal() {
@@ -152,5 +153,12 @@ $(document).on('turbolinks:load', function() {
       var modal = $(this);
       modal.find('.modal-body .input-groups').html('');
     });
+  }
+
+  function _onClickBtnPageToken() {
+    $('#btn-page-token').on('click', function() {
+      $(this).hide();
+      $('#page-token').removeClass('hidden');
+    })
   }
 })
