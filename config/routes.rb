@@ -24,6 +24,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :facebook_pages, only: :index
+
   resources :users
 
   # resolve session

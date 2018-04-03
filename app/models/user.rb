@@ -59,4 +59,9 @@ class User < ActiveRecord::Base
 
     user
   end
+
+  def fb_graph
+    access_token = self.oauth_token
+    Koala::Facebook::API.new(access_token)
+  end
 end

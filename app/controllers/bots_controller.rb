@@ -23,7 +23,7 @@ class BotsController < ApplicationController
     @bot = Bot.find(params[:id])
     authorize @bot
 
-    if @bot.update_attributes(data_params)
+    if @bot.update_attributes(facebook_params)
       ::Bots::GetStartWorker.perform_async(@bot.id)
 
       redirect_to bot_path(@bot), notice: 'Bot updated successfully!'
@@ -72,5 +72,11 @@ class BotsController < ApplicationController
 
   def data_params
     params.require(:bot).permit(:name, :facebook_page_id, :facebook_page_access_token)
+  end
+
+  def facebook_params
+    param = params.require(:bot).permit(:facebook_page_id)
+    param[:facebook_page_access_token] = current_user.fb_graph.get_page_access_token(param[:facebook_page_id])
+    param
   end
 end

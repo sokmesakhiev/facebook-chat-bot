@@ -4,18 +4,13 @@
       .modal-header
         %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'modal', type: 'button' }
           %span{ 'aria-hidden' => 'true' } ×
-        %h4#myModalLabel.modal-title Facebook Page
+        %h4#myModalLabel.modal-title Facebook Pages
 
       = form_for @bot, html: { class: 'sform-horizontal' } do |f|
         .modal-body
-          .form-group
-            = label_tag 'facebook_page_id', 'Facebook page id'
-            = f.text_field :facebook_page_id, class: 'form-control input-md', required: true
-
-          .form-group
-            = f.label :facebook_page_access_token
-            = f.text_field :facebook_page_access_token, class: 'form-control input-md', required: true
-
+          .loading
+            %img{src: image_url('loading.gif')}
+          .input-groups
         .modal-footer
           .form-group
             %button.btn.btn-default{ 'data-dismiss' => 'modal', type: 'button'} Cancel

@@ -25,5 +25,7 @@ module Mbot
     Bundler.require(*Rails.groups)
 
     Dotenv::Railtie.load
+
+    Koala.config.api_version = 'v2.0'
   end
 end

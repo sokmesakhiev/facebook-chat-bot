@@ -9,9 +9,10 @@
           %span Your spreadsheet:
           %b#title= @bot.google_spreadsheet_title
 
-        .picker
-          %button#auth.btn.btn-default.btn-primary{ type: 'button', 'data-bot-id' => @bot.id } Reconnect
-  - else
+        - unless current_user.admin?
+          .picker
+            %button#auth.btn.btn-default.btn-primary{ type: 'button', 'data-bot-id' => @bot.id } Reconnect
+  - elsif !current_user.admin?
     %button#auth.btn.btn-default.btn-primary{ type: 'button', 'data-bot-id' => @bot.id } Connect
 
 %script{:src => "https://apis.google.com/js/api.js?onload=LoadMe", :type => "text/javascript"}

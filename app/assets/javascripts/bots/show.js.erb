@@ -115,7 +115,6 @@ function LoadMe() {
   onApiLoad();
 }
 
-
 "use strict";
 
 $(document).on('turbolinks:load', function() {
@@ -123,16 +122,35 @@ $(document).on('turbolinks:load', function() {
 
   function init() {
     _onOpenFacebookModal();
+    _onCloseFacebookModal();
   }
 
   function _onOpenFacebookModal() {
     $('#facebook-modal').on('shown.bs.modal', function (event) {
-      var button = $(event.relatedTarget);
-      var bot = button.data('bot');
+      var bot = $(event.relatedTarget).data('bot');
       var modal = $(this);
+      modal.find('.modal-body .loading').show();
 
-      modal.find('.modal-content #bot_facebook_page_id').val(bot.facebook_page_id);
-      modal.find('.modal-content #bot_facebook_page_access_token').val(bot.facebook_page_access_token);
+      $.ajax({
+        url: '/facebook_pages',
+        type: 'GET',
+        success: function(data) {
+          modal.find('.modal-body .loading').hide();
+          for(var i=0; i<data.length; i++) {
+            var radioInput = $('<div class="radio"><label><input type="radio" name="bot[facebook_page_id]" value="'+ data[i].id +'">'+ data[i].name +'</label></div>');
+            modal.find('.modal-body .input-groups').append(radioInput);
+          }
+
+          $('input:radio[name="bot[facebook_page_id]"]').filter('[value="'+ bot.facebook_page_id +'"]').attr('checked', true);
+        }
+      });
     })
+  }
+
+  function _onCloseFacebookModal() {
+    $('#facebook-modal').on('hide.bs.modal', function (event) {
+      var modal = $(this);
+      modal.find('.modal-body .input-groups').html('');
+    });
   }
 })

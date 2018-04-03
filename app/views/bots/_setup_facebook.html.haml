@@ -9,12 +9,13 @@
           %div
             %span Facebook page id:
             %span= @bot.facebook_page_id
-          %div.ellipsis
+          .ellipsis
             %span Facebook page access token:
-            %span.inline-block= @bot.facebook_page_access_token
+            %span= @bot.facebook_page_access_token
 
-        %button.btn.btn-default.btn-primary{'data-target' => '#facebook-modal', 'data-toggle' => 'modal', type: 'button', 'data-bot' => @bot.to_json} Reconnect
-  - else
+        - unless current_user.admin?
+          %button.btn.btn-default.btn-primary{'data-target' => '#facebook-modal', 'data-toggle' => 'modal', type: 'button', 'data-bot' => @bot.to_json} Reconnect
+  - elsif !current_user.admin?
     %button.btn.btn-default.btn-primary{'data-target' => '#facebook-modal', 'data-toggle' => 'modal', type: 'button', 'data-bot' => @bot.to_json} Connect
 
 = render 'facebook_modal'

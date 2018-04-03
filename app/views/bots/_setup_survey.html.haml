@@ -11,11 +11,12 @@
         .paragraph
           = "Last Modified : #{I18n.l @bot.questions.first.updated_at, format: :long}, "
           %strong="#{@bot.questions.length} questions"
-        %div
-          %button.btn.btn-default{"data-target" => "#import", "data-toggle" => "modal", :type => "button"} Re-import
-          = link_to 'Delete', delete_survey_bot_path(@bot), method: :delete, data: {confirm: "Are you sure to delete survey?"}, class: 'btn btn-default'
-          %button.btn.btn-default.btn-primary{"data-target" => "#preview", "data-toggle" => "modal", :type => "button"} Preview
-  - else
+        - unless current_user.admin?
+          %div
+            %button.btn.btn-default{"data-target" => "#import", "data-toggle" => "modal", :type => "button"} Re-import
+            = link_to 'Delete', delete_survey_bot_path(@bot), method: :delete, data: {confirm: "Are you sure to delete survey?"}, class: 'btn btn-default'
+            %button.btn.btn-default.btn-primary{"data-target" => "#preview", "data-toggle" => "modal", :type => "button"} Preview
+  - elsif !current_user.admin?
     %button.btn.btn-default.btn-primary{"data-target" => "#import", "data-toggle" => "modal", :type => "button"}
       %span Import xlsForm
 

@@ -1,13 +1,3 @@
-.ellipsis {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.inline-block {
-  display: inline-block;
-}
-
 #bots-show {
   .card {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -25,5 +15,15 @@
       flex-grow: 1;
       overflow: hidden
     }
+  }
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .loading {
+    text-align: center;
   }
 }
