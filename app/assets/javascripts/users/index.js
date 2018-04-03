@@ -6,6 +6,8 @@ $(document).on('turbolinks:load', function() {
   function init() {
     _onOpenUserModal();
     _onCloseUserModal();
+    _onActivateUser();
+    _onDeactivateUser();
   }
 
   function _onOpenUserModal() {
@@ -36,5 +38,35 @@ $(document).on('turbolinks:load', function() {
       modal.find('.modal-content form').attr('action', '/users');
       modal.find('.modal-content [name="_method"]').remove();
     })
+  }
+
+  function _onActivateUser() {
+    $('.activate-user').on('click', function(e) {
+      var user = $(this).data('user')
+      _update(user.id, 'activate');
+    })
+  }
+
+  function _onDeactivateUser() {
+    $('.deactivate-user').on('click', function(e) {
+      var result = confirm("Are you sure you want to deactivate this user?");
+
+      if (result) {
+        var user = $(this).data('user');
+        _update(user.id, 'deactivate');
+      }
+    })
+  }
+
+  function _update(user_id, action) {
+    var token = $('[name="authenticity_token"]').val();
+
+    $.ajax({
+      url: '/users/'+ user_id +'/' + action,
+      type: 'PUT',
+      data: 'authenticity_token=' + token,
+      success: function(data) {
+      }
+    });
   }
 })

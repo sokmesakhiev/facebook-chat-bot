@@ -28,12 +28,25 @@ class UsersController < ApplicationController
     end
   end
 
-  def destroy
+  def activate
     @user = User.find(params[:id])
-    authorize @user
+    authorize @user, :update?
 
-    if @user.destroy
-      redirect_to users_path, notice: 'User deleted successfully!'
+    if @user.update_attributes(published: true)
+      redirect_to users_path, notice: 'User activated successfully!'
+    else
+      redirect_to users_path, alert: @user.errors.full_messages
+    end
+  end
+
+  def deactivate
+    @user = User.find(params[:id])
+    authorize @user, :update?
+
+    if @user.update_attributes(published: false)
+      @user.bots.update_all(published: false)
+
+      redirect_to users_path, notice: 'User deactivated successfully!'
     else
       redirect_to users_path, alert: @user.errors.full_messages
     end

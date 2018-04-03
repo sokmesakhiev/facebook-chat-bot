@@ -25,7 +25,11 @@
               Edit
 
             - if user.id != current_user.id
-              %a.btn.btn-danger.btn-xs{:rel => 'nofollow', :href => user_path(user.id), "data-method" => 'delete',  data: { confirm: 'Are you sure you want to delete the user?' }}
-                Delete
+              - if user.published?
+                %button.deactivate-user.btn.btn-danger.btn-xs{ 'data-user' => user.to_json }
+                  Deactivate
+              - else
+                %button.activate-user.btn.btn-primary.btn-xs{ 'data-user' => user.to_json }
+                  Activate
 
 = render 'form_modal'

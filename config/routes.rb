@@ -26,7 +26,12 @@ Rails.application.routes.draw do
 
   resources :facebook_pages, only: :index
 
-  resources :users
+  resources :users, only: [:index, :create, :update] do
+    member do
+      put :deactivate
+      put :activate
+    end
+  end
 
   # resolve session
   post ':controller(/:action(/:id(.:format)))'

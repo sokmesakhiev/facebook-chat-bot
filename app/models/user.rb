@@ -8,6 +8,7 @@
 #  name                   :string(255)
 #  oauth_token            :string(255)
 #  oauth_expires_at       :datetime
+#  published              :boolean          default(TRUE)
 #  created_at             :datetime
 #  updated_at             :datetime
 #  email                  :string(255)      default(""), not null
@@ -44,6 +45,10 @@ class User < ActiveRecord::Base
 
   def admin?
     role == 'admin'
+  end
+
+  def published?
+    self.published
   end
 
   def self.from_omniauth(params)
