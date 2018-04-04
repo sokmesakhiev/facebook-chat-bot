@@ -7,6 +7,10 @@
     , if you don't have it, so download
     = link_to 'sample here', '/survey.xlsx'
     !
+  %div Note: We only support question type such as text, integer, decimal, date, select_one, and select_many.
+
+  %br
+
   - if @bot.questions.present?
     .card
       .card-body
