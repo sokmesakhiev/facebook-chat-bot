@@ -13,9 +13,8 @@ module Message
       send_response_text_message(sender_id, recipient_id, message['text'])
       puts("Received echo for message #{message['mid']} and app #{message['app_id']} with metadata #{message['metadata']}")
       return
-    elsif quick_reply = message['quick_reply'].presence
-      quick_reply_payload = quick_reply['payload']
-      puts("Quick reply for message #{message['mid']} with payload #{quick_reply_payload}")
+    elsif message['quick_reply'].present?
+      puts("Quick reply for message #{message['mid']} with payload #{message['quick_reply']['payload']}")
 
       send_text_message(sender_id, recipient_id, 'Quick reply tapped')
       return

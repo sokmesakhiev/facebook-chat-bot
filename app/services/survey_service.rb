@@ -26,16 +26,20 @@ class SurveyService
     UserResponse.create(user_session_id: user_session_id, question_id: current_question_id, value: response_message)
   end
 
-  def next_question(question_id = nil)
-    @nex_question ||= nextQ(question_id)
+  def next_question
+    @nex_question ||= next_q
   end
 
-  def nextQ(question_id)
+  def next_q(question_id = nil)
     current = nil
-    current = @bot_service.find_current_index(question_id || @question_user.current_question_id) if question_id.present? || @question_user.current_question_id.present?
+
+    if question_id.present? || @question_user.current_question_id.present?
+      current = @bot_service.find_current_index(question_id || @question_user.current_question_id)
+    end
+
     question = @bot_service.next(current: current)
 
-    return nextQ(question.id) if question.present? && question.relevant.present? && skip_question(question)
+    return next_q(question.id) if question.present? && question.relevant.present? && skip_question(question)
 
     question
   end
