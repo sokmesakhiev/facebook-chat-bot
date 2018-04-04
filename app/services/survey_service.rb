@@ -1,55 +1,33 @@
 # frozen_string_literal: true
 
 class SurveyService
-  attr_accessor :user_session_id, :facebook_page_id, :bot
+  attr_accessor :user_session_id, :facebook_page_id
 
   def initialize(user_id, page_id)
     @user_session_id = user_id
     @facebook_page_id = page_id
     @question_user = QuestionUser.find_or_create_by(user_session_id: user_id)
-    @bot = Bot.find_by(facebook_page_id: page_id)
-
-    return if @bot.nil? || !bot.published?
-
-    @bot_service = BotChatService.new(@bot)
+    @bot_chat = BotChatService.new(Bot.find_by(facebook_page_id: page_id))
   end
 
   def first_question
-    @bot_service.first
+    @bot_chat.first
   end
 
-  def update_state(question)
+  def save_state(question)
     @question_user.update_attribute(:current_question_id, question['id'])
   end
 
-  def update_response(response_message)
-    UserResponse.create(user_session_id: user_session_id, question_id: current_question_id, value: response_message)
+  def save_response(response_message)
+    UserResponse.create(user_session_id: user_session_id, question_id: @question_user.current_question_id, value: response_message)
   end
 
   def next_question
     @nex_question ||= next_q
   end
 
-  def next_q(question_id = nil)
-    current = nil
-
-    if question_id.present? || @question_user.current_question_id.present?
-      current = @bot_service.find_current_index(question_id || @question_user.current_question_id)
-    end
-
-    question = @bot_service.next(current: current)
-
-    return next_q(question.id) if question.present? && question.relevant.present? && skip_question(question)
-
-    question
-  end
-
-  def current_question_id
-    @question_user.current_question_id
-  end
-
   def last_question?
-    @question_user.current_question_id.present? && @bot_service.last?(@question_user.current_question_id)
+    @question_user.current_question_id.present? && @bot_chat.last?(@question_user.current_question_id)
   end
 
   def template_message(question)
@@ -63,7 +41,73 @@ class SurveyService
     end
   end
 
+  def send_typing_on
+    message_data = {
+      'recipient' => {
+        'id' => user_session_id
+      },
+      'sender_action' => 'typing_on'
+    }
+
+    send_api(message_data)
+  end
+
+  def send_text_message(message)
+    message_data = {
+      'recipient' => {
+        'id' => user_session_id
+      },
+      'message' => {
+        'text' => message,
+        'metadata' => 'DEVELOPER_DEFINED_METADATA'
+      }
+    }
+
+    send_api(message_data)
+  end
+
+  def send_api(message_data = {})
+    message_data['access_token'] = bot.facebook_page_access_token
+
+    request = Typhoeus::Request.new(
+      'https://graph.facebook.com/v2.6/me/messages',
+      method: :POST,
+      body: 'this is a request body',
+      params: message_data,
+      headers: { Accept: 'application/json' }
+    )
+
+    request.run
+    response = request.response
+    if response.code == 200
+      result = JSON.parse response.response_body
+      recipient_id = result['recipient_id']
+      message_id = result['message_id']
+      if message_id
+        puts "Successfully sent message with id #{message_id}to recipient #{recipient_id}"
+      else
+        puts "Successfully called Send API for recipient #{recipient_id}"
+      end
+    else
+      puts "Failed calling Send API #{response.code}"
+    end
+  end
+
   private
+
+  def next_q(question_id = nil)
+    current = nil
+
+    if question_id.present? || @question_user.current_question_id.present?
+      current = @bot_chat.find_current_index(question_id || @question_user.current_question_id)
+    end
+
+    question = @bot_chat.next(current: current)
+
+    return next_q(question.id) if question.present? && question.relevant.present? && skip_question(question)
+
+    question
+  end
 
   def skip_question(question)
     user_response = UserResponse.where(user_session_id: user_session_id, question_id: question.relevant.id).last
@@ -87,8 +131,7 @@ class SurveyService
       'message' => {
         'text' => question.label,
         'metadata' => 'DEVELOPER_DEFINED_METADATA'
-      },
-      'access_token' => @bot.facebook_page_access_token
+      }
     }
   end
 
@@ -114,8 +157,7 @@ class SurveyService
             'buttons' => buttons.take(3)
           }
         }
-      },
-      'access_token' => @bot.facebook_page_access_token
+      }
     }
   end
 
