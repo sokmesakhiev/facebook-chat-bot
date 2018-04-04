@@ -5,7 +5,7 @@ class UserResponseWorker
     user_response = UserResponse.find(user_response_id)
     question = user_response.question
 
-    return if question.nil?
+    return if question.nil? || question.bot.nil? || !question.bot.authorized_spreadsheet?
 
     ws = BotDriveService.new(question.bot).worksheets[0]
     row_num = find_row_num(ws, user_response.user_session_id)
