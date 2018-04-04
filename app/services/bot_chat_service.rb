@@ -17,7 +17,7 @@ class BotChatService
   def next(option = {})
     if option[:current].present?
       @current = option[:current] + 1
-    elsif current < @total - 1
+    elsif current < @total
       @current += 1
     end
 
