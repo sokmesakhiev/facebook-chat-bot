@@ -36,6 +36,10 @@ FactoryBot.define do
     end
 
     trait :with_skip_logic_surveys_and_choices do
+      transient do
+        count 4
+      end
+
       after(:create) do |bot, evaluator|
         surveys = [
           { id: 1, question_type: 'select_one', select_name: 'yes_no', name: 'likes_pizza', label: 'Do you like pizza?' },
@@ -43,8 +47,8 @@ FactoryBot.define do
           { id: 3, question_type: 'text', name: 'favorite_cheese', label: 'What is your favorite type of cheese?', relevant_id: 2, operator: 'selected', relevant_value: 'cheese' },
           { id: 4, question_type: 'text', name: 'thank', label: 'Thank you!' }
         ]
-        surveys.each do |question|
-          bot.questions.create!(question)
+        evaluator.count.times do |i|
+          bot.questions.create!(surveys[i])
         end
 
         choices = [

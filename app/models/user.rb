@@ -47,10 +47,6 @@ class User < ActiveRecord::Base
     role == 'admin'
   end
 
-  def published?
-    published
-  end
-
   def self.from_omniauth(params)
     user = User.find_by(email: params['info']['email'])
 

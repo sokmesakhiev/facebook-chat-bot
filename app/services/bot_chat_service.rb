@@ -45,6 +45,8 @@ class BotChatService
   private
 
   def current_question
+    return nil if current < 0
+
     bot.questions[current]
   end
 end

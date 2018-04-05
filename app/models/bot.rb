@@ -41,10 +41,6 @@ class Bot < ApplicationRecord
     facebook_page_id.present? && facebook_page_access_token.present?
   end
 
-  def published?
-    self.published
-  end
-
   private
 
   def import_questions(xlsx)

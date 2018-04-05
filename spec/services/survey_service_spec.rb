@@ -6,7 +6,7 @@ RSpec.describe SurveyService do
     let(:survey_service) { SurveyService.new('123', '1512165178836125') }
 
     it '#first_question' do
-      expect(survey_service.first_question.id).to eq(1)
+      expect(survey_service.first_question.name).to eq('username')
     end
 
     it '#last_question?' do
@@ -53,6 +53,15 @@ RSpec.describe SurveyService do
       user_response_dose_not_like_piza
 
       expect(survey_service.next_question.id).to eq(4)
+    end
+
+    it 'returns next question as nil' do
+      Bot.destroy_all
+      create(:bot, :with_skip_logic_surveys_and_choices, count: 3, facebook_page_id: '1512165178836125')
+      question_user_with_question1
+      user_response_dose_not_like_piza
+
+      expect(survey_service.next_question).to eq(nil)
     end
 
     it '#last_question?' do

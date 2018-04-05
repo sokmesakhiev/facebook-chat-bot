@@ -74,3 +74,5 @@ gem 'devise', '~> 4.4.3'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'koala', '3.0.0'
 gem 'pundit', '~> 1.1.0'
+
+gem 'strip_attributes', '~> 1.8.0'
