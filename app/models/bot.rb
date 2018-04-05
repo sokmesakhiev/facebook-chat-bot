@@ -25,12 +25,12 @@ class Bot < ApplicationRecord
 
   def import(file)
     xlsx = Roo::Spreadsheet.open(file.path, extension: :xlsx)
-    self.questions.destroy_all
+    questions.destroy_all
 
     import_questions(xlsx)
     import_choices(xlsx)
 
-    Bots::ImportHeaderWorker.perform_async(self.id)
+    Bots::ImportHeaderWorker.perform_async(id)
   end
 
   def authorized_spreadsheet?
@@ -52,11 +52,12 @@ class Bot < ApplicationRecord
       next if row['type'].blank?
 
       types = row['type'].split(' ')
-      question = self.questions.create!(
+      question = questions.create!(
         question_type: types[0],
         select_name: types[1],
         name: row['name'],
-        label: row['label'])
+        label: row['label']
+      )
       handle_relevant_field(question, row['relevant'])
     end
   end
@@ -66,9 +67,9 @@ class Bot < ApplicationRecord
 
     relevant_field = relevant[/\$\{(\w+)\}/, 1]
     params = {
-      relevant_id: self.questions.find_by(name: relevant_field).id,
+      relevant_id: questions.find_by(name: relevant_field).id,
       operator: relevant[/(\>\=|\<\=|\!\=|[\+\-\*\>\<\=\|]|div|or|and|mod|selected)/, 1],
-      relevant_value: relevant[/[\‘\'\"](\w+)[\’\'\"]/, 1]
+      relevant_value: relevant[/[‘|'|"](\w+)[’|'|"]/, 1]
     }
     params[:operator] = '==' if params[:operator] == '='
 
@@ -81,7 +82,7 @@ class Bot < ApplicationRecord
 
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      question = self.questions.find_by(select_name: row['list_name'])
+      question = questions.find_by(select_name: row['list_name'])
       next if row['list_name'].blank? || question.nil?
 
       row.delete('list_name')

@@ -9,13 +9,12 @@ Rails.application.routes.draw do
 
   get 'webhook' => 'fbmessengers#get_webhook'
   post 'webhook' => 'fbmessengers#post_webhook'
-  get 'oauthcallback' => 'fbmessengers#oauthcallback'
 
   get 'oauth_callbacks' => 'oauth_callbacks#create'
   post 'oauth_callbacks' => 'oauth_callbacks#create'
 
   resource :home, only: :index
-  resources :bots do
+  resources :bots, only: [:index, :show, :create, :update] do
     member do
       post :import
       delete :delete_survey
@@ -42,7 +41,7 @@ Rails.application.routes.draw do
   # match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
 
   scope '/api', as: :api, module: :api do
-    resources :bots
+    resources :bots, only: :update
   end
 
   require 'sidekiq/web'
