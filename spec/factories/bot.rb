@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :bot do
     name  { FFaker::Name.name }
     facebook_page_id            '1512165178836125'
-    facebook_page_access_token  'token'
+    facebook_page_access_token  'EAAIZAC8ESk9cBADkudVR6nrACk7Q5ZATxZAWic26ZBjWU7x2kG8OuBgrZCqJX2QTtVQ8ZBsQ7zBhuiej6WVM7HgIsS5MrJ9lU8l1E6yRdXTGDslbqn3tHYE1dVQFaZBVDaqRC5zsQzZCCKzUKT2vrZCpXpyxnSUlYWSZAwvNXuYEF9no47WabcT0Ce'
     published                   true
 
     trait :with_simple_surveys_and_choices do

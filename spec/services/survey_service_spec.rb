@@ -83,6 +83,40 @@ RSpec.describe SurveyService do
       expect(survey_service.template_message(bot.questions[2])).to eq(select_template_for_question(bot.questions[2]))
     end
   end
+
+  context '#send_api' do
+    it 'returns 200'  do
+      VCR.use_cassette "Survey/success" do
+        bot = create(:bot, :with_simple_surveys_and_choices)
+        survey_service = SurveyService.new('1612943458742093', '1512165178836125')
+        message_data = {
+          'recipient' => {
+            'id' => '1612943458742093'
+          },
+          'sender_action' => 'typing_on'
+        }
+        response = survey_service.send_api(message_data)
+
+        expect(response.code).to eq(200)
+      end
+    end
+
+    it 'returns 400', vcr: { cassette_name: 'Survey/fails' }  do
+      VCR.use_cassette "Survey/fails" do
+        bot = create(:bot, :with_simple_surveys_and_choices, facebook_page_access_token: 'token')
+        survey_service = SurveyService.new('1612943458742093', '1512165178836125')
+        message_data = {
+          'recipient' => {
+            'id' => '1612943458742093'
+          },
+          'sender_action' => 'typing_on'
+        }
+        response = survey_service.send_api(message_data)
+
+        expect(response.code).to eq(400)
+      end
+    end
+  end
 end
 
 def text_template_for_question(question_id)

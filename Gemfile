@@ -24,7 +24,7 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-gem "typhoeus"
+gem 'typhoeus', '~> 1.3.0'
 
 group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -41,6 +41,13 @@ group :development, :test do
 end
 
 group :test do
+  gem 'simplecov', '~> 0.14.1',  require: false
+
+  ## Http
+  gem 'vcr',       '~> 4.0.0'
+  gem 'webmock',   '~> 3.3.0'
+
+  # Spec
   gem 'shoulda-matchers',       '~> 3.1.2'
   gem 'database_cleaner',       '~> 1.6.2'
   gem 'factory_bot_rails',      '~> 4.0'

@@ -79,19 +79,19 @@ class SurveyService
     )
 
     request.run
-    response = request.response
-    if response.code == 200
-      result = JSON.parse response.response_body
-      recipient_id = result['recipient_id']
-      message_id = result['message_id']
-      if message_id
-        puts "Successfully sent message with id #{message_id}to recipient #{recipient_id}"
-      else
-        puts "Successfully called Send API for recipient #{recipient_id}"
-      end
-    else
-      puts "Failed calling Send API #{response.code}"
-    end
+    # response = request.response
+    # if response.code == 200
+    #   result = JSON.parse response.response_body
+    #   recipient_id = result['recipient_id']
+    #   message_id = result['message_id']
+    #   if message_id
+    #     puts "Successfully sent message with id #{message_id}to recipient #{recipient_id}"
+    #   else
+    #     puts "Successfully called Send API for recipient #{recipient_id}"
+    #   end
+    # else
+    #   puts "Failed calling Send API #{response.code}"
+    # end
   end
 
   private
