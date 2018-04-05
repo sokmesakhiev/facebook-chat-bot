@@ -25,7 +25,7 @@ class MessageService
     survey.send_typing_on
 
     if message == 'first_welcome'
-      survey.update_state(survey.first_question)
+      survey.save_state(survey.first_question)
       return survey.send_api(survey.template_message(survey.first_question))
     end
 

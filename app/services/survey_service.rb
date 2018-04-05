@@ -7,7 +7,8 @@ class SurveyService
     @user_session_id = user_id
     @facebook_page_id = page_id
     @question_user = QuestionUser.find_or_create_by(user_session_id: user_id)
-    @bot_chat = BotChatService.new(Bot.find_by(facebook_page_id: page_id))
+    @bot = Bot.find_by(facebook_page_id: page_id)
+    @bot_chat = BotChatService.new(@bot)
   end
 
   def first_question
@@ -67,7 +68,7 @@ class SurveyService
   end
 
   def send_api(message_data = {})
-    message_data['access_token'] = bot.facebook_page_access_token
+    message_data['access_token'] = @bot.facebook_page_access_token
 
     request = Typhoeus::Request.new(
       'https://graph.facebook.com/v2.6/me/messages',
