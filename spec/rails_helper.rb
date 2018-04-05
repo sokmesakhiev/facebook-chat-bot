@@ -8,6 +8,7 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'support/factory_bot'
 require 'support/database_cleaner'
+require 'support/sidekiq'
 require 'pry'
 require 'shoulda/matchers'
 # Add additional requires below this line. Rails is not loaded until this point!
