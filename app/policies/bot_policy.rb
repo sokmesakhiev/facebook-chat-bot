@@ -2,6 +2,10 @@ class BotPolicy < ApplicationPolicy
   class Scope
     attr_reader :user, :scope
 
+    def create?
+      !user.admin?
+    end
+
     def initialize(user, scope)
       @user  = user
       @scope = scope
