@@ -13,8 +13,9 @@ The Facebook Chatbot is your toolbox for building bots.
   * Register and setup [Google app](https://developers.google.com/picker/docs/)
 
 
-  * Register and set
+  * Register and setup
     Facebook app for [Chatbot](https://developers.facebook.com/docs/messenger-platform/getting-started/app-setup) and [Login with Facebook](https://revs.runtime-revolution.com/working-with-facebook-using-devise-omniauth-koala-and-rails-5-cde5d032de02)
+
 
 ## In .env file
 
@@ -59,13 +60,13 @@ FACEBOOK_APP_SECRET=app_secret
 ```
 
 ## Database creation
-  * For development:
+* For development:
 ```
-  <tt>rake db:prepare_for_dev</tt>
+rake db:prepare_for_dev
 ```
-  * For Test:
+* For Test:
 ```
-  <tt>rake db:prepare_for_test</tt>
+rake db:prepare_for_test
 ```
 
 ## How to run the test suite
@@ -81,7 +82,7 @@ rubocop .
 
 
 ## Run
-* install redis and start redis with
+* Install redis and start redis with
 ```
 redis-server
 ```
@@ -89,7 +90,7 @@ redis-server
 ```
 sidekiq
 ```
-* start project
+* Start project
 ```
 rails s
 ```
