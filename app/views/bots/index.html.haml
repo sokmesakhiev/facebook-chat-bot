@@ -2,11 +2,12 @@
 = render 'shared/alert'
 
 .container.space-top
-  - unless current_user.admin?
-    %center
-      #div{style: "width:80%;", align: "right"}
-        %button.btn.btn-default.btn-primary{'data-target' => '#create-new', 'data-toggle' => 'modal', type: 'button'} Create new
-    %br
+  %fieldset
+    %legend
+      .flex{style: 'margin-bottom: 8px'}
+        .flex-grow Bots
+        - unless current_user.admin?
+          %button.btn.btn-default.btn-primary{'data-target' => '#create-new', 'data-toggle' => 'modal', type: 'button'} Create new
 
   %table.table-bordered.table.central{style: "width:80%;", align: "center"}
     %tr

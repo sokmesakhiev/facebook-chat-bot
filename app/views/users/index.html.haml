@@ -2,10 +2,11 @@
 = render 'shared/alert'
 
 .container.space-top
-  %center
-    #div{style: 'width:80%', align: 'right'}
-      %button.btn.btn-default.btn-primary{'data-target' => '#user-modal', 'data-toggle' => 'modal', type: 'button'} Create new
-  %br
+  %fieldset
+    %legend
+      .flex{style: 'margin-bottom: 8px'}
+        .flex-grow Users
+        %button.btn.btn-default.btn-primary{'data-target' => '#user-modal', 'data-toggle' => 'modal', type: 'button'} Create new
 
   %table.table-bordered.table.central{style: 'width:80%', align: 'center'}
     %thead
