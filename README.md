@@ -16,6 +16,7 @@ The Facebook Chatbot is your toolbox for building bots.
   * Register and setup
     Facebook app for [Chatbot](https://developers.facebook.com/docs/messenger-platform/getting-started/app-setup) and [Login with Facebook](https://revs.runtime-revolution.com/working-with-facebook-using-devise-omniauth-koala-and-rails-5-cde5d032de02)
 
+![alt text](https://raw.githubusercontent.com/sokmesakhiev/facebook-chat-bot/cf5d7c1059ea2e9c7497701c7cde5f38e06db5ae/public/fb_app.png)
 
 ## In .env file
 
