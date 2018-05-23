@@ -11,7 +11,7 @@ gem 'sass-rails', '~> 5.0.4'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 4.2.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer',  platforms: :ruby
 
@@ -30,7 +30,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'annotate', '~> 2.7.2'
   gem 'spring'
-  gem 'rubocop', '~> 0.52.1'
+  gem 'rubocop', '~> 0.56.0'
 end
 
 group :development, :test do
@@ -62,6 +62,13 @@ end
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+group :development do
+  gem "capistrano", "~> 3.10", require: false
+  gem "capistrano-rails", "~> 1.3", require: false
+
+  gem 'capistrano-rvm', require: false
+end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
