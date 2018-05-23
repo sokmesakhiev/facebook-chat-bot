@@ -1,60 +1,58 @@
 Rails.application.routes.draw do
+  devise_for :users, path: '/', controllers: { omniauth_callbacks: 'auth/callbacks' }
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'home#index'
 
   get 'webhook' => 'fbmessengers#get_webhook'
   post 'webhook' => 'fbmessengers#post_webhook'
-  get 'oauthcallback' => 'fbmessengers#oauthcallback'
 
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
+  get 'oauth_callbacks' => 'oauth_callbacks#create'
+  post 'oauth_callbacks' => 'oauth_callbacks#create'
 
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
+  resource :home, only: :index
+  resources :bots, only: [:index, :show, :create, :update] do
+    member do
+      post :import
+      delete :delete_survey
+      put :deactivate
+      put :activate
+    end
+  end
 
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
+  resources :facebook_pages, only: :index
 
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
+  resources :users, only: [:index, :create, :update] do
+    member do
+      put :deactivate
+      put :activate
+    end
+  end
 
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
+  # resolve session
+  post ':controller(/:action(/:id(.:format)))'
+  get ':controller(/:action(/:id(.:format)))'
 
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
+  # match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
+  # match 'auth/failure', to: redirect('/'), via: [:get, :post]
+  # match 'signout', to: 'sessions#destroy', as: 'signout', via: [:get, :post]
 
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
+  scope '/api', as: :api, module: :api do
+    resources :bots, only: :update
+  end
 
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
+  require 'sidekiq/web'
+  Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+    # Protect against timing attacks:
+    # - See https://codahale.com/a-lesson-in-timing-attacks/
+    # - See https://thisdata.com/blog/timing-attacks-against-string-comparison/
+    # - Use & (do not use &&) so that it doesn't short circuit.
+    # - Use digests to stop length information leaking (see also ActiveSupport::SecurityUtils.variable_size_secure_compare)
+    ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"])) &
+      ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"]))
+  end if Rails.env.production?
+  mount Sidekiq::Web, at: "/sidekiq"
 end

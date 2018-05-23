@@ -1,0 +1,36 @@
+= render 'shared/header'
+= render 'shared/alert'
+
+.container.space-top
+  %fieldset
+    %legend
+      .flex{style: 'margin-bottom: 8px'}
+        .flex-grow Users
+        %button.btn.btn-default.btn-primary{'data-target' => '#user-modal', 'data-toggle' => 'modal', type: 'button'} Create new
+
+  %table.table-bordered.table.central{style: 'width:80%', align: 'center'}
+    %thead
+      %tr
+        %th{width: 60} #
+        %th Email
+        %th Role
+        %th Actions
+    %tbody
+      - @users.each_with_index do |user, index|
+        %tr
+          %td= index + 1
+          %td= user.email
+          %td= user.role
+          %td
+            %a.btn.btn-info.btn-xs{ 'data-target' => '#user-modal', 'data-toggle' => 'modal', type: 'button', 'data-user' => user.to_json}
+              Edit
+
+            - if user.id != current_user.id
+              - if user.published?
+                %button.deactivate-user.btn.btn-danger.btn-xs{ 'data-user' => user.to_json }
+                  Deactivate
+              - else
+                %button.activate-user.btn.btn-primary.btn-xs{ 'data-user' => user.to_json }
+                  Activate
+
+= render 'form_modal'

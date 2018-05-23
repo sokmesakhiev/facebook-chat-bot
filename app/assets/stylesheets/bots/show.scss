@@ -1,0 +1,29 @@
+#bots-show {
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    background: #fff;
+  }
+
+  .card-body {
+    display: flex;
+    padding: 20px;
+    align-items: center;
+
+    .paragraph {
+      opacity: .8;
+      flex-grow: 1;
+      overflow: hidden
+    }
+  }
+
+  .ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .loading {
+    text-align: center;
+  }
+}

@@ -1,0 +1,27 @@
+.navbar.navbar-default.navbar-fixed-top
+  .container
+    .navbar-header
+      %button.navbar-toggle.collapsed{'aria-controls' => 'navbar', 'aria-expanded' => 'false', 'data-target' => '#navbar', 'data-toggle' => 'collapse', type: 'button'}
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      = link_to 'Facebook Chatbot', root_path, class: 'navbar-brand'
+
+    #navbar.navbar-collapse.collapse
+      %ul.nav.navbar-nav
+        %li{ class: current_class?(root_path) }
+          = link_to 'Home', root_path
+        - if current_user.admin?
+          %li{ class: current_class?(users_path) }
+            = link_to 'Users', users_path
+        %li{ class: current_class?(bots_path) }
+          = link_to 'Bots', bots_path
+
+      %ul.nav.navbar-nav.navbar-right
+        %li{style: 'padding: 15px'}
+          Welcome
+          %strong= "#{current_user.name} !"
+
+        %li
+          = link_to "Sign out", destroy_user_session_path, id: "sign_out", method: :delete

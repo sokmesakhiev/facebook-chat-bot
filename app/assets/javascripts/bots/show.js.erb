@@ -1,0 +1,164 @@
+// https://developers.google.com/picker/docs/
+function LoadMe() {
+  // The Browser API key obtained from the Google API Console.
+  var developerKey = "<%= ENV['GOOGLE_API_KEY'] %>";
+
+  // The Client ID obtained from the Google API Console. Replace with your own Client ID.
+  var clientId = "<%= ENV['GOOGLE_CLIENT_ID'] %>"
+
+  // Scope to use to access user's photos.
+  var scope = 'https://www.googleapis.com/auth/drive';
+
+  var pickerApiLoaded = false;
+  var oauthToken;
+
+  // Use the API Loader script to load google.picker and gapi.auth.
+  function onApiLoad() {
+    gapi.load('auth2', onAuthApiLoad);
+    gapi.load('picker', onPickerApiLoad);
+  }
+
+  // https://developers.google.com/identity/sign-in/web/server-side-flow
+  function onAuthApiLoad() {
+    var authBtn = document.getElementById('auth');
+    authBtn.disabled = false;
+    authBtn.addEventListener('click', function() {
+      var auth2 = gapi.auth2.init({
+        client_id: clientId,
+        scope: scope
+      });
+      auth2.grantOfflineAccess().then(signInCallback);
+    });
+  }
+
+  function signInCallback(authResult) {
+    console.log(authResult)
+    if (authResult['code']) {
+      // Send the code to the server
+      var authBtn = document.getElementById('auth');
+      $.ajax({
+        url: '/oauth_callbacks',
+        type: 'POST',
+        data: 'code=' + authResult['code'] + '&bot_id=' + authBtn.dataset.botId,
+        success: function(result) {
+          console.log('result==', result);
+          handleAuthResult(result);
+        }
+      });
+    } else {
+      // There was an error.
+    }
+  }
+
+  function onPickerApiLoad() {
+    pickerApiLoaded = true;
+    createPicker();
+  }
+
+  function handleAuthResult(authResult) {
+    if (authResult && !authResult.error) {
+      oauthToken = authResult.access_token;
+      saveToken(oauthToken);
+    }
+  }
+
+  function saveToken(oauthToken) {
+    var authBtn = document.getElementById('auth');
+    $.ajax({
+      url: '/api/bots/' + authBtn.dataset.botId,
+      type: 'PUT',
+      data: 'google_access_token=' + oauthToken,
+      success: function(data) {
+        createPicker();
+      }
+    });
+  }
+
+  // Create and render a Picker object for picking user Photos.
+  function createPicker() {
+    if (pickerApiLoaded && oauthToken) {
+      var picker = new google.picker.PickerBuilder().
+          addView(google.picker.ViewId.SPREADSHEETS).
+          setOAuthToken(oauthToken).
+          setDeveloperKey(developerKey).
+          setCallback(pickerCallback).
+          build();
+      picker.setVisible(true);
+    }
+  }
+
+  // A simple callback implementation.
+  function pickerCallback(data) {
+    if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
+      var doc = data[google.picker.Response.DOCUMENTS][0];
+      saveSpreadsheetKey(doc.id, doc.name);
+    }
+  }
+
+  function renderTitle(title) {
+    var dom = document.getElementById('title');
+    dom.innerHTML = title
+  }
+
+  function saveSpreadsheetKey(key, title) {
+    var authBtn = document.getElementById('auth');
+    $.ajax({
+      url: '/api/bots/' + authBtn.dataset.botId,
+      type: 'PUT',
+      data: 'google_spreadsheet_key=' + key + '&google_spreadsheet_title=' + title,
+      success: function(data) {
+        location.reload();
+      }
+    });
+  }
+
+  onApiLoad();
+}
+
+"use strict";
+
+$(document).on('turbolinks:load', function() {
+  init();
+
+  function init() {
+    _onOpenFacebookModal();
+    _onCloseFacebookModal();
+    _onClickBtnPageToken();
+  }
+
+  function _onOpenFacebookModal() {
+    $('#facebook-modal').on('shown.bs.modal', function (event) {
+      var bot = $(event.relatedTarget).data('bot');
+      var modal = $(this);
+      modal.find('.modal-body .loading').show();
+
+      $.ajax({
+        url: '/facebook_pages',
+        type: 'GET',
+        success: function(data) {
+          modal.find('.modal-body .loading').hide();
+          for(var i=0; i<data.length; i++) {
+            var radioInput = $('<div class="radio"><label><input type="radio" name="bot[facebook_page_id]" value="'+ data[i].id +'">'+ data[i].name +'</label></div>');
+            modal.find('.modal-body .input-groups').append(radioInput);
+          }
+
+          $('input:radio[name="bot[facebook_page_id]"]').filter('[value="'+ bot.facebook_page_id +'"]').attr('checked', true);
+        }
+      });
+    })
+  }
+
+  function _onCloseFacebookModal() {
+    $('#facebook-modal').on('hide.bs.modal', function (event) {
+      var modal = $(this);
+      modal.find('.modal-body .input-groups').html('');
+    });
+  }
+
+  function _onClickBtnPageToken() {
+    $('#btn-page-token').on('click', function() {
+      $(this).hide();
+      $('#page-token').removeClass('hidden');
+    })
+  }
+})

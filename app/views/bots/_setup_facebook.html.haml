@@ -1,0 +1,23 @@
+.jumbotron
+  %h2 Facebook Page
+  %p Connect your bot to facebook page!
+
+  - if @bot.facebook_page_id.present?
+    .card
+      .card-body
+        .paragraph
+          %div
+            %span Facebook page id:
+            %span= @bot.facebook_page_id
+          .ellipsis
+            %span Facebook page access token:
+            %button#btn-page-token.btn.btn-default
+              %span.glyphicon.glyphicon-eye-close
+            %span#page-token.hidden= @bot.facebook_page_access_token
+
+        - unless current_user.admin?
+          %button.btn.btn-default.btn-primary{'data-target' => '#facebook-modal', 'data-toggle' => 'modal', type: 'button', 'data-bot' => @bot.to_json} Reconnect
+  - elsif !current_user.admin?
+    %button.btn.btn-default.btn-primary{'data-target' => '#facebook-modal', 'data-toggle' => 'modal', type: 'button', 'data-bot' => @bot.to_json} Connect
+
+= render 'facebook_modal'

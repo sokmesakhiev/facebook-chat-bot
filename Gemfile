@@ -6,7 +6,8 @@ gem 'rails', '~> 4.1.16'
 
 gem 'mysql2', '~> 0.3.18'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0.4'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
@@ -23,11 +24,35 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+gem 'typhoeus', '~> 1.3.0'
 
-gem 'byebug'
-gem "typhoeus"
+group :development do
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'annotate', '~> 2.7.2'
+  gem 'spring'
+  gem 'rubocop', '~> 0.52.1'
+end
+
+group :development, :test do
+  gem 'byebug'
+  gem 'pry-rails', '0.3.6'
+  gem 'rspec', '3.7.0'
+  gem 'rspec-rails', '~> 3.7'
+end
+
+group :test do
+  gem 'simplecov', '~> 0.14.1',  require: false
+
+  ## Http
+  gem 'vcr',       '~> 4.0.0'
+  gem 'webmock',   '~> 3.3.0'
+
+  # Spec
+  gem 'shoulda-matchers',       '~> 3.1.2'
+  gem 'database_cleaner',       '~> 1.6.2'
+  gem 'factory_bot_rails',      '~> 4.0'
+  gem 'ffaker',                 '~> 2.8.0'
+end
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -40,4 +65,21 @@ gem "typhoeus"
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+gem 'dotenv-rails', '~> 2.2.1'
+gem 'google_drive', '~> 2.1.9'
+gem 'haml', '~> 5.0.4'
 
+gem 'sidekiq', '~> 5.1.1'
+gem 'slim', '~> 3.0.9'
+gem 'sinatra', '~> 1.4.8'
+gem 'roo', '~> 2.7.1'
+
+gem 'bootstrap-sass', '~> 3.3.6'
+gem 'autoprefixer-rails'
+
+gem 'devise', '~> 4.4.3'
+gem 'omniauth-facebook', '~> 4.0.0'
+gem 'koala', '3.0.0'
+gem 'pundit', '~> 1.1.0'
+
+gem 'strip_attributes', '~> 1.8.0'

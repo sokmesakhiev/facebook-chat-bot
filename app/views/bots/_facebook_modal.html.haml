@@ -1,0 +1,17 @@
+#facebook-modal.modal.fade{ 'aria-labelledby' => 'myModalLabel', :role => 'dialog', :tabindex => '-1' }
+  .modal-dialog{role: 'document'}
+    .modal-content
+      .modal-header
+        %button.close{ 'aria-label' => 'Close', 'data-dismiss' => 'modal', type: 'button' }
+          %span{ 'aria-hidden' => 'true' } ×
+        %h4#myModalLabel.modal-title Facebook Pages
+
+      = form_for @bot, html: { class: 'sform-horizontal' } do |f|
+        .modal-body
+          .loading
+            %img{src: image_url('loading.gif')}
+          .input-groups
+        .modal-footer
+          .form-group
+            %button.btn.btn-default{ 'data-dismiss' => 'modal', type: 'button'} Cancel
+            = f.submit 'Save', class: 'btn btn-primary'

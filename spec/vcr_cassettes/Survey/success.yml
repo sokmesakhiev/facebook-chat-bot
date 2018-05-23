@@ -1,0 +1,54 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://graph.facebook.com/v2.6/me/messages?access_token=EAAIZAC8ESk9cBADkudVR6nrACk7Q5ZATxZAWic26ZBjWU7x2kG8OuBgrZCqJX2QTtVQ8ZBsQ7zBhuiej6WVM7HgIsS5MrJ9lU8l1E6yRdXTGDslbqn3tHYE1dVQFaZBVDaqRC5zsQzZCCKzUKT2vrZCpXpyxnSUlYWSZAwvNXuYEF9no47WabcT0Ce&recipient%5Bid%5D=1612943458742093&sender_action=typing_on
+    body:
+      encoding: UTF-8
+      string: this is a request body
+    headers:
+      User-Agent:
+      - Typhoeus - https://github.com/typhoeus/typhoeus
+      Accept:
+      - application/json
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      X-Page-Usage:
+      - '{"call_count":1,"total_cputime":1,"total_time":1}'
+      Strict-Transport-Security:
+      - max-age=15552000; preload
+      X-Fb-Trace-Id:
+      - Ad4MXfoZ4lU
+      X-Fb-Rev:
+      - '3785677'
+      Expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      Content-Type:
+      - application/json
+      Facebook-Api-Version:
+      - v2.12
+      Cache-Control:
+      - private, no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Access-Control-Allow-Origin:
+      - "*"
+      X-Fb-Debug:
+      - b6/BLgk+bCW4iXFIuyJ8uMUPwvxPjAY1Cj/EXSHhb91vAqUoKf4Zkt4hA5WYUaHb9FCKmZciVIesILBXNRcb/g==
+      Date:
+      - Thu, 05 Apr 2018 09:05:52 GMT
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35'
+    body:
+      encoding: UTF-8
+      string: '{"recipient_id":"1612943458742093"}'
+    http_version: 
+  recorded_at: Thu, 05 Apr 2018 09:05:52 GMT
+recorded_with: VCR 4.0.0
