@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
 
+  get 'privacy-policy' => 'privacy_policies#index'
+
   get 'webhook' => 'fbmessengers#get_webhook'
   post 'webhook' => 'fbmessengers#post_webhook'
 
