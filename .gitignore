@@ -18,3 +18,4 @@
 dump.rdb
 **/.DS_Store
 coverage
+.byebug*

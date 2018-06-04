@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BotChatService
+class BotState
   attr_accessor :bot, :current
 
   def initialize(bot)

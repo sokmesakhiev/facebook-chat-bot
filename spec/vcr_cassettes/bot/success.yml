@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: post
-    uri: https://graph.facebook.com/v2.6/me/messages?access_token=EAAIZAC8ESk9cBADkudVR6nrACk7Q5ZATxZAWic26ZBjWU7x2kG8OuBgrZCqJX2QTtVQ8ZBsQ7zBhuiej6WVM7HgIsS5MrJ9lU8l1E6yRdXTGDslbqn3tHYE1dVQFaZBVDaqRC5zsQzZCCKzUKT2vrZCpXpyxnSUlYWSZAwvNXuYEF9no47WabcT0Ce&recipient%5Bid%5D=1612943458742093&sender_action=typing_on
+    uri: https://graph.facebook.com/v2.6/me/messages?access_token=aabbccdd&recipient%5Bid%5D=1612943458742093&sender_action=typing_on
     body:
       encoding: UTF-8
       string: this is a request body

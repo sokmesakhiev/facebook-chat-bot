@@ -37,7 +37,7 @@ class Bot < ApplicationRecord
     google_access_token.present? && google_spreadsheet_key.present?
   end
 
-  def authorized_facbook?
+  def authorized_facebook?
     facebook_page_id.present? && facebook_page_access_token.present?
   end
 
@@ -52,13 +52,16 @@ class Bot < ApplicationRecord
       next if row['type'].blank?
 
       types = row['type'].split(' ')
-      question = questions.create!(
-        question_type: types[0],
-        select_name: types[1],
-        name: row['name'],
-        label: row['label']
-      )
-      handle_relevant_field(question, row['relevant'])
+
+      begin
+        question = Parsers::QuestionParser.parse(types[0])
+        question.update_attributes(bot_id: id, select_name: types[1], name: row['name'], label: row['label'])
+
+        handle_relevant_field(question, row['relevant'])
+
+      rescue
+        Rails.logger.warn "Unknown datatype ##{types[0]}"
+      end
     end
   end
 
@@ -89,4 +92,5 @@ class Bot < ApplicationRecord
       question.choices.create!(row)
     end
   end
+
 end

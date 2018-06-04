@@ -2,17 +2,17 @@ FactoryBot.define do
   factory :bot do
     name  { FFaker::Name.name }
     facebook_page_id            '1512165178836125'
-    facebook_page_access_token  'EAAIZAC8ESk9cBADkudVR6nrACk7Q5ZATxZAWic26ZBjWU7x2kG8OuBgrZCqJX2QTtVQ8ZBsQ7zBhuiej6WVM7HgIsS5MrJ9lU8l1E6yRdXTGDslbqn3tHYE1dVQFaZBVDaqRC5zsQzZCCKzUKT2vrZCpXpyxnSUlYWSZAwvNXuYEF9no47WabcT0Ce'
+    facebook_page_access_token  'aabbccdd'
     published                   true
 
     trait :with_simple_surveys_and_choices do
       after(:create) do |bot, evaluator|
         surveys = [
-          { question_type: 'text', name: 'username', label: 'What is your name?' },
-          { question_type: 'num', name: 'age', label: 'How old are you?' },
-          { question_type: 'select_one', select_name: 'sex', name: 'sex', label: 'What is your sex?' },
-          { question_type: 'date', name: 'dob', label: 'When is your birth date?' },
-          { question_type: 'select_many', select_name: 'favorite_foods', name: 'favorite_foods', label: 'What are your favorite foods?' }
+          { type: Questions::TextQuestion.name, name: 'username', label: 'What is your name?' },
+          { type: Questions::IntegerQuestion.name, name: 'age', label: 'How old are you?' },
+          { type: Questions::SelectOneQuestion.name, select_name: 'sex', name: 'sex', label: 'What is your sex?' },
+          { type: Questions::DateQuestion.name, name: 'dob', label: 'When is your birth date?' },
+          { type: Questions::SelectMultipleQuestion.name, select_name: 'favorite_foods', name: 'favorite_foods', label: 'What are your favorite foods?' }
         ]
         surveys.each do |question|
           bot.questions.create!(question)
@@ -42,10 +42,10 @@ FactoryBot.define do
 
       after(:create) do |bot, evaluator|
         surveys = [
-          { id: 1, question_type: 'select_one', select_name: 'yes_no', name: 'likes_pizza', label: 'Do you like pizza?' },
-          { id: 2, question_type: 'select_multiple', select_name: 'pizza_toppings', name: 'favorite_topping', label: 'Favorite toppings', relevant_id: 1, operator: '==', relevant_value: 'yes' },
-          { id: 3, question_type: 'text', name: 'favorite_cheese', label: 'What is your favorite type of cheese?', relevant_id: 2, operator: 'selected', relevant_value: 'cheese' },
-          { id: 4, question_type: 'text', name: 'thank', label: 'Thank you!' }
+          { id: 1, type: Questions::SelectOneQuestion.name, select_name: 'yes_no', name: 'likes_pizza', label: 'Do you like pizza?' },
+          { id: 2, type: Questions::SelectMultipleQuestion.name, select_name: 'pizza_toppings', name: 'favorite_topping', label: 'Favorite toppings', relevant_id: 1, operator: '==', relevant_value: 'yes' },
+          { id: 3, type: Questions::TextQuestion.name, name: 'favorite_cheese', label: 'What is your favorite type of cheese?', relevant_id: 2, operator: 'selected', relevant_value: 'cheese' },
+          { id: 4, type: Questions::TextQuestion.name, name: 'thank', label: 'Thank you!' }
         ]
         evaluator.count.times do |i|
           bot.questions.create!(surveys[i])

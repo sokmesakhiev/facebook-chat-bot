@@ -8,11 +8,11 @@ class SurveyService
     @facebook_page_id = page_id
     @question_user = QuestionUser.find_or_create_by(user_session_id: user_id)
     @bot = Bot.find_by(facebook_page_id: page_id)
-    @bot_chat = BotChatService.new(@bot)
+    @bot_state = BotState.new(@bot)
   end
 
   def first_question
-    @bot_chat.first
+    @bot_state.first
   end
 
   def save_state(question)
@@ -28,70 +28,7 @@ class SurveyService
   end
 
   def last_question?
-    @question_user.current_question_id.present? && @bot_chat.last?(@question_user.current_question_id)
-  end
-
-  def template_message(question)
-    case question.question_type.strip.downcase
-    when 'select_one'
-      select_one_template(question)
-    when 'select_multiple'
-      select_multiple_template(question)
-    else
-      text_template(question)
-    end
-  end
-
-  def send_typing_on
-    message_data = {
-      'recipient' => {
-        'id' => user_session_id
-      },
-      'sender_action' => 'typing_on'
-    }
-
-    send_api(message_data)
-  end
-
-  def send_text_message(message)
-    message_data = {
-      'recipient' => {
-        'id' => user_session_id
-      },
-      'message' => {
-        'text' => message,
-        'metadata' => 'DEVELOPER_DEFINED_METADATA'
-      }
-    }
-
-    send_api(message_data)
-  end
-
-  def send_api(message_data = {})
-    message_data['access_token'] = @bot.facebook_page_access_token
-
-    request = Typhoeus::Request.new(
-      'https://graph.facebook.com/v2.6/me/messages',
-      method: :POST,
-      body: 'this is a request body',
-      params: message_data,
-      headers: { Accept: 'application/json' }
-    )
-
-    request.run
-    # response = request.response
-    # if response.code == 200
-    #   result = JSON.parse response.response_body
-    #   recipient_id = result['recipient_id']
-    #   message_id = result['message_id']
-    #   if message_id
-    #     puts "Successfully sent message with id #{message_id}to recipient #{recipient_id}"
-    #   else
-    #     puts "Successfully called Send API for recipient #{recipient_id}"
-    #   end
-    # else
-    #   puts "Failed calling Send API #{response.code}"
-    # end
+    @question_user.current_question_id.present? && @bot_state.last?(@question_user.current_question_id)
   end
 
   private
@@ -100,10 +37,10 @@ class SurveyService
     current = nil
 
     if question_id.present? || @question_user.current_question_id.present?
-      current = @bot_chat.find_current_index(question_id || @question_user.current_question_id)
+      current = @bot_state.find_current_index(question_id || @question_user.current_question_id)
     end
 
-    question = @bot_chat.next(current: current)
+    question = @bot_state.next(current: current)
 
     return next_q(question.id) if question.present? && question.relevant.present? && skip_question(question)
 
@@ -122,47 +59,5 @@ class SurveyService
 
     condition = eval("user_response.value #{question.operator} question.relevant_value")
     !condition
-  end
-
-  def text_template(question)
-    {
-      'recipient' => {
-        'id' => user_session_id
-      },
-      'message' => {
-        'text' => question.label,
-        'metadata' => 'DEVELOPER_DEFINED_METADATA'
-      }
-    }
-  end
-
-  def select_one_template(question)
-    buttons = question.choices.map do |choice|
-      {
-        'type' => 'postback',
-        'title' => choice.label,
-        'payload' => choice.name
-      }
-    end
-
-    {
-      'recipient' => {
-        'id' => user_session_id
-      },
-      'message' => {
-        'attachment' => {
-          'type' => 'template',
-          'payload' => {
-            'template_type' => 'button',
-            'text' => question.label,
-            'buttons' => buttons.take(3)
-          }
-        }
-      }
-    }
-  end
-
-  def select_multiple_template(question)
-    select_one_template(question)
   end
 end

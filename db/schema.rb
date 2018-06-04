@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180328100226) do
+ActiveRecord::Schema.define(version: 20180531045143) do
 
   create_table "bots", force: true do |t|
     t.string   "name"
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20180328100226) do
 
   create_table "questions", force: true do |t|
     t.integer  "bot_id"
-    t.string   "question_type"
+    t.string   "type"
     t.string   "select_name"
     t.string   "name"
     t.string   "label"

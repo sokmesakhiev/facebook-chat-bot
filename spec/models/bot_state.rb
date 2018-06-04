@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BotChatService do
+RSpec.describe BotState do
   let(:bot) { create(:bot, :with_simple_surveys_and_choices, facebook_page_id: '1512165178836125') }
   let(:bot_service) { BotChatService.new(bot) }
 

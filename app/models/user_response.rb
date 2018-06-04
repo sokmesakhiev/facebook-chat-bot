@@ -14,6 +14,6 @@ class UserResponse < ApplicationRecord
   belongs_to :question
 
   after_create do
-    UserResponseWorker.perform_async(id)
+    UserResponseWorker.perform_at(30.seconds.from_now , id)
   end
 end

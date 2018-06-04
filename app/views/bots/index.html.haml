@@ -27,7 +27,7 @@
           - unless current_user.admin?
             = link_to 'Configure', bot_path(bot), class: 'btn btn-info btn-xs'
 
-          - if bot.authorized_facbook? && bot.questions.present?
+          - if bot.authorized_facebook? && bot.questions.present?
             - if bot.published?
               %button.deactivate.btn.btn-danger.btn-xs{ 'data-bot' => bot.to_json }
                 Deactivate

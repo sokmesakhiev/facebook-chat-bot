@@ -16,6 +16,12 @@
 #
 
 class Question < ApplicationRecord
+  # We will need a way to know which animals
+  # will subclass the Animal model
+  def self.types
+    %w(Text Integer Decimal Date SelectOne SelectMultiple)
+  end
+
   belongs_to :bot
   belongs_to :relevant, class_name: 'Question', foreign_key: 'relevant_id'
   has_many :choices, dependent: :destroy
@@ -23,4 +29,34 @@ class Question < ApplicationRecord
   has_many :user_responses, dependent: :destroy
 
   validates :name, uniqueness: { case_sensitive: false, scope: :bot_id }
+
+  QUESTION_FIRST_WELCOME = 'first_welcome'
+
+  def kind
+    raise 'You have to implemented in sub-class'
+  end
+
+  def html_element
+    "<input id='#{name}' name='#{name}' type=#{kind} class='form-control' />"
+  end
+
+  def html_template
+    "
+      <label for=#{name}>#{label}</label>
+      #{html_element}
+    "
+  end
+
+  def to_fb_params(user_session_id)
+    {
+      'recipient' => {
+        'id' => user_session_id
+      },
+      'message' => {
+        'text' => label,
+        'metadata' => 'DEVELOPER_DEFINED_METADATA'
+      }
+    }
+  end
+
 end

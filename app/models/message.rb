@@ -1,23 +1,30 @@
-module Message
-  def self.received_message(event)
-    sender_id = event['sender']['id']
-    recipient_id = event['recipient']['id']
-    time_of_message = event['timestamp']
-    message = event['message']
-
-    puts("Received message for user #{sender_id} and page #{recipient_id} at #{time_of_message} with message:")
-    puts(message)
-
-    ::Bots::MessageWorker.perform_async(:response_message,
-                                        user_session_id: sender_id,
-                                        page_id: recipient_id,
-                                        message: message['text'])
+class Message
+  def initialize type, options = {}
+    @type = type
+    @options = options
   end
 
-  def self.received_postback(event)
-    ::Bots::MessageWorker.perform_async(:response_postback,
-                                        user_session_id: event['sender']['id'],
-                                        page_id: event['recipient']['id'],
-                                        message: event['postback']['payload'])
+  # user session id
+  def user_session_id
+    @options['sender']['id'] rescue nil
   end
+
+  # page id
+  def page_id
+    @options['recipient']['id'] rescue nil
+  end
+
+  def timestamp
+    @options['timestamp'] || Time.now.to_i
+  end
+
+  def type
+    @type
+  end
+
+  # reply text/media message
+  def value
+    raise 'You have to override'
+  end
+
 end

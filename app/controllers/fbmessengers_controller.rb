@@ -19,20 +19,10 @@ class FbmessengersController < ApplicationController
     params['entry'].each do |page_entry|
       # // Iterate over each messaging event
       page_entry['messaging'].each do |messaging_event|
-        if messaging_event['optin']
-          Message.receivedAuthentication(messaging_event)
-        elsif messaging_event['message']
-          Message.received_message(messaging_event)
-        elsif messaging_event['postback']
-          Message.received_postback(messaging_event)
-        # elsif messaging_event['delivery']
-        #   Message.receivedDeliveryConfirmation(messaging_event)
-        # elsif messaging_event['read']
-        #   Message.receivedMessageRead(messaging_event)
-        # elsif messaging_event['account_linking']
-        #   Message.receivedAccountLink(messaging_event)
-        else
-          puts "Webhook received unknown messaging_event: #{messaging_event}"
+        begin
+          ChatbotService.receive(messaging_event)
+        rescue Exception => ex
+          Rails.logger.warn "Webhook received #{ex}"
         end
       end
     end
