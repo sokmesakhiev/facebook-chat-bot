@@ -59,4 +59,22 @@ class Question < ApplicationRecord
     }
   end
 
+  def add_relevant(relevant)
+    return unless relevant.present?
+
+    relevant_field = relevant[/\$\{(\w+)\}/, 1]
+    relevant_question = Question.where(bot_id: bot.id).find_by(name: relevant_field)
+    
+    if relevant_question
+      params = {
+        relevant_id: relevant_question.id,
+        operator: relevant[/(\>\=|\<\=|\!\=|[\+\-\*\>\<\=\|]|div|or|and|mod|selected)/, 1],
+        relevant_value: relevant[/[‘|'|"](\w+)[’|'|"]/, 1]
+      }
+      params[:operator] = '==' if params[:operator] == '='
+
+      update_attributes(params)
+    end
+  end
+
 end

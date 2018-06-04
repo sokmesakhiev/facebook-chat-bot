@@ -14,4 +14,19 @@ RSpec.describe Question do
 
     expect(validate_uniqueness_of(:name).scoped_to(:bot_id).case_insensitive)
   end
+
+  context '#add_relevant' do
+    let(:bot) { create(:bot) }
+    let!(:question1) { create(:question, :text, bot: bot, name: 'name') }
+    let!(:question2) { create(:question, :text, bot: bot) }
+    let(:relevant) { "${name} = 'foo'" }
+
+    it 'should add a relevant to a question' do
+      question2.add_relevant relevant
+
+      expect(question2.relevant_id).to eq(question1.id)
+      expect(question2.operator).to eq('==')
+      expect(question2.relevant_value).to eq('foo')
+    end
+  end
 end

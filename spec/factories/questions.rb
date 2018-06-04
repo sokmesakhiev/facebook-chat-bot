@@ -19,11 +19,13 @@ FactoryBot.define do
     end
 
     trait :select_one do
+      select_name { FFaker::Name.name }
       label 'select_one'
       type Questions::SelectOneQuestion.name
     end
 
     trait :select_multiple do
+      select_name { FFaker::Name.name }
       label 'select_multiple'
       type Questions::SelectMultipleQuestion.name
     end

@@ -79,6 +79,7 @@ gem 'haml', '~> 5.0.4'
 gem 'sidekiq', '~> 5.1.1'
 gem 'slim', '~> 3.0.9'
 gem 'roo', '~> 2.7.1'
+gem 'roo-xls'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'autoprefixer-rails'
