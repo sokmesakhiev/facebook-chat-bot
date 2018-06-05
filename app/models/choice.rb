@@ -12,4 +12,8 @@
 
 class Choice < ApplicationRecord
   belongs_to :question
+
+  def value
+    name.numeric? ? name.to_i : name
+  end
 end

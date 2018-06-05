@@ -1,6 +1,6 @@
-class Spreadsheets::ChoicesSpreadsheet
+class Spreadsheets::AggregateSpreadsheet
   attr_reader :bot
-  
+
   def initialize bot
     @bot = bot
   end
@@ -16,10 +16,12 @@ class Spreadsheets::ChoicesSpreadsheet
   end
 
   def process row
-    question = Question.where(bot_id: bot.id).find_by(select_name: row['list_name'])
+    return if row['score_from'].blank? || row['score_to'].blank?
 
-    return if row['list_name'].blank? || question.nil?
-
-    question.choices.create!(row.except('list_name'))
+    begin
+      Aggregation.create!(row.merge(bot: bot))
+    rescue ex
+      Rails.logger.warn ex.message
+    end
   end
 end

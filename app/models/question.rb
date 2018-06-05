@@ -16,12 +16,6 @@
 #
 
 class Question < ApplicationRecord
-  # We will need a way to know which animals
-  # will subclass the Animal model
-  def self.types
-    %w(Text Integer Decimal Date SelectOne SelectMultiple)
-  end
-
   belongs_to :bot
   belongs_to :relevant, class_name: 'Question', foreign_key: 'relevant_id'
   has_many :choices, dependent: :destroy
@@ -31,6 +25,10 @@ class Question < ApplicationRecord
   validates :name, uniqueness: { case_sensitive: false, scope: :bot_id }
 
   QUESTION_FIRST_WELCOME = 'first_welcome'
+
+  def self.types
+    %w(Text Integer Decimal Date SelectOne SelectMultiple)
+  end
 
   def kind
     raise 'You have to implemented in sub-class'
@@ -59,6 +57,10 @@ class Question < ApplicationRecord
     }
   end
 
+  def has_relevant?
+    relevant.present?
+  end
+
   def add_relevant(relevant)
     return unless relevant.present?
 
@@ -76,5 +78,4 @@ class Question < ApplicationRecord
       update_attributes(params)
     end
   end
-
 end

@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180531045143) do
+ActiveRecord::Schema.define(version: 20180605155102) do
+
+  create_table "aggregations", force: true do |t|
+    t.string   "name"
+    t.decimal  "score_from", precision: 10, scale: 0
+    t.decimal  "score_to",   precision: 10, scale: 0
+    t.string   "result"
+    t.integer  "bot_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "bots", force: true do |t|
     t.string   "name"
@@ -41,6 +51,7 @@ ActiveRecord::Schema.define(version: 20180531045143) do
     t.integer  "current_question_id"
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
+    t.integer  "bot_id"
   end
 
   create_table "questions", force: true do |t|
@@ -62,6 +73,7 @@ ActiveRecord::Schema.define(version: 20180531045143) do
     t.string   "value"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.integer  "bot_id"
   end
 
   create_table "users", force: true do |t|

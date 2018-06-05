@@ -12,8 +12,12 @@
 
 class UserResponse < ApplicationRecord
   belongs_to :question
+  belongs_to :bot
+
+  validates :bot, presence: true, on: :create
+  validates :question, :uniqueness => {:scope => :user_session_id}
 
   after_create do
-    UserResponseWorker.perform_at(30.seconds.from_now , id)
+    UserResponseWorker.perform_at(30.seconds.from_now , id) if bot.authorized_spreadsheet?
   end
 end

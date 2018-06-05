@@ -12,13 +12,11 @@ class ChatbotService
       message: message.value)
   end
 
-  def self.send_text user_session_id, page_id, text
-    bot = Bot.find_by(facebook_page_id: page_id)
-
+  def self.send_text session, text
     message_data = {
-      'access_token' => bot.facebook_page_access_token,
+      'access_token' => session.bot.facebook_page_access_token,
       'recipient' => {
-        'id' => user_session_id
+        'id' => session.user_session_id
       },
       'message' => {
         'text' => text,
@@ -29,13 +27,11 @@ class ChatbotService
     send_api(message_data)
   end
 
-  def self.send_typing_on user_session_id, page_id
-    bot = Bot.find_by(facebook_page_id: page_id)
-
+  def self.send_typing_on session
     message_data = {
-      'access_token' => bot.facebook_page_access_token,
+      'access_token' => session.bot.facebook_page_access_token,
       'recipient' => {
-        'id' => user_session_id
+        'id' => session.user_session_id
       },
       'sender_action' => 'typing_on'
     }
@@ -43,13 +39,11 @@ class ChatbotService
     send_api(message_data)
   end
 
-  def self.send_question(user_session_id, page_id, question)
+  def self.send_question(session, question)
     return if question.nil?
 
-    bot = Bot.find_by(facebook_page_id: page_id)
-
-    fb_params = question.to_fb_params(user_session_id)
-    fb_params['access_token'] = bot.facebook_page_access_token
+    fb_params = question.to_fb_params(session.user_session_id)
+    fb_params['access_token'] = session.bot.facebook_page_access_token
     
     send_api(fb_params)
   end

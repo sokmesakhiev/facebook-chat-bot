@@ -1,40 +1,15 @@
 # frozen_string_literal: true
 
 class MessageService
-  attr_accessor :user_session_id, :facebook_page_id, :bot
-
   # TODO refactoring text parameter to message object
-  def initialize(user_id, page_id)
-    @user_session_id = user_id
-    @facebook_page_id = page_id
-    @bot = Bot.find_by(facebook_page_id: page_id)
-  end
+  def receive fb_message_session
+    return if fb_message_session.bot.nil? || !fb_message_session.bot.published?
 
-  # TODO refactoring text parameter to message object
-  def receive text
-    return if bot.nil? || !bot.published?
+    survey = SurveyService.new(fb_message_session)
+    survey.send_typing_on
 
-    ChatbotService.send_typing_on(user_session_id, facebook_page_id)
+    return survey.start if fb_message_session.text == Question::QUESTION_FIRST_WELCOME
 
-    survey = SurveyService.new(user_session_id, facebook_page_id)
-
-    if text == Question::QUESTION_FIRST_WELCOME
-      survey.save_state(survey.first_question)
-      return ChatbotService.send_question(user_session_id, facebook_page_id, survey.first_question)
-    end
-
-    survey.save_response(text)
-    handle_response(survey)
-  end
-
-  private
-
-  def handle_response(survey)
-    if survey.last_question? || survey.next_question.nil?
-      return ChatbotService.send_text(user_session_id, facebook_page_id, 'Thank you!')
-    end
-
-    survey.save_state(survey.next_question)
-    ChatbotService.send_question(user_session_id, facebook_page_id, survey.next_question)
+    survey.move_next
   end
 end

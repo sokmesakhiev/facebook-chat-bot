@@ -11,6 +11,7 @@ class BotState
 
   def first
     @current = 0
+
     current_question
   end
 
@@ -45,7 +46,7 @@ class BotState
   private
 
   def current_question
-    return nil if current < 0
+    return nil if current < 0 || current >= @total
 
     bot.questions[current]
   end
