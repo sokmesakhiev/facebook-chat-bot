@@ -12,13 +12,31 @@ class Facebook::Session
     Facebook::Client.send_api(params)
   end
 
-  def send_text text
-    params = request_params(
-      'message' => {
-        'text' => text,
-        'metadata' => 'DEVELOPER_DEFINED_METADATA'
+  def send_text text, buttons = []
+    message_params = if buttons.empty?
+      {
+        'message' => {
+          'text' => text,
+          'metadata' => 'DEVELOPER_DEFINED_METADATA'
+        }
       }
-    )
+    else
+      {
+        'message' => {
+          'attachment' => {
+            'type' => 'template',
+            'payload' => {
+              'template_type' => 'button',
+              'text' => text,
+              'buttons' => buttons.take(3)
+            }
+          }
+        }
+      }
+    end
+
+    params = request_params(message_params)
+
     Facebook::Client.send_api(params)
   end
 
@@ -29,10 +47,10 @@ class Facebook::Session
     Facebook::Client.send_api(params)
   end
 
-  def terminate
+  def terminate version
     reply_msg = 'Thank you!'
     if bot.has_aggregate?
-      aggregation = bot.get_aggregation(bot.scoring_of(user_session_id))
+      aggregation = bot.get_aggregation(bot.scoring_of(user_session_id, version))
       
       reply_msg = aggregation.result if aggregation
     end
@@ -42,6 +60,9 @@ class Facebook::Session
     QuestionUser.find_or_create_by(user_session_id: user_session_id, bot_id: bot.id).destroy
 
     send_text(reply_msg)
+
+    restart_msg = bot.restart_msg || Bot::DEFAULT_RESTART_MSG
+    send_text(restart_msg, restart_buttons)
   end
 
   protected
@@ -53,5 +74,15 @@ class Facebook::Session
         'id' => user_session_id
       }
     )
+  end
+
+  def restart_buttons
+    [
+      {
+        'type' => 'postback',
+        'title' => 'Yes',
+        'payload' => 'yes'
+      }
+    ]
   end
 end

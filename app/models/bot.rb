@@ -13,6 +13,7 @@
 #  google_spreadsheet_key     :string(255)
 #  google_spreadsheet_title   :string(255)
 #  published                  :boolean          default(FALSE)
+#  restart_msg                :string(255)
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #
@@ -27,10 +28,13 @@ class Bot < ApplicationRecord
 
   validates :name, presence: true
 
+  DEFAULT_RESTART_MSG = 'Do you want to restart this survey again?'
+
   def import(file)
     return unless File.exists? file.path
 
     questions.destroy_all
+    question_users.destroy_all
     aggregations.destroy_all
 
     BotSpreadsheet.for(self).import(file)
@@ -80,8 +84,8 @@ class Bot < ApplicationRecord
     aggregations.where("score_from <= :score and score_to >= :score", score: score).first
   end
 
-  def scoring_of user_session_id
+  def scoring_of user_session_id, version
     select_questions = questions.where(type: [Questions::SelectOneQuestion.name, Questions::SelectMultipleQuestion.name]).select(&:id)
-    user_responses.where(question_id: select_questions, user_session_id: user_session_id).sum(:value)
+    user_responses.where(question_id: select_questions, user_session_id: user_session_id, version: version).sum(:value)
   end
 end

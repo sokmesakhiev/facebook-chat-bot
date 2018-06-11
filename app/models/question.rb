@@ -24,7 +24,7 @@ class Question < ApplicationRecord
 
   validates :name, uniqueness: { case_sensitive: false, scope: :bot_id }
 
-  QUESTION_FIRST_WELCOME = 'first_welcome'
+  QUESTION_GET_STARTED = 'get_started'
 
   def self.types
     %w(Text Integer Decimal Date SelectOne SelectMultiple)

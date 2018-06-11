@@ -12,7 +12,7 @@ RSpec.describe UserResponse do
 
     it 'should add a job to user response worker' do
       expect {
-        UserResponse.create(bot: bot, user_session_id: '123', question_id: 1, value: 'yes')
+        UserResponse.create(bot: bot, user_session_id: '123', question_id: 1, value: 'yes', version: 1)
       }.to change(UserResponseWorker.jobs, :size).by(1)
     end
   end

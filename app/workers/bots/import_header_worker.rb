@@ -9,6 +9,7 @@ module Bots
 
       ws = BotDriveService.new(bot).worksheets[0]
       ws[1, 1] = 'user_session_id'
+      ws[1, 2] = 'version'
 
       bot.questions.each_with_index do |question, index|
         ws[1, index + 2] = question.name

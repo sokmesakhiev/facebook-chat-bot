@@ -9,7 +9,9 @@
         .modal-body
           .form-group
             = f.label :name
-            = f.text_field :name, class: 'form-control input-md', required: true, autofocus: true
+            = f.text_field :name, class: 'form-control input-md', required: true, autofocus: true, placeholder: "Your bot name"
+            = f.label 'Ending survey message (160 character maximum)'
+            = f.text_field :restart_msg, class: 'form-control input-md', required: true, autofocus: true, placeholder: 'Ending message to let visitor restart survey, e.g: Do you want to restart survey again?'
 
         .modal-footer
           .form-group

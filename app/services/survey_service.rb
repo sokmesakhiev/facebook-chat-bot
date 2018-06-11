@@ -10,15 +10,18 @@ class SurveyService
   def move_next
     session.send_typing_on
 
-    current_quiz = get_user_state.question
+    question_user = get_user_state session
 
-    save_current_response current_quiz
+    current_quiz = question_user.question
+    version = question_user.version
+
+    save_current_response current_quiz, version
 
     next_quiz = next_question current_quiz
 
-    finish if next_quiz.nil?
+    finish(version) if next_quiz.nil?
 
-    save_state next_quiz
+    question_user.save_state next_quiz
 
     session.send_question next_quiz
   end
@@ -51,25 +54,25 @@ class SurveyService
     !condition
   end
 
-  def finish
-    session.terminate
+  def finish version
+    session.terminate version
   end
 
-  def save_current_response question
+  def save_current_response question, version
     return if question.nil?
 
-    session.bot.user_responses.create(user_session_id: session.user_session_id, question_id: question.id, value: session.response_text)
+    session.bot.user_responses.create(user_session_id: session.user_session_id, question_id: question.id, value: session.response_text, version: version)
   end
 
-  def save_state(question)
-    return if question.nil?
+  def get_user_state session
+    if session.response_text == Question::QUESTION_GET_STARTED
+      question_user = QuestionUser.renew session, Time.now.to_i
+    else
+      question_user = QuestionUser.state_of(session)
+      # restart user state when user finish survey but still keep sending message
+      question_user = QuestionUser.renew session, Time.now.to_i if question_user.nil?
+    end
 
-    versioning = get_user_state.versioning.nil? ? Time.now.to_i : get_user_state.versioning
-
-    get_user_state.update_attribute(:current_question_id, question.id, versioning: versioning)
-  end
-
-  def get_user_state
-    @question_user ||= QuestionUser.find_or_create_by(user_session_id: session.user_session_id, bot_id: session.bot.id)
+    question_user
   end
 end
