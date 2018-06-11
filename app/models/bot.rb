@@ -46,6 +46,32 @@ class Bot < ApplicationRecord
     facebook_page_id.present? && facebook_page_access_token.present?
   end
 
+  def has_question?
+    bot.questions.size > 0
+  end
+
+  def first_question? question
+    find_current_index_of == 0
+  end
+
+  def question_of(question_index)
+    return nil if question_index < 0 || question_index >= questions.length
+
+    questions[question_index]
+  end
+
+  def next_question_of(question)
+    next_question_index = find_current_index_of(question) + 1
+
+    question_of(next_question_index)
+  end
+
+  def find_current_index_of(question)
+    return -1 if question.nil?
+    
+    questions.index { |q| q.id == question.id }
+  end
+
   def has_aggregate?
     aggregations.size > 0
   end

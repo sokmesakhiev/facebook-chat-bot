@@ -1,9 +1,10 @@
 FactoryBot.define do
   factory :bot do
     name  { FFaker::Name.name }
-    facebook_page_id            '1512165178836125'
+    facebook_page_id            '11223344'
     facebook_page_access_token  'aabbccdd'
     published                   true
+    
 
     trait :with_simple_surveys_and_choices do
       after(:create) do |bot, evaluator|

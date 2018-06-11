@@ -34,6 +34,10 @@ class Question < ApplicationRecord
     raise 'You have to implemented in sub-class'
   end
 
+  def value_of text
+    text
+  end
+
   def html_element
     "<input id='#{name}' name='#{name}' type=#{kind} class='form-control' />"
   end
@@ -45,16 +49,17 @@ class Question < ApplicationRecord
     "
   end
 
-  def to_fb_params(user_session_id)
+  def to_fb_params
     {
-      'recipient' => {
-        'id' => user_session_id
-      },
       'message' => {
         'text' => label,
         'metadata' => 'DEVELOPER_DEFINED_METADATA'
       }
     }
+  end
+
+  def has_choices?
+    choices.size > 0
   end
 
   def has_relevant?
@@ -65,13 +70,14 @@ class Question < ApplicationRecord
     return unless relevant.present?
 
     relevant_field = relevant[/\$\{(\w+)\}/, 1]
-    relevant_question = Question.where(bot_id: bot.id).find_by(name: relevant_field)
+    relevant_question = Question.find_by(bot_id: bot.id, name: relevant_field)
+    relevant_value = relevant[/[‘|'|"](\w+)[’|'|"]/, 1]
     
     if relevant_question
       params = {
         relevant_id: relevant_question.id,
         operator: relevant[/(\>\=|\<\=|\!\=|[\+\-\*\>\<\=\|]|div|or|and|mod|selected)/, 1],
-        relevant_value: relevant[/[‘|'|"](\w+)[’|'|"]/, 1]
+        relevant_value: relevant_question.value_of(relevant_value)
       }
       params[:operator] = '==' if params[:operator] == '='
 

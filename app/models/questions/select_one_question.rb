@@ -3,6 +3,11 @@ class Questions::SelectOneQuestion < Question
     :radio
   end
 
+  def value_of text
+    choice = choices.find_by(label: text)
+    choice.nil? ? text : choice.name
+  end
+
   def html_element
     options = choices.map do |choice|
       "
@@ -13,7 +18,7 @@ class Questions::SelectOneQuestion < Question
     end.join('')
   end
 
-  def to_fb_params(user_session_id)
+  def to_fb_params
     buttons = choices.map do |choice|
       {
         'type' => 'postback',
@@ -23,9 +28,6 @@ class Questions::SelectOneQuestion < Question
     end
 
     {
-      'recipient' => {
-        'id' => user_session_id
-      },
       'message' => {
         'attachment' => {
           'type' => 'template',

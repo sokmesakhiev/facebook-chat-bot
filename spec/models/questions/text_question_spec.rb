@@ -6,9 +6,6 @@ RSpec.describe Questions::TextQuestion do
 
     let!(:fb_params) {
       {
-        'recipient' => {
-          'id' => 'user_session_id'
-        },
         'message' => {
           'text' => question.label,
           'metadata' => 'DEVELOPER_DEFINED_METADATA'
@@ -16,6 +13,6 @@ RSpec.describe Questions::TextQuestion do
       }
     }
 
-    it { expect(question.to_fb_params('user_session_id')).to eq(fb_params) }
+    it { expect(question.to_fb_params).to eq(fb_params) }
   end
 end

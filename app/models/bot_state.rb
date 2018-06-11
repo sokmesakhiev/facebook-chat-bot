@@ -15,12 +15,8 @@ class BotState
     current_question
   end
 
-  def next(option = {})
-    if option[:current].present?
-      @current = option[:current] + 1
-    elsif current < @total
-      @current += 1
-    end
+  def next(question)
+    @current = find_current_index(question) + 1
 
     current_question
   end
@@ -35,12 +31,18 @@ class BotState
     current_question
   end
 
-  def find_current_index(id)
-    bot.questions.index { |q| q.id == id }
+  def find_current_index(question)
+    return -1 if question.nil?
+    
+    bot.questions.index { |q| q.id == question.id }
   end
 
-  def last?(question_id)
-    !bot.questions.empty? && bot.questions.last.id == question_id
+  def first? question
+    !bot.has_question? && bot.questions.first.id == question.id
+  end
+
+  def last?(question)
+    !bot.has_question? && bot.questions.last.id == question.id
   end
 
   private

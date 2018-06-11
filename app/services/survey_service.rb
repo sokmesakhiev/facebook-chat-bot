@@ -5,88 +5,71 @@ class SurveyService
 
   def initialize(session)
     @session = session
-    @bot_state = BotState.new(session.bot)
-    @question_user = QuestionUser.find_or_create_by(user_session_id: session.user_session_id, bot_id: session.bot.id)
-  end
-
-  def save_current_response
-    session.bot.user_responses.create(user_session_id: session.user_session_id, question_id: @question_user.current_question_id, value: session.response_text)
-  end
-
-  def start
-    save_state(first_question)
-    ChatbotService.send_question(session, first_question)
-  end
-
-  def first_question
-    @bot_state.first
   end
 
   def move_next
-    ChatbotService.send_typing_on(session)
+    session.send_typing_on
 
-    return start if session.response_text == Question::QUESTION_FIRST_WELCOME
+    current_quiz = get_user_state.question
 
-    save_current_response
+    save_current_response current_quiz
 
-    return finish if last_question? || next_question.nil?
+    next_quiz = next_question current_quiz
 
-    save_state(next_question)
-    ChatbotService.send_question(session, next_question)
+    finish if next_quiz.nil?
+
+    save_state next_quiz
+
+    session.send_question next_quiz
   end
 
-  def next_question
-    @nex_question ||= next_quiz
-  end
+  protected
 
-  def last_question?
-    @question_user.current_question_id.present? && @bot_state.last?(@question_user.current_question_id)
-  end
+  def next_question(question = nil)
+    next_quiz = session.bot.next_question_of(question)
 
-  def finish
-    reply_msg = 'Thank you!'
-    if session.bot.has_aggregate?
-      aggregation = session.bot.get_aggregation(session.bot.scoring_of(session.user_session_id))
-      
-      reply_msg = aggregation.result if aggregation
-    end
+    return next_question(next_quiz) if skip_question(next_quiz)
 
-    ChatbotService.send_text(session, reply_msg)
-  end
-
-  private
-
-  def next_quiz(question_id = nil)
-    current = nil
-
-    if question_id.present? || @question_user.current_question_id.present?
-      current = @bot_state.find_current_index(question_id || @question_user.current_question_id)
-    end
-
-    question = @bot_state.next(current: current)
-
-    return next_quiz(question.id) if skip_question(question)
-
-    question
+    next_quiz
   end
 
   def skip_question(question)
     return false if question.nil? || !question.has_relevant?
 
-    user_response = UserResponse.where(user_session_id: session.user_session_id, question_id: question.relevant.id).last
+    user_response = UserResponse.where(bot_id: session.bot.id, user_session_id: session.user_session_id, question_id: question.relevant.id).last
 
     return true if user_response.nil?
 
     if question.operator == 'selected'
       arr = user_response.value.split(',')
-      return !arr.include?(question.relevant_value)
+      return !(arr.include?(question.relevant_value) || arr.include?(question.relevant.value_of(question.relevant_value)))
     end
 
     condition = eval("user_response.value #{question.operator} question.relevant_value")
+    condition = eval("user_response.value #{question.operator} question.relevant.value_of(question.relevant_value)") unless condition
+
     !condition
   end
 
+  def finish
+    session.terminate
+  end
+
+  def save_current_response question
+    return if question.nil?
+
+    session.bot.user_responses.create(user_session_id: session.user_session_id, question_id: question.id, value: session.response_text)
+  end
+
   def save_state(question)
-    @question_user.update_attribute(:current_question_id, question['id'])
+    return if question.nil?
+
+    versioning = get_user_state.versioning.nil? ? Time.now.to_i : get_user_state.versioning
+
+    get_user_state.update_attribute(:current_question_id, question.id, versioning: versioning)
+  end
+
+  def get_user_state
+    @question_user ||= QuestionUser.find_or_create_by(user_session_id: session.user_session_id, bot_id: session.bot.id)
   end
 end

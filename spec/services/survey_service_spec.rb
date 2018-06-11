@@ -1,74 +1,92 @@
 require 'rails_helper'
 
 RSpec.describe SurveyService do
-  context "has no skip logic" do
-    let!(:bot) { create(:bot, :with_simple_surveys_and_choices, facebook_page_id: '1512165178836125') }
-    let(:survey_service) { SurveyService.new('123', '1512165178836125') }
+  let!(:user_session_id) { '1612943458742093' }
+  let!(:page_id) { '1512165178836125' }
 
-    it '#first_question' do
-      expect(survey_service.first_question.name).to eq('username')
+  context '#move_next' do
+    let!(:bot) { create(:bot, :with_simple_surveys_and_choices, facebook_page_id: page_id) }
+    let!(:session) { Facebook::Session.new(user_session_id, page_id) }
+
+    before(:each) do
+      allow(session).to receive(:send_typing_on).and_return(true)
     end
 
-    it '#last_question?' do
-      QuestionUser.create(user_session_id: '123', current_question_id: bot.questions.last.id)
+    context 'should send the first qusetion if survey is first started' do
+      let(:first_question) { bot.questions.first }
+      let(:survey_service) { SurveyService.new(session) }
 
-      expect(survey_service.last_question?).to eq(true)
-    end
-  end
+      before(:each) do
+        allow(survey_service).to receive(:next_question).with(nil).and_return(first_question)
+      end
 
-  context "has skip logic" do
-    let!(:bot) { create(:bot, :with_skip_logic_surveys_and_choices, facebook_page_id: '1512165178836125') }
-    let(:question_user_with_question1) { QuestionUser.create(user_session_id: '123', current_question_id: 1) }
-    let(:user_response_like_piza) { UserResponse.create(user_session_id: '123', question_id: 1, value: 'yes') }
-    let(:user_response_dose_not_like_piza) { UserResponse.create(user_session_id: '123', question_id: 1, value: 'no') }
-    let(:user_response_like_cheese) { UserResponse.create(user_session_id: '123', question_id: 2, value: 'cheese,sausage') }
-    let(:survey_service) { SurveyService.new('123', '1512165178836125') }
+      it {
+        expect(session).to receive(:send_question).with(first_question).once
 
-    it '#first_question' do
-      expect(survey_service.first_question.id).to eq(1)
+        survey_service.move_next
+      }
     end
 
-    it 'returns next question as favorite_topping' do
-      question_user_with_question1
-      user_response_like_piza
+    context 'should return next question of current question' do
+      let(:current_question) { bot.questions.first }
+      let(:next_question) { bot.questions[1] }
+      let(:session) { Facebook::Session.new(user_session_id, page_id) }
+      let(:survey_service) { SurveyService.new(session) }
 
-      expect(survey_service.next_question.id).to eq(2)
+      before(:each) do
+        allow_any_instance_of(QuestionUser).to receive(:question).and_return(current_question)
+        allow(survey_service).to receive(:next_question).with(current_question).and_return(next_question)
+      end
+
+      it {
+        expect(session).to receive(:send_question).with(next_question).once
+
+        survey_service.move_next
+      }
     end
 
-    it 'returns next question as favorite_cheese' do
-      QuestionUser.create(user_session_id: '123', current_question_id: 2)
-      user_response_like_cheese
+    context 'should finish survey if question is the last question' do
+      let(:last_question) { bot.questions.last }
+      let(:survey_service) { SurveyService.new(session) }
 
-      expect(survey_service.next_question.id).to eq(3)
-    end
+      before(:each) do
+        allow_any_instance_of(QuestionUser).to receive(:question).and_return(last_question)
+        allow(survey_service).to receive(:next_question).with(last_question).and_return(nil)
+      end
 
-    it 'returns next question as thank' do
-      QuestionUser.create(user_session_id: '123', current_question_id: 3)
+      it {
+        expect(survey_service).to receive(:finish).once
 
-      expect(survey_service.next_question.id).to eq(4)
-    end
-
-    it 'returns next question as thank' do
-      question_user_with_question1
-      user_response_dose_not_like_piza
-
-      expect(survey_service.next_question.id).to eq(4)
-    end
-
-    it 'returns next question as nil' do
-      Bot.destroy_all
-      create(:bot, :with_skip_logic_surveys_and_choices, count: 3, facebook_page_id: '1512165178836125')
-      question_user_with_question1
-      user_response_dose_not_like_piza
-
-      expect(survey_service.next_question).to eq(nil)
-    end
-
-    it '#last_question?' do
-      QuestionUser.create(user_session_id: '123', current_question_id: 4)
-
-      expect(survey_service.last_question?).to eq(true)
+        survey_service.move_next()
+      }
     end
   end
 
+  context '#next_question' do
+    let!(:bot) { create(:bot, :with_simple_surveys_and_choices, facebook_page_id: page_id) }
+    let!(:session) { Facebook::Session.new(user_session_id, page_id) }
+
+    let!(:question1) { bot.questions[0] }
+    let!(:question2) { bot.questions[1] }
+    let!(:question3) { bot.questions[2] }
+
+    let!(:session) { Facebook::Session.new(user_session_id, page_id) }
+    let(:survey_service) { SurveyService.new(session) }
+
+    context 'next_question has no skip logic' do
+      before(:each) do
+        allow(survey_service).to receive(:skip_question).with(question2).and_return(false)
+      end
+
+      it { expect { survey_service.next_question(current_question).to eq(question2) }}
+    end
+
+    context 'next_question has skip logic' do
+      before(:each) do
+        allow(survey_service).to receive(:skip_question).with(question2).and_return(true)
+      end
+
+      it { expect { survey_service.next_question(current_question).to eq(question3) } }
+    end
+  end
 end
