@@ -5,7 +5,7 @@ module Bots
     def perform(bot_id)
       bot = Bot.find(bot_id)
 
-      return if bot.nil? || bot.questions.blank? || !bot.authorized_spreadsheet?
+      return if bot.nil? || bot.questions.blank?
 
       request = Typhoeus::Request.new(
         'https://graph.facebook.com/v2.6/me/messenger_profile',
