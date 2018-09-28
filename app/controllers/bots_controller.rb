@@ -1,4 +1,7 @@
 class BotsController < ApplicationController
+  before_filter :load_bot, only: [:show, :download]
+  before_filter :csv_settings, only: [:download]
+
   def index
     @bots = policy_scope(Bot)
   end
@@ -15,8 +18,9 @@ class BotsController < ApplicationController
   end
 
   def show
-    @bot = Bot.find(params[:id])
     authorize @bot
+
+    @respondents = Respondent.where(bot: @bot).includes(:surveys).order(created_at: :desc).page(page).per(per_page)
   end
 
   def update
@@ -56,6 +60,8 @@ class BotsController < ApplicationController
 
   def import
     @bot = Bot.find(params[:id])
+    authorize @bot, :update?
+
     @bot.import(params[:file])
 
     redirect_to bot_path(@bot), notice: 'Form imported successfully!'
@@ -63,12 +69,25 @@ class BotsController < ApplicationController
 
   def delete_survey
     @bot = Bot.find(params[:id])
+    authorize @bot, :destroy?
+
     @bot.questions.destroy_all
 
     redirect_to bot_path(@bot), notice: 'Survey deleted successfully!'
   end
 
+  # GET /bots/:bot_id/download.csv
+  def download
+    authorize @bot, :update?
+
+    @respondents = Respondent.where(bot: @bot).includes(:surveys).order(created_at: :desc)
+  end
+
   private
+
+  def load_bot
+    @bot = Bot.includes(:questions => [:choices]).find(params[:id])
+  end
 
   def data_params
     params.require(:bot).permit(:name, :restart_msg, :facebook_page_id, :facebook_page_access_token)
@@ -79,4 +98,20 @@ class BotsController < ApplicationController
     param[:facebook_page_access_token] = current_user.fb_graph.get_page_access_token(param[:facebook_page_id])
     param
   end
+
+  def page
+    params[:page] || 1
+  end
+
+  def per_page
+    params[:limit] || 10
+  end
+
+  def csv_settings
+    @filename = "#{@bot.name}-#{Time.now.to_s.gsub(' ', '_')}).csv"
+    @output_encoding = 'UTF-8'
+    @streaming = true
+    @csv_options = { :col_sep => ',' }
+  end
+
 end

@@ -19,8 +19,8 @@ class Question < ApplicationRecord
   belongs_to :bot
   belongs_to :relevant, class_name: 'Question', foreign_key: 'relevant_id'
   has_many :choices, dependent: :destroy
-  has_many :question_users, foreign_key: :current_question_id, dependent: :destroy
-  has_many :user_responses, dependent: :destroy
+  has_many :respondents, foreign_key: :current_question_id, dependent: :nullify
+  has_many :surveys, dependent: :nullify
 
   validates :name, uniqueness: { case_sensitive: false, scope: :bot_id }
 

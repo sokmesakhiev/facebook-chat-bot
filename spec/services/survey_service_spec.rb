@@ -7,9 +7,11 @@ RSpec.describe SurveyService do
   context '#move_next' do
     let!(:bot) { create(:bot, :with_simple_surveys_and_choices, facebook_page_id: page_id) }
     let!(:session) { Facebook::Session.new(user_session_id, page_id) }
+    let!(:respondent) { create(:respondent) }
 
     before(:each) do
       allow(session).to receive(:send_typing_on).and_return(true)
+      allow(survey_service).to receive(:get_respondent).with(session).and_return(respondent)
     end
 
     context 'should send the first qusetion if survey is first started' do
@@ -17,7 +19,8 @@ RSpec.describe SurveyService do
       let(:survey_service) { SurveyService.new(session) }
 
       before(:each) do
-        allow(survey_service).to receive(:next_question).with(nil).and_return(first_question)
+        allow(respondent).to receive(:question).and_return(nil)
+        allow(survey_service).to receive(:next_question).with(respondent, nil).and_return(first_question)
       end
 
       it {
@@ -34,8 +37,8 @@ RSpec.describe SurveyService do
       let(:survey_service) { SurveyService.new(session) }
 
       before(:each) do
-        allow_any_instance_of(QuestionUser).to receive(:question).and_return(current_question)
-        allow(survey_service).to receive(:next_question).with(current_question).and_return(next_question)
+        allow(respondent).to receive(:question).and_return(current_question)
+        allow(survey_service).to receive(:next_question).with(respondent, current_question).and_return(next_question)
       end
 
       it {
@@ -50,8 +53,8 @@ RSpec.describe SurveyService do
       let(:survey_service) { SurveyService.new(session) }
 
       before(:each) do
-        allow_any_instance_of(QuestionUser).to receive(:question).and_return(last_question)
-        allow(survey_service).to receive(:next_question).with(last_question).and_return(nil)
+        allow(respondent).to receive(:question).and_return(last_question)
+        allow(survey_service).to receive(:next_question).with(respondent, last_question).and_return(nil)
       end
 
       it {
@@ -64,29 +67,31 @@ RSpec.describe SurveyService do
 
   context '#next_question' do
     let!(:bot) { create(:bot, :with_simple_surveys_and_choices, facebook_page_id: page_id) }
-    let!(:session) { Facebook::Session.new(user_session_id, page_id) }
 
     let!(:question1) { bot.questions[0] }
     let!(:question2) { bot.questions[1] }
     let!(:question3) { bot.questions[2] }
 
     let!(:session) { Facebook::Session.new(user_session_id, page_id) }
+    let!(:respondent) { create(:respondent) }
     let(:survey_service) { SurveyService.new(session) }
 
     context 'next_question has no skip logic' do
       before(:each) do
-        allow(survey_service).to receive(:skip_question).with(question2).and_return(false)
+        allow(survey_service).to receive(:skip_question).with(respondent, question2).and_return(false)
       end
 
-      it { expect { survey_service.next_question(current_question).to eq(question2) }}
+      it { expect { survey_service.next_question(respondent, current_question).to eq(question2) }}
     end
 
     context 'next_question has skip logic' do
+      let!(:respondent) { create(:respondent) }
+
       before(:each) do
-        allow(survey_service).to receive(:skip_question).with(question2).and_return(true)
+        allow(survey_service).to receive(:skip_question).with(respondent, question2).and_return(true)
       end
 
-      it { expect { survey_service.next_question(current_question).to eq(question3) } }
+      it { expect { survey_service.next_question(respondent, current_question).to eq(question3) } }
     end
   end
 end

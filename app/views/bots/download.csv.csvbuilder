@@ -1,0 +1,24 @@
+headers = ['session_id']
+
+@bot.questions.each do |question|
+  headers << question.name
+end
+
+headers << 'state'
+
+csv << headers
+
+@respondents.each do |respondent|
+  rows = [respondent.user_session_id]
+  respondent.surveys.each do |survey|
+    rows << survey.value
+  end
+
+  (respondent.surveys.size...@bot.questions.size).each do
+    rows << ''
+  end
+  
+  rows << respondent.state
+
+  csv << rows
+end

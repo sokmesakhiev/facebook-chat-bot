@@ -55,9 +55,11 @@ class Facebook::Session
       reply_msg = aggregation.result if aggregation
     end
 
-    # TODO refactoring
-    # clear state in question_user
-    QuestionUser.find_or_create_by(user_session_id: user_session_id, bot_id: bot.id).destroy
+    respondent = Respondent.where(user_session_id: user_session_id, bot_id: bot.id).last
+    if respondent
+      respondent.state = Respondent::STATE_COMPLETED
+      respondent.save
+    end
 
     send_text(reply_msg)
 

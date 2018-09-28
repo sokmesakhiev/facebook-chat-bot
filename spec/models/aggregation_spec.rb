@@ -1,5 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Aggregation, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { is_expected.to belong_to(:bot) }
+
+  it { is_expected.to validate_presence_of(:result) }
+  it { is_expected.to validate_presence_of(:bot) }
+
+  it { is_expected.to validate_numericality_of(:score_from) }
+  it { is_expected.to validate_numericality_of(:score_to) }
 end

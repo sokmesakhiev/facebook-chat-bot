@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180611082256) do
+ActiveRecord::Schema.define(version: 20180928103945) do
 
   create_table "aggregations", force: true do |t|
     t.string   "name"
@@ -47,15 +47,6 @@ ActiveRecord::Schema.define(version: 20180611082256) do
     t.datetime "updated_at",  null: false
   end
 
-  create_table "question_users", force: true do |t|
-    t.string   "user_session_id"
-    t.integer  "current_question_id"
-    t.datetime "created_at",          null: false
-    t.datetime "updated_at",          null: false
-    t.integer  "bot_id"
-    t.integer  "version"
-  end
-
   create_table "questions", force: true do |t|
     t.integer  "bot_id"
     t.string   "type"
@@ -69,15 +60,25 @@ ActiveRecord::Schema.define(version: 20180611082256) do
     t.datetime "updated_at",     null: false
   end
 
-  create_table "user_responses", force: true do |t|
+  create_table "respondents", force: true do |t|
     t.string   "user_session_id"
-    t.integer  "question_id"
-    t.string   "value"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.integer  "current_question_id"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.integer  "bot_id"
     t.integer  "version"
+    t.string   "state"
   end
+
+  create_table "surveys", force: true do |t|
+    t.integer  "question_id"
+    t.string   "value"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "respondent_id"
+  end
+
+  add_index "surveys", ["respondent_id"], name: "index_surveys_on_respondent_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "provider"
