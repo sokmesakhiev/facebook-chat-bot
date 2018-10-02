@@ -26,6 +26,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 gem 'typhoeus', '~> 1.3.0'
 
+gem 'kaminari'
+
 group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'annotate', '~> 2.7.2'
@@ -90,3 +92,5 @@ gem 'koala', '3.0.0'
 gem 'pundit', '~> 1.1.0'
 
 gem 'strip_attributes', '~> 1.8.0'
+
+gem 'csv_builder'

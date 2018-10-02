@@ -8,6 +8,4 @@
     %h2{style: 'text-align: center'}= @bot.name
     %h6{style: 'text-align: center'}= "Ending message: `#{@bot.restart_msg || Bot::DEFAULT_RESTART_MSG}`"
 
-    = render 'setup_facebook'
-    = render 'setup_survey'
-    = render 'setup_spreadsheet'
+    = render 'tab', bot: @bot

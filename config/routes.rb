@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       delete :delete_survey
       put :deactivate
       put :activate
+      get :download
     end
   end
 

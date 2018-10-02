@@ -23,7 +23,7 @@ class Bot < ApplicationRecord
 
   has_many :questions, dependent: :destroy
   has_many :aggregations, dependent: :destroy
-  has_many :question_users, dependent: :destroy
+  has_many :respondents, dependent: :nullify
   has_many :user_responses, dependent: :nullify
 
   validates :name, presence: true
@@ -34,7 +34,6 @@ class Bot < ApplicationRecord
     return unless File.exists? file.path
 
     questions.destroy_all
-    question_users.destroy_all
     aggregations.destroy_all
 
     BotSpreadsheet.for(self).import(file)

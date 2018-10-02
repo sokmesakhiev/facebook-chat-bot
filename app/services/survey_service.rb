@@ -10,36 +10,36 @@ class SurveyService
   def move_next
     session.send_typing_on
 
-    question_user = get_user_state session
+    respondent = get_respondent session
 
-    current_quiz = question_user.question
-    version = question_user.version
+    current_quiz = respondent.question
+    version = respondent.version
 
-    save_current_response current_quiz, version
+    save_current_response respondent, current_quiz, session.response_text
 
-    next_quiz = next_question current_quiz
+    next_quiz = next_question respondent, current_quiz
 
     finish(version) if next_quiz.nil?
 
-    question_user.save_state next_quiz
+    respondent.save_state next_quiz
 
     session.send_question next_quiz
   end
 
   protected
 
-  def next_question(question = nil)
+  def next_question(respondent, question = nil)
     next_quiz = session.bot.next_question_of(question)
 
-    return next_question(next_quiz) if skip_question(next_quiz)
+    return next_question(respondent, next_quiz) if skip_question(respondent, next_quiz)
 
     next_quiz
   end
 
-  def skip_question(question)
+  def skip_question(respondent, question)
     return false if question.nil? || !question.has_relevant?
 
-    user_response = UserResponse.where(bot_id: session.bot.id, user_session_id: session.user_session_id, question_id: question.relevant.id).last
+    user_response = Survey.where(respondent: respondent, question: question.relevant).last
 
     return true if user_response.nil?
 
@@ -58,21 +58,21 @@ class SurveyService
     session.terminate version
   end
 
-  def save_current_response question, version
+  def save_current_response respondent, question, answer
     return if question.nil?
 
-    session.bot.user_responses.create(user_session_id: session.user_session_id, question_id: question.id, value: session.response_text, version: version)
+    respondent.surveys.create(question: question, value: answer)
   end
 
-  def get_user_state session
+  def get_respondent session
     if session.response_text == Question::QUESTION_GET_STARTED
-      question_user = QuestionUser.renew session, Time.now.to_i
+      respondent = Respondent.instance_of session
     else
-      question_user = QuestionUser.state_of(session)
-      # restart user state when user finish survey but still keep sending message
-      question_user = QuestionUser.renew session, Time.now.to_i if question_user.nil?
+      respondent = Respondent.find_last(session)
+      # restart user respondent state when user completed the survey but still keep sending message
+      respondent = Respondent.instance_of session if (respondent.nil? or respondent.completed?)
     end
 
-    question_user
+    respondent
   end
 end

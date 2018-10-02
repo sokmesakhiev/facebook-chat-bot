@@ -1,0 +1,45 @@
+<div style='margin: 1em 0;'>
+  <div style='float:left;'>
+    <%= page_entries_info @respondents %>
+  </div>
+
+  <% if @respondents.size > 0 %>
+    <div style='float:right;'>
+      <%= link_to(download_bot_path(bot, format: :csv), target: '_blank') do %>
+        <span class="glyphicon glyphicon-download-alt"></span> Download as CSV 
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<table class="table table-hover">
+  <thead>
+    <% if @respondents.size > 0 %>
+      <tr>
+        <th>Session ID</th>
+        <% bot.questions.each do |question| %>
+          <th><%= question.name %></th>
+        <% end %>
+        <th>State</th>
+      </tr>
+    <% end %>
+  </thead>
+  <tbody>
+    <% @respondents.each do |respondent| %>
+      <tr>
+        <td><%= respondent.user_session_id %></td>
+        <% respondent.surveys.each do |survey| %>
+          <td><%= survey.value %></td>
+        <% end %>
+        <% (respondent.surveys.size...bot.questions.size).each do %>
+          <td></td>
+        <% end %>
+        <td><%= respondent.state %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class='paging'>
+  <%= paginate @respondents %>
+</div>
