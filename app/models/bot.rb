@@ -24,7 +24,6 @@ class Bot < ApplicationRecord
   has_many :questions, dependent: :destroy
   has_many :aggregations, dependent: :destroy
   has_many :respondents, dependent: :nullify
-  has_many :user_responses, dependent: :nullify
 
   validates :name, presence: true
 
@@ -83,8 +82,8 @@ class Bot < ApplicationRecord
     aggregations.where("score_from <= :score and score_to >= :score", score: score).first
   end
 
-  def scoring_of user_session_id, version
-    select_questions = questions.where(type: [Questions::SelectOneQuestion.name, Questions::SelectMultipleQuestion.name]).select(&:id)
-    user_responses.where(question_id: select_questions, user_session_id: user_session_id, version: version).sum(:value)
+  def scorable_questionnaires
+    questions.where(type: [Questions::SelectOneQuestion.name, Questions::SelectMultipleQuestion.name])
   end
+
 end

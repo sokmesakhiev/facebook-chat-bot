@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: user_responses
+# Table name: surveys
 #
 #  id              :integer          not null, primary key
 #  respondent_id   :integer
@@ -19,5 +19,9 @@ class Survey < ApplicationRecord
 
   after_create do
     UserResponseWorker.perform_at(30.seconds.from_now , id) if respondent.bot.authorized_spreadsheet?
+  end
+
+  def self.score_of respondent, questions
+    where(question_id: questions.select(&:id), respondent: respondent).sum(:value)
   end
 end

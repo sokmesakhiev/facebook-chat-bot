@@ -47,19 +47,16 @@ class Facebook::Session
     Facebook::Client.send_api(params)
   end
 
-  def terminate version
+  def terminate respondent
     reply_msg = 'Thank you!'
     if bot.has_aggregate?
-      aggregation = bot.get_aggregation(bot.scoring_of(user_session_id, version))
+      aggregation = bot.get_aggregation(Survey.score_of(respondent, bot.scorable_questionnaires))
       
       reply_msg = aggregation.result if aggregation
     end
 
-    respondent = Respondent.where(user_session_id: user_session_id, bot_id: bot.id).last
-    if respondent
-      respondent.state = Respondent::STATE_COMPLETED
-      respondent.save
-    end
+    respondent.state = Respondent::STATE_COMPLETED
+    respondent.save
 
     send_text(reply_msg)
 

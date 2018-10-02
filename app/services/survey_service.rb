@@ -13,13 +13,12 @@ class SurveyService
     respondent = get_respondent session
 
     current_quiz = respondent.question
-    version = respondent.version
 
     save_current_response respondent, current_quiz, session.response_text
 
     next_quiz = next_question respondent, current_quiz
 
-    finish(version) if next_quiz.nil?
+    finish(respondent) if next_quiz.nil?
 
     respondent.save_state next_quiz
 
@@ -54,8 +53,8 @@ class SurveyService
     !condition
   end
 
-  def finish version
-    session.terminate version
+  def finish respondent
+    session.terminate respondent
   end
 
   def save_current_response respondent, question, answer
