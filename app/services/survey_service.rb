@@ -7,10 +7,20 @@ class SurveyService
     @session = session
   end
 
+  #TODO REFACTOR to remove this too complicate logic
   def move_next
     session.send_typing_on
 
-    respondent = get_respondent session
+    respondent = find_or_initialize_respondent session
+
+    if respondent.nil?
+      if session.response_no?
+        session.send_greeting_message
+        return
+      else
+        respondent = initial_respondent session
+      end
+    end
 
     current_quiz = respondent.question
 
@@ -63,15 +73,18 @@ class SurveyService
     respondent.surveys.create(question: question, value: answer)
   end
 
-  def get_respondent session
-    if session.response_text == Question::QUESTION_GET_STARTED
-      respondent = Respondent.instance_of session
-    else
-      respondent = Respondent.find_last(session)
-      # restart user respondent state when user completed the survey but still keep sending message
-      respondent = Respondent.instance_of session if (respondent.nil? or respondent.completed?)
-    end
+  def find_or_initialize_respondent session
+    return initial_respondent session if session.get_started?
+
+    respondent = Respondent.find_last(session)
+
+    respondent = nil if respondent.completed?
 
     respondent
   end
+
+  def initial_respondent session
+    Respondent.instance_of(session)
+  end
+
 end

@@ -27,7 +27,7 @@ class Spreadsheets::SurveySpreadsheet
 
       question.add_relevant row['relevant']
     rescue
-      Rails.logger.warn "Unknown datatype ##{types[0]}"
+      Rails.logger.warn "Unknown datatype #{types[0]}"
     end
   end
 end

@@ -28,6 +28,7 @@ class Bot < ApplicationRecord
   validates :name, presence: true
 
   DEFAULT_RESTART_MSG = 'Do you want to restart this survey again?'
+  DEFAULT_GREETING_MSG = 'Thank for your time to take basic mental health test. Please try again in next 3 months.'
 
   def import(file)
     return unless File.exists? file.path

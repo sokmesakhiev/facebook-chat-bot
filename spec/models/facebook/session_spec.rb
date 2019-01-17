@@ -92,4 +92,19 @@ RSpec.describe Facebook::Session do
       }
     end
   end
+
+  context '.terminate' do
+    let!(:bot) { create(:bot) }
+    let!(:session) { Facebook::Session.new('1612943458742093', bot.facebook_page_id) }
+    let(:respondent) { create(:respondent) }
+
+    it {
+      expect(respondent).to receive(:mark_as_completed!)
+      expect(session).to receive(:send_aggregate_result)
+      expect(session).to receive(:send_restart_message)
+
+      session.terminate respondent
+    }
+  end
+
 end

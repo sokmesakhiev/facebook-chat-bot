@@ -11,7 +11,7 @@ RSpec.describe SurveyService do
 
     before(:each) do
       allow(session).to receive(:send_typing_on).and_return(true)
-      allow(survey_service).to receive(:get_respondent).with(session).and_return(respondent)
+      allow(survey_service).to receive(:find_or_initialize_respondent).with(session).and_return(respondent)
     end
 
     context 'should send the first qusetion if survey is first started' do
@@ -59,6 +59,24 @@ RSpec.describe SurveyService do
 
       it {
         expect(survey_service).to receive(:finish).once
+
+        survey_service.move_next()
+      }
+    end
+
+    context 'should send greeting message when the survey is finished but user response no on restart action' do
+      let!(:session) { Facebook::Session.new(user_session_id, page_id, 'no') }
+      let(:survey_service) { SurveyService.new(session) }
+      let(:greeting_msg) { 'សូមអរគុណចំពោះការចំណាយពេលវេលាធ្វើតេស្តសុខភាពផ្លូវចិត្តបឋមរបស់លោកអ្នក។សូមមកធ្វើតេស្តម្តងទៀតនៅរយៈពេល៣ខែក្រោយ' }
+
+      before(:each) do
+        allow(survey_service).to receive(:find_or_initialize_respondent).and_return(nil)
+      end
+
+      it { expect(session.response_text).to eq('no') }
+
+      it {
+        expect(session).to receive(:send_greeting_message)
 
         survey_service.move_next()
       }

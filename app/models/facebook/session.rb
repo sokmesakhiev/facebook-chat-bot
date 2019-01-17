@@ -7,6 +7,14 @@ class Facebook::Session
     @response_text = response_text
   end
 
+  def get_started?
+    response_text == Question::QUESTION_GET_STARTED
+  end
+
+  def response_no?
+    response_text == 'no'
+  end
+
   def send_typing_on
     params = request_params('sender_action' => 'typing_on')
     Facebook::Client.send_api(params)
@@ -48,23 +56,30 @@ class Facebook::Session
   end
 
   def terminate respondent
-    reply_msg = 'Thank you!'
-    if bot.has_aggregate?
-      aggregation = bot.get_aggregation(Survey.score_of(respondent, bot.scorable_questionnaires))
-      
-      reply_msg = aggregation.result if aggregation
-    end
+    respondent.mark_as_completed!
 
-    respondent.state = Respondent::STATE_COMPLETED
-    respondent.save
+    send_aggregate_result
 
-    send_text(reply_msg)
+    send_restart_message
+  end
 
-    restart_msg = bot.restart_msg || Bot::DEFAULT_RESTART_MSG
-    send_text(restart_msg, restart_buttons)
+  def send_greeting_message
+    send_text bot.greeting_msg || Bot::DEFAULT_GREETING_MSG
   end
 
   protected
+
+  def send_aggregate_result msg = 'Thank you!'
+    aggregation = bot.has_aggregate? ? bot.get_aggregation(Survey.score_of(respondent, bot.scorable_questionnaires)) : nil
+    msg = aggregation.result if aggregation
+    
+    send_text msg
+  end
+
+  def send_restart_message
+    restart_msg = bot.restart_msg || Bot::DEFAULT_RESTART_MSG
+    send_text restart_msg, restart_buttons
+  end
 
   def request_params options = {}
     options.merge(
@@ -81,6 +96,11 @@ class Facebook::Session
         'type' => 'postback',
         'title' => 'Yes',
         'payload' => 'yes'
+      },
+      {
+        'type' => 'postback',
+        'title' => 'No',
+        'payload' => 'no'
       }
     ]
   end

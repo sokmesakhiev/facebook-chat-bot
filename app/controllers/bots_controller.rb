@@ -90,7 +90,7 @@ class BotsController < ApplicationController
   end
 
   def data_params
-    params.require(:bot).permit(:name, :restart_msg, :facebook_page_id, :facebook_page_access_token)
+    params.require(:bot).permit(:name, :restart_msg, :greeting_msg, :facebook_page_id, :facebook_page_access_token)
   end
 
   def facebook_params

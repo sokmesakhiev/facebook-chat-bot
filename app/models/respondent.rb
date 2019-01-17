@@ -38,6 +38,11 @@ class Respondent < ApplicationRecord
     create user_session_id: session.user_session_id, bot_id: session.bot.id, version: Time.now.to_i
   end
 
+  def mark_as_completed!
+    respondent.state = Respondent::STATE_COMPLETED
+    respondent.save!
+  end
+
   def completed?
     state == STATE_COMPLETED.to_s
   end
