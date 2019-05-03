@@ -8,8 +8,8 @@
       = form_tag import_bot_path(@bot), multipart: true, class: 'form-group' do
         .modal-body
           .form-group
-            = label_tag :xls_file
-            = file_field_tag :file, required: true, accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+            = label_tag 'Accept only compress(.zip) or Ms. Excel(.xls, .xlsx) file'
+            = file_field_tag :file, required: true, accept: 'application/zip, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
 
         .modal-footer
           %button.btn.btn-default{"data-dismiss" => "modal", :type => "button"} Close

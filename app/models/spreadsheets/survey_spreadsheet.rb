@@ -23,7 +23,8 @@ class Spreadsheets::SurveySpreadsheet
 
     begin
       question = Parsers::QuestionParser.parse(types[0])
-      question.update_attributes(bot_id: bot.id, select_name: types[1], name: row['name'], label: row['label'])
+      question.update_attributes(bot_id: bot.id, select_name: types[1], name: row['name'],
+         label: row['label'], description: row['description'], media_image: row['media::image'])
 
       question.add_relevant row['relevant']
     rescue

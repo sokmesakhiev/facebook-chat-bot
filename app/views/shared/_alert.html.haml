@@ -1,11 +1,11 @@
 - if flash[:alert].present?
-  .alert.alert-danger.alert-dismissible.fade.in{style: 'position: fixed; z-index: 1040; right: 20px; top: 20px;'}
+  .alert.alert-danger.alert-dismissible.fade.in{style: 'position: fixed; z-index: 1040; right: 20px; top: 50px;'}
     %button.close{ 'data-dismiss' => 'alert' }
       %span x
     %span= flash[:alert]
 
 - elsif flash[:notice].present?
-  .alert.alert-success.alert-dismissible.fade.in{style: 'position: fixed; z-index: 1040; right: 20px; top: 20px;'}
+  .alert.alert-success.alert-dismissible.fade.in{style: 'position: fixed; z-index: 1040; right: 20px; top: 50px;'}
     %button.close{ 'data-dismiss' => 'alert' }
       %span x
     %span= flash[:notice]

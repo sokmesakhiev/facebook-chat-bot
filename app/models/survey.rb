@@ -2,12 +2,12 @@
 #
 # Table name: surveys
 #
-#  id              :integer          not null, primary key
-#  respondent_id   :integer
-#  question_id     :integer
-#  value           :string(255)
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
+#  id            :integer          not null, primary key
+#  question_id   :integer
+#  value         :string(255)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  respondent_id :integer
 #
 
 class Survey < ApplicationRecord
