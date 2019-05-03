@@ -10,7 +10,7 @@ RSpec.describe BotSpreadsheet do
       expect_any_instance_of(Spreadsheets::ChoicesSpreadsheet).to receive(:import).with(instance_of(Roo::Excelx))
       expect_any_instance_of(Spreadsheets::SurveySpreadsheet).to receive(:import).with(instance_of(Roo::Excelx))
 
-      bot_spreadsheet.import(file)
+      bot_spreadsheet.import(file, 'xlsx')
     end
   end
 end

@@ -61,10 +61,13 @@ class BotsController < ApplicationController
   def import
     @bot = Bot.find(params[:id])
     authorize @bot, :update?
+    begin
+      @bot.import(params[:file])
+      redirect_to bot_path(@bot), notice: 'Form imported successfully!'
+    rescue
+      redirect_to bot_path(@bot), alert: 'Invalid survey file!'
+    end
 
-    @bot.import(params[:file])
-
-    redirect_to bot_path(@bot), notice: 'Form imported successfully!'
   end
 
   def delete_survey
@@ -72,6 +75,7 @@ class BotsController < ApplicationController
     authorize @bot, :destroy?
 
     @bot.questions.destroy_all
+    @bot.clean_dependency_media
 
     redirect_to bot_path(@bot), notice: 'Survey deleted successfully!'
   end

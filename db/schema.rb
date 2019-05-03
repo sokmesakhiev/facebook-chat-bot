@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190117085336) do
+ActiveRecord::Schema.define(version: 20190501014157) do
 
   create_table "aggregations", force: true do |t|
     t.string   "name"
@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(version: 20190117085336) do
     t.string   "relevant_value"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.string   "media_image"
+    t.text     "description"
   end
 
   create_table "respondents", force: true do |t|

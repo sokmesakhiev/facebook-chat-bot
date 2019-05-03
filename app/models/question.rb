@@ -4,7 +4,7 @@
 #
 #  id             :integer          not null, primary key
 #  bot_id         :integer
-#  question_type  :string(255)
+#  type           :string(255)
 #  select_name    :string(255)
 #  name           :string(255)
 #  label          :string(255)
@@ -13,6 +13,8 @@
 #  relevant_value :string(255)
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  media_image    :string(255)
+#  description    :text
 #
 
 class Question < ApplicationRecord
@@ -44,8 +46,14 @@ class Question < ApplicationRecord
 
   def html_template
     "
-      <label for=#{name}>#{label}</label>
+      #{label_element}
       #{html_element}
+    "
+  end
+
+  def label_element
+    "
+      <label for=#{name}>#{label}</label>
     "
   end
 
@@ -72,7 +80,7 @@ class Question < ApplicationRecord
     relevant_field = relevant[/\$\{(\w+)\}/, 1]
     relevant_question = Question.find_by(bot_id: bot.id, name: relevant_field)
     relevant_value = relevant[/[‘|'|"](\w+)[’|'|"]/, 1]
-    
+
     if relevant_question
       params = {
         relevant_id: relevant_question.id,
@@ -84,4 +92,5 @@ class Question < ApplicationRecord
       update_attributes(params)
     end
   end
+
 end
