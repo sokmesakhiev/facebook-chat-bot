@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
-
+# Checks for vulnerable versions of gems in Gemfile
+gem 'bundler-audit'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.1.16'
+gem 'rails', '~> 4.2.11.1'
 
 gem 'mysql2', '~> 0.3.18'
 # Use SCSS for stylesheets
@@ -72,8 +73,6 @@ group :development do
   gem 'capistrano-rvm', require: false
 end
 
-# Use debugger
-# gem 'debugger', group: [:development, :test]
 gem 'dotenv-rails', '~> 2.2.1'
 gem 'google_drive', '~> 2.1.9'
 gem 'haml', '~> 5.0.4'
@@ -83,10 +82,10 @@ gem 'slim', '~> 3.0.9'
 gem 'roo', '~> 2.7.1'
 gem 'roo-xls'
 
-gem 'bootstrap-sass', '~> 3.3.6'
+gem "bootstrap-sass", ">= 3.4.1"
 gem 'autoprefixer-rails'
 
-gem 'devise', '~> 4.4.3'
+gem "devise", ">= 4.6.0"
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'koala', '3.0.0'
 gem 'pundit', '~> 1.1.0'
