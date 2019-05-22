@@ -19,35 +19,31 @@
 #  uuid           :string(255)
 #
 
-class Questions::SelectOneQuestion < Question
+class Questions::NoteQuestion < Question
   def kind
-    :radio
-  end
-
-  def value_of text
-    choice = choices.find_by(label: text)
-    choice.nil? ? text : choice.name
+    :note
   end
 
   def html_element
-    media_image ? card_element : select_one_element
+    media_image ? card_element : list_element
   end
 
   def label_element
-    return if media_image?
-    return super
+    return
   end
 
   def to_fb_params
+    # to_fb_button_template
     media_image ? to_fb_generic_template : to_fb_button_template
   end
 
   private
-  def select_one_element
-    options = choices.map do |choice|
+  def list_element
+
+    list = label.split("\n").map do |labelRow|
       "
         <div class='#{kind}'>
-          <label><input type='#{kind}' name='#{choice.name}' value='#{choice.name}'>#{choice.label}</label>
+          <label>#{labelRow}</label>
         </div>
       "
     end.join('')
@@ -57,10 +53,6 @@ class Questions::SelectOneQuestion < Question
     "
       <div class='card'>
         <img class='card-img-top' src='#{FileUtil.image_url(bot,media_image)}' alt='Card image cap'>
-        <div class='card-body carousel-title'>
-          <h5 class='card-title'>#{label}</h5>
-          <p class='card-text'>#{description}</p>
-        </div>
         <ul class='list-group list-group-flush card-list'>
           #{render_options}
         </ul>
@@ -69,9 +61,9 @@ class Questions::SelectOneQuestion < Question
   end
 
   def render_options
-    options = choices.map do |choice|
+    list = label.split("\n").map do |labelRow|
       "
-        <li class='list-group-item'>#{choice.label}</li>
+        <li class='list-group-item'>#{labelRow}</li>
       "
     end.join('')
   end
@@ -85,10 +77,10 @@ class Questions::SelectOneQuestion < Question
             "template_type" => "generic",
             "elements" => [
                {
-                "title" => label,
+                "title" => 'Test',
                 "image_url" => FileUtil.image_url(bot, media_image),
-                "subtitle" => description,
-                "buttons" => buttons_from_choices.take(3)
+                "subtitle" => label
+                # "buttons" => buttons_from_choices.take(3)
                 }
               ]
           }
@@ -99,15 +91,8 @@ class Questions::SelectOneQuestion < Question
 
   def to_fb_button_template
     {
-      'message' => {
-        'attachment' => {
-          'type' => 'template',
-          'payload' => {
-            'template_type' => 'button',
-            'text' => label,
-            'buttons' => buttons_from_choices.take(3)
-          }
-        }
+      "message" => {
+        "text" => label
       }
     }
   end

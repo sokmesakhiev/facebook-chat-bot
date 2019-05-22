@@ -11,7 +11,6 @@ module Bots
       return if bot.nil? || !bot.published? || bot.questions.blank?
 
       session = Facebook::Session.new(user_session_id, page_id, text)
-
       SurveyService.new(session).move_next
     end
   end

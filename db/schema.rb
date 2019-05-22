@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190501014157) do
-
+ActiveRecord::Schema.define(version: 20190517045049) do
   create_table "aggregations", force: true do |t|
     t.string   "name"
     t.decimal  "score_from", precision: 10, scale: 0
@@ -53,14 +52,16 @@ ActiveRecord::Schema.define(version: 20190501014157) do
     t.string   "type"
     t.string   "select_name"
     t.string   "name"
-    t.string   "label"
+    t.text     "label"
     t.integer  "relevant_id"
     t.string   "operator"
     t.string   "relevant_value"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.string   "media_image"
     t.text     "description"
+    t.boolean  "required",       default: false
+    t.string   "uuid"
   end
 
   create_table "respondents", force: true do |t|
