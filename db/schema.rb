@@ -12,7 +12,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20190517045049) do
-
   create_table "aggregations", force: true do |t|
     t.string   "name"
     t.decimal  "score_from", precision: 10, scale: 0
