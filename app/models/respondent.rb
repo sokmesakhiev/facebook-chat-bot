@@ -39,8 +39,8 @@ class Respondent < ApplicationRecord
   end
 
   def mark_as_completed!
-    respondent.state = Respondent::STATE_COMPLETED
-    respondent.save!
+    self.state = Respondent::STATE_COMPLETED
+    self.save!
   end
 
   def completed?

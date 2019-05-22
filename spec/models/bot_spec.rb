@@ -26,7 +26,7 @@ RSpec.describe Bot do
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to belong_to(:user) }
 
-  context '#import' do
+  describe '#import' do
     let(:bot) { create(:bot) }
     let(:spreadsheet_file) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'survey.xlsx'), 'application/vnd.ms-excel') }
     let(:zip_file) { Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'survey.zip'), 'application/zip') }
@@ -68,4 +68,5 @@ RSpec.describe Bot do
       end
     end
   end
+
 end

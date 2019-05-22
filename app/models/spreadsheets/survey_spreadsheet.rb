@@ -1,4 +1,6 @@
 class Spreadsheets::SurveySpreadsheet
+  include StringHelper
+
   attr_reader :bot
 
   def initialize bot
@@ -24,7 +26,8 @@ class Spreadsheets::SurveySpreadsheet
     begin
       question = Parsers::QuestionParser.parse(types[0])
       question.update_attributes(bot_id: bot.id, select_name: types[1], name: row['name'],
-         label: row['label'], description: row['description'], media_image: row['media::image'])
+         label: row['label'], description: row['description'], media_image: row['media::image'],
+         required: to_boolean(row['required']), uuid: SecureRandom.uuid)
 
       question.add_relevant row['relevant']
     rescue

@@ -1,6 +1,6 @@
 class Facebook::Session
   attr_reader :user_session_id, :bot, :response_text
-  
+
   def initialize user_session_id, page_id, response_text = nil
     @user_session_id = user_session_id
     @bot = Bot.find_by(facebook_page_id: page_id)
@@ -55,6 +55,14 @@ class Facebook::Session
     Facebook::Client.send_api(params)
   end
 
+
+  def send_question question
+    return if question.nil?
+
+    params = request_params(question.to_fb_params)
+    Facebook::Client.send_api(params)
+  end
+
   def terminate respondent
     respondent.mark_as_completed!
 
@@ -72,7 +80,7 @@ class Facebook::Session
   def send_aggregate_result msg = 'Thank you!'
     aggregation = bot.has_aggregate? ? bot.get_aggregation(Survey.score_of(respondent, bot.scorable_questionnaires)) : nil
     msg = aggregation.result if aggregation
-    
+
     send_text msg
   end
 

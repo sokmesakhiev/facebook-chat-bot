@@ -5,7 +5,7 @@ RSpec.describe SurveyService do
   let!(:page_id) { '1512165178836125' }
 
   context '#move_next' do
-    let!(:bot) { create(:bot, :with_simple_surveys_and_choices, facebook_page_id: page_id) }
+    let!(:bot) { create(:bot, :with_required_surveys_and_choices, facebook_page_id: page_id) }
     let!(:session) { Facebook::Session.new(user_session_id, page_id) }
     let!(:respondent) { create(:respondent) }
 
@@ -14,8 +14,9 @@ RSpec.describe SurveyService do
       allow(survey_service).to receive(:find_or_initialize_respondent).with(session).and_return(respondent)
     end
 
-    context 'should send the first qusetion if survey is first started' do
+    context 'for first started conversation' do
       let(:first_question) { bot.questions.first }
+      let(:second_question) { bot.questions.second }
       let(:survey_service) { SurveyService.new(session) }
 
       before(:each) do
@@ -32,17 +33,38 @@ RSpec.describe SurveyService do
 
     context 'should return next question of current question' do
       let(:current_question) { bot.questions.first }
-      let(:next_question) { bot.questions[1] }
+      let(:second_question) { bot.questions.second }
       let(:session) { Facebook::Session.new(user_session_id, page_id) }
       let(:survey_service) { SurveyService.new(session) }
 
       before(:each) do
         allow(respondent).to receive(:question).and_return(current_question)
-        allow(survey_service).to receive(:next_question).with(respondent, current_question).and_return(next_question)
+        allow(survey_service).to receive(:next_question).with(respondent, current_question).and_return(second_question)
       end
 
       it {
-        expect(session).to receive(:send_question).with(next_question).once
+        expect(session).to receive(:send_question).with(second_question).once
+
+        survey_service.move_next
+      }
+    end
+
+    context 'with required questions' do
+      let(:current_question) { bot.questions.second }
+      let(:third_question) { bot.questions.third }
+      let(:fourth_question) { bot.questions.fourth }
+      let(:session) { Facebook::Session.new(user_session_id, page_id) }
+      let(:survey_service) { SurveyService.new(session) }
+
+      before(:each) do
+        allow(respondent).to receive(:question).and_return(current_question)
+        allow(survey_service).to receive(:next_question).with(respondent, current_question).and_return(third_question)
+        allow(survey_service).to receive(:next_question).with(respondent, third_question).and_return(fourth_question)
+      end
+
+      it {
+        expect(session).to receive(:send_question).with(third_question).once
+        expect(session).to receive(:send_question).with(fourth_question).once
 
         survey_service.move_next
       }

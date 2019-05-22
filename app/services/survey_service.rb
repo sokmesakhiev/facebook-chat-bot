@@ -8,11 +8,11 @@ class SurveyService
   end
 
   #TODO REFACTOR to remove this too complicate logic
-  def move_next
+  def move_next(current_quiz=nil)
+
     session.send_typing_on
 
     respondent = find_or_initialize_respondent session
-
     if respondent.nil?
       if session.response_no?
         session.send_greeting_message
@@ -22,20 +22,33 @@ class SurveyService
       end
     end
 
-    current_quiz = respondent.question
-
-    save_current_response respondent, current_quiz, session.response_text
+    if current_quiz.nil?
+      current_quiz = respondent.question
+      save_current_response(respondent, current_quiz, session.response_text)
+    end
 
     next_quiz = next_question respondent, current_quiz
-
-    finish(respondent) if next_quiz.nil?
-
-    respondent.save_state next_quiz
-
     session.send_question next_quiz
+
+    finish(respondent) if last_question?(next_quiz)
+
+    if blocked_question?(next_quiz)
+      respondent.save_state next_quiz
+      return
+    end
+
+    move_next(next_quiz)
   end
 
   protected
+
+  def last_question? question
+    question.nil?
+  end
+
+  def blocked_question? question
+    return (last_question?(question) || question.required == true) ? true : false
+  end
 
   def next_question(respondent, question = nil)
     next_quiz = session.bot.next_question_of(question)

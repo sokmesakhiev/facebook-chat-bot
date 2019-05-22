@@ -7,7 +7,7 @@
 #  type           :string(255)
 #  select_name    :string(255)
 #  name           :string(255)
-#  label          :string(255)
+#  label          :text
 #  relevant_id    :integer
 #  operator       :string(255)
 #  relevant_value :string(255)
@@ -15,6 +15,8 @@
 #  updated_at     :datetime         not null
 #  media_image    :string(255)
 #  description    :text
+#  required       :boolean          default(FALSE)
+#  uuid           :string(255)
 #
 
 class Question < ApplicationRecord
@@ -29,7 +31,7 @@ class Question < ApplicationRecord
   QUESTION_GET_STARTED = 'get_started'
 
   def self.types
-    %w(Text Integer Decimal Date SelectOne SelectMultiple)
+    %w(Text Integer Decimal Date SelectOne SelectMultiple Note)
   end
 
   def kind
@@ -53,7 +55,7 @@ class Question < ApplicationRecord
 
   def label_element
     "
-      <label for=#{name}>#{label}</label>
+      <label for=#{name}>#{label}#{"<span class='text-danger'> * </span>" if required}</label>
     "
   end
 

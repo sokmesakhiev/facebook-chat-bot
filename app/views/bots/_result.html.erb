@@ -6,7 +6,7 @@
   <% if @respondents.size > 0 %>
     <div style='float:right;'>
       <%= link_to(download_bot_path(bot, format: :csv), target: '_blank') do %>
-        <span class="glyphicon glyphicon-download-alt"></span> Download as CSV 
+        <span class="glyphicon glyphicon-download-alt"></span> Download as CSV
       <% end %>
     </div>
   <% end %>
@@ -28,11 +28,8 @@
     <% @respondents.each do |respondent| %>
       <tr>
         <td><%= respondent.user_session_id %></td>
-        <% respondent.surveys.each do |survey| %>
-          <td><%= survey.value %></td>
-        <% end %>
-        <% (respondent.surveys.size...bot.questions.size).each do %>
-          <td></td>
+        <% bot.questions.each do |question| %>
+          <td><%= respondent.surveys.find_by(question_id: question.id).try(:value) %></td>
         <% end %>
         <td><%= respondent.state %></td>
       </tr>
