@@ -19,3 +19,7 @@ dump.rdb
 **/.DS_Store
 coverage
 .byebug*
+/config/application.yml
+public/assets
+/public/audios/*
+/public/upload/*

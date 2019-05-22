@@ -13,9 +13,10 @@
 #  google_spreadsheet_key     :string(255)
 #  google_spreadsheet_title   :string(255)
 #  published                  :boolean          default(FALSE)
-#  restart_msg                :string(255)
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
+#  restart_msg                :string(255)
+#  greeting_msg               :text
 #
 
 class Bot < ApplicationRecord
@@ -35,8 +36,7 @@ class Bot < ApplicationRecord
 
     questions.destroy_all
     aggregations.destroy_all
-
-    BotSpreadsheet.for(self).import(file)
+    FileParser.for(self).import(file)
 
     Bots::ImportHeaderWorker.perform_async(id)
   end
@@ -71,7 +71,7 @@ class Bot < ApplicationRecord
 
   def find_current_index_of(question)
     return -1 if question.nil?
-    
+
     questions.index { |q| q.id == question.id }
   end
 
@@ -85,6 +85,10 @@ class Bot < ApplicationRecord
 
   def scorable_questionnaires
     questions.where(type: [Questions::SelectOneQuestion.name, Questions::SelectMultipleQuestion.name])
+  end
+
+  def clean_dependency_media
+    FileUtils.remove_dir("public/upload/survey/bot_#{id}",true)
   end
 
 end

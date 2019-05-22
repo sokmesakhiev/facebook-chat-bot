@@ -1,15 +1,15 @@
 # == Schema Information
 #
-# Table name: session_states
+# Table name: respondents
 #
 #  id                  :integer          not null, primary key
 #  user_session_id     :string(255)
 #  current_question_id :integer
-#  bot_id              :integer
-#  version             :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
-#  state     ..........:string(255)
+#  bot_id              :integer
+#  version             :integer
+#  state               :string(255)
 #
 
 class Respondent < ApplicationRecord

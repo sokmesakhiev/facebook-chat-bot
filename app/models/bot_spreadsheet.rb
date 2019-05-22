@@ -5,8 +5,8 @@ class BotSpreadsheet
     @bot = bot
   end
 
-  def import file
-    spreadsheet(file).each_with_pagename do |sheet_name, sheet|
+  def import(file_path, file_type)
+    spreadsheet(file_path, file_type).each_with_pagename do |sheet_name, sheet|
       begin
         get(sheet_name).import(sheet)
       rescue
@@ -25,7 +25,7 @@ class BotSpreadsheet
 
   private
 
-  def spreadsheet file
-    Roo::Spreadsheet.open(file.path, extension: File.extname(file.original_filename)[1..-1].to_sym)
+  def spreadsheet file_path, file_type
+    Roo::Spreadsheet.open(file_path, extension: file_type.to_sym)
   end
 end
