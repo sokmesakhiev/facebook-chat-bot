@@ -69,6 +69,6 @@ class ZipReader
   end
 
   def media_file?(file_name)
-    File.basename(file_name) =~ /.\.(png|jpeg|jpg|gif)$/
+    File.basename(file_name).end_with?(*ENV['MEDIA_EXTENSION_SUPPORT'].split(","))
   end
 end
