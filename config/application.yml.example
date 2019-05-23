@@ -18,3 +18,4 @@ FACEBOOK_APP_SECRET:
 FACEBOOK_PERMISSION_SCOPES: 'email,pages_show_list,manage_pages'
 
 SAMPLE_XLS_FILE_NAME:
+MEDIA_EXTENSION_SUPPORT: 'png,jpeg,jpg,gif'
