@@ -55,7 +55,9 @@ class Question < ApplicationRecord
 
   def label_element
     "
-      <label for=#{name}>#{label}#{"<span class='text-danger'> * </span>" if required}</label>
+      <div class='field-name'>
+        #{"<span class='text-danger'> * </span>" if required}<label for=#{name}>#{label}</label>
+      </div>
     "
   end
 
