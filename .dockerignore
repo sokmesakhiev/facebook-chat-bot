@@ -1,0 +1,10 @@
+.bundle
+.git
+tmp
+log
+backups
+doc
+samples
+test
+spec
+vendor
