@@ -37,7 +37,7 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     env_file: .env
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - '.:/app'
     depends_on:
