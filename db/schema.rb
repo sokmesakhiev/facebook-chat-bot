@@ -57,11 +57,11 @@ ActiveRecord::Schema.define(version: 20190523013416) do
     t.integer  "relevant_id",    limit: 4
     t.string   "operator",       limit: 255
     t.string   "relevant_value", limit: 255
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
     t.string   "media_image",    limit: 255
     t.text     "description",    limit: 65535
-    t.boolean  "required",                     default: true
+    t.boolean  "required",                     default: false
     t.string   "uuid",           limit: 255
   end
 
