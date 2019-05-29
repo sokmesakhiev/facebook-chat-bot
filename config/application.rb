@@ -27,7 +27,5 @@ module Mbot
     Dotenv::Railtie.load
 
     Koala.config.api_version = 'v2.0'
-
-    ENV.update(YAML::load_file(File.join(Rails.root, 'config', 'application.yml'))) rescue {}
   end
 end
