@@ -25,5 +25,25 @@ services:
     tty: true
     stdin_open: true
 
+  redis:
+    image: redis
+    restart: unless-stopped
+    volumes:
+      - redis:/data
+
+  sidekiq:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file: .env
+    command: bundle exec sidekiq
+    volumes:
+      - '.:/app'
+    depends_on:
+      - db
+      - redis
+
 volumes:
   db:
+  redis:
