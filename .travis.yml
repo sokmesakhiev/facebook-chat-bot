@@ -11,6 +11,7 @@ before_install:
   - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
+  - mv .env.sample .env
 
 install:
   - docker-compose pull
@@ -23,7 +24,7 @@ script:
 
 addons:
   code_climate:
-    repo_token: bce1c4e679bf03eb5d5864b5fd86562fafe3a5bab4e674deeb482c48d00a3813
+    repo_token: a2a3016f27a13e2e5c7a26c18c834742f735a1792716dc16b1a75f3a6f6049aa
 
 notifications:
   slack:
