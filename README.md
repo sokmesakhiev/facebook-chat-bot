@@ -1,5 +1,8 @@
 # Facebook Chatbot
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/eb30c6a9f4c4fbfa2e75/maintainability)](https://codeclimate.com/github/kakada/facebook-chat-bot/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/eb30c6a9f4c4fbfa2e75/test_coverage)](https://codeclimate.com/github/kakada/facebook-chat-bot/test_coverage)
+
 The Facebook Chatbot is your toolbox for building bots.
 
 ## System dependencies
