@@ -3,20 +3,20 @@ version: '3'
 services:
   db:
     image: mysql:5.7
-    restart: unless-stopped
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     volumes:
       - db:/var/lib/mysql
 
   web: &rails
-    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.dev
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
     volumes:
       - .:/app
+      - bundle:/usr/local/bundle
+    tmpfs: /app/tmp
     ports:
       - "3000:3000"
     depends_on:
@@ -27,12 +27,10 @@ services:
 
   redis:
     image: redis
-    restart: unless-stopped
     volumes:
       - redis:/data
 
   sidekiq:
-    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.dev
@@ -47,3 +45,4 @@ services:
 volumes:
   db:
   redis:
+  bundle:
