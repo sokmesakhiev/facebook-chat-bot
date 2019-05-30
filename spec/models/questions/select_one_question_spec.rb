@@ -30,12 +30,17 @@ RSpec.describe Questions::SelectOneQuestion do
 
   describe '#label_element' do
     context 'without media_image' do
-      it { expect(@question.label_element).to eq("\n      <div class='field-name'>\n        <span class='text-danger'> * </span><label for=#{@question.name}>#{@question.label}</label>\n      </div>\n    ") }
+      it { expect(@question.label_element).to eq("\n      <div class='field-name'>\n        <label for=#{@question.name}>#{@question.label}</label>\n      </div>\n    ") }
     end
 
     context 'with media_image' do
       before { @question.media_image = "test.png" }
       it { expect(@question.label_element).to eq(nil) }
+    end
+
+    context 'with required' do
+      before { @question.required = true }
+      it { expect(@question.label_element).to eq("\n      <div class='field-name'>\n        <span class='text-danger'> * </span><label for=#{@question.name}>#{@question.label}</label>\n      </div>\n    ") }
     end
   end
 
