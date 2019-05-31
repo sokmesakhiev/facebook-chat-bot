@@ -5,6 +5,9 @@ gem 'bundler-audit'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2.11.1'
 
+# Use Puma as rails application server
+gem 'puma'
+
 gem 'mysql2', '~> 0.3.18'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.4'
