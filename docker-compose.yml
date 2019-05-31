@@ -38,6 +38,7 @@ services:
     command: bundle exec sidekiq -C config/sidekiq.yml
     volumes:
       - '.:/app'
+      - bundle:/usr/local/bundle
     depends_on:
       - db
       - redis
