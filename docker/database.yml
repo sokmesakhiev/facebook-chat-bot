@@ -1,3 +1,2 @@
 production:
-  pool: <%= ENV['DB_MAX_CONNECTION_POOL'] %>
   url: <%= ENV['DATABASE_URL'] %>
