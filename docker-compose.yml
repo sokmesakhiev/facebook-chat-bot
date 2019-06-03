@@ -43,6 +43,13 @@ services:
       - db
       - redis
 
+  ngrok:
+    image: wernight/ngrok
+    ports:
+      - 4040:4040
+    environment:
+      NGROK_PORT: 'web:3000'
+
 volumes:
   db:
   redis:
