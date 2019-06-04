@@ -1,12 +1,12 @@
 default: &default
   adapter: mysql2
   encoding: utf8
-  pool: 5
-  timeout: 5000
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-  host: 127.0.0.1
-  socket: /var/run/mysqld/mysqld.sock
+  pool: <%= ENV.fetch("DB_MAX_CONNECTION_POOL") { 5 } %>
+  username: <%= ENV.fetch('DB_USER') { 'root' } %>
+  password: <%= ENV.fetch('DB_PWD') { '' } %>
+  host: <%= ENV.fetch('DB_HOST') { 'localhost' } %>
+  timeout: <%= ENV.fetch('DB_CONNECTION_TIMEOUT') { 5000 } %>
+  # socket: /var/run/mysqld/mysqld.sock
 
 development:
   <<: *default
@@ -19,6 +19,25 @@ test:
   <<: *default
   database: facebook-chat-bot_test
 
+# As with config/secrets.yml, you never want to store sensitive information,
+# like your database password, in your source code. If your source code is
+# ever seen by anyone, they now have access to your database.
+#
+# Instead, provide the password as a unix environment variable when you boot
+# the app. Read http://guides.rubyonrails.org/configuring.html#configuring-a-database
+# for a full rundown on how to provide these environment variables in a
+# production deployment.
+#
+# On Heroku and other platform providers, you may have a full connection URL
+# available as an environment variable. For example:
+#
+#   DATABASE_URL="mysql2://myuser:mypass@localhost/somedatabase?pool=5"
+#
+# You can use this database configuration with:
+#
+#   production:
+#     url: <%= ENV['DATABASE_URL'] %>
+#
 production:
   <<: *default
   database: facebook-chat-bot_production

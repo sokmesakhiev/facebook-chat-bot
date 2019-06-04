@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - db:/var/lib/mysql
+
+  web: &rails
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+    tmpfs: /app/tmp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file: .env
+    tty: true
+    stdin_open: true
+
+  redis:
+    image: redis
+    volumes:
+      - redis:/data
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file: .env
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes:
+      - '.:/app'
+      - bundle:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
+
+  ngrok:
+    image: wernight/ngrok
+    ports:
+      - 4040:4040
+    environment:
+      NGROK_PORT: 'web:3000'
+
+volumes:
+  db:
+  redis:
+  bundle:
