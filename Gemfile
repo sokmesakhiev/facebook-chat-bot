@@ -43,7 +43,7 @@ end
 
 group :development, :test do
   gem 'byebug'
-  gem 'pry-rails', '0.3.6'
+  gem 'pry-rails', '0.3.9'
   gem 'rspec', '3.7.0'
   gem 'rspec-rails', '~> 3.7'
 end
