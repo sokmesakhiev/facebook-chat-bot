@@ -179,7 +179,7 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
-    mysql2 (0.3.21)
+    mysql2 (0.5.2)
     net-scp (2.0.0)
       net-ssh (>= 2.6.5, < 6.0.0)
     net-ssh (5.2.0)
@@ -398,7 +398,7 @@ DEPENDENCIES
   jquery-rails
   kaminari
   koala (= 3.0.0)
-  mysql2 (~> 0.3.18)
+  mysql2 (~> 0.5.2)
   omniauth-facebook (~> 4.0.0)
   pry-rails (= 0.3.6)
   puma

@@ -8,7 +8,7 @@ gem 'rails', '~> 4.2.11.1'
 # Use Puma as rails application server
 gem 'puma'
 
-gem 'mysql2', '~> 0.3.18'
+gem 'mysql2', '~> 0.5.2'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.4'
 
