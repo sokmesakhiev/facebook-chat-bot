@@ -44,8 +44,8 @@ end
 group :development, :test do
   gem 'byebug'
   gem 'pry-rails', '0.3.6'
-  gem 'rspec', '3.7.0'
-  gem 'rspec-rails', '~> 3.7'
+  gem 'rspec', '3.8.0'
+  gem 'rspec-rails', '~> 3.8'
 end
 
 group :test do
