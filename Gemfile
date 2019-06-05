@@ -83,7 +83,7 @@ gem 'google_drive', '~> 2.1.9'
 gem 'haml', '~> 5.0.4'
 
 gem 'sidekiq', '~> 5.1.1'
-gem 'slim', '~> 3.0.9'
+gem 'slim', '~> 4.0.1'
 gem 'roo', '~> 2.7.1'
 gem 'roo-xls'
 
