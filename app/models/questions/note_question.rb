@@ -33,8 +33,7 @@ class Questions::NoteQuestion < Question
   end
 
   def to_fb_params
-    # to_fb_button_template
-    media_image ? to_fb_generic_template : to_fb_button_template
+    media_image ? to_fb_generic_template : super
   end
 
   private
@@ -77,34 +76,15 @@ class Questions::NoteQuestion < Question
             "template_type" => "generic",
             "elements" => [
                {
-                "title" => 'Test',
+                "title" => label,
                 "image_url" => FileUtil.image_url(bot, media_image),
-                "subtitle" => label
-                # "buttons" => buttons_from_choices.take(3)
+                "subtitle" => description
                 }
               ]
           }
         }
       }
     }
-  end
-
-  def to_fb_button_template
-    {
-      "message" => {
-        "text" => label
-      }
-    }
-  end
-
-  def buttons_from_choices
-    choices.map do |choice|
-      {
-        'type' => 'postback',
-        'title' => choice.label,
-        'payload' => choice.name
-      }
-    end
   end
 
 end
