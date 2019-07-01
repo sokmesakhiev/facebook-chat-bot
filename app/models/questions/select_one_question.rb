@@ -29,97 +29,21 @@ class Questions::SelectOneQuestion < Question
     choice.nil? ? text : choice.name
   end
 
-  def html_element
-    media_image ? card_element : select_one_element
+  def html_tag
+    media_image ? card_tag : "
+      #{label_tag}
+      #{options_tag}
+    "
   end
 
-  def label_element
+  def label_tag
     return if media_image?
-    return super
+    
+    super
   end
 
   def to_fb_params
-    media_image ? to_fb_generic_template : to_fb_button_template
-  end
-
-  private
-  def select_one_element
-    options = choices.map do |choice|
-      "
-        <div class='#{kind}'>
-          <label><input type='#{kind}' name='#{choice.name}' value='#{choice.name}'>#{choice.label}</label>
-        </div>
-      "
-    end.join('')
-  end
-
-  def card_element
-    "
-      <div class='card'>
-        <img class='card-img-top' src='#{FileUtil.image_url(bot,media_image)}' alt='Card image cap'>
-        <div class='card-body carousel-title'>
-          <h5 class='card-title'>#{label}</h5>
-          <p class='card-text'>#{description}</p>
-        </div>
-        <ul class='list-group list-group-flush card-list'>
-          #{render_options}
-        </ul>
-      </div>
-    "
-  end
-
-  def render_options
-    options = choices.map do |choice|
-      "
-        <li class='list-group-item'>#{choice.label}</li>
-      "
-    end.join('')
-  end
-
-  def to_fb_generic_template
-    {
-      "message" => {
-        "attachment" => {
-          "type" => "template",
-          "payload" => {
-            "template_type" => "generic",
-            "elements" => [
-               {
-                "title" => label,
-                "image_url" => FileUtil.image_url(bot, media_image),
-                "subtitle" => description,
-                "buttons" => buttons_from_choices.take(3)
-                }
-              ]
-          }
-        }
-      }
-    }
-  end
-
-  def to_fb_button_template
-    {
-      'message' => {
-        'attachment' => {
-          'type' => 'template',
-          'payload' => {
-            'template_type' => 'button',
-            'text' => label,
-            'buttons' => buttons_from_choices.take(3)
-          }
-        }
-      }
-    }
-  end
-
-  def buttons_from_choices
-    choices.map do |choice|
-      {
-        'type' => 'postback',
-        'title' => choice.label,
-        'payload' => choice.name
-      }
-    end
+    media_image ? generic_template : options_template
   end
 
 end

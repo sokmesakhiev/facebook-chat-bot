@@ -22,105 +22,49 @@
 require 'rails_helper'
 
 RSpec.describe Questions::SelectOneQuestion do
-  before(:each) do
-    @bot = create(:bot)
-    @question = create(:select_one_question)
-    @choice = create(:choice, question: @question)
-  end
+  describe '#html_tag' do
+    context 'it should call card_tag if no media image provided' do
+      let(:question) { build(:select_one_question, media_image: 'abc.png') }
+      
+      it {
+        expect(question).to receive(:card_tag).once
 
-  describe '#label_element' do
-    context 'without media_image' do
-      it { expect(@question.label_element).to eq("\n      <div class='field-name'>\n        <label for=#{@question.name}>#{@question.label}</label>\n      </div>\n    ") }
+        question.html_tag
+      }
     end
 
-    context 'with media_image' do
-      before { @question.media_image = "test.png" }
-      it { expect(@question.label_element).to eq(nil) }
-    end
+    context 'it should call options_tag if media image provided' do
+      let(:question) { build(:select_one_question, media_image: nil) }
+      
+      it {
+        expect(question).to receive(:label_tag).once
+        expect(question).to receive(:options_tag).once
 
-    context 'with required' do
-      before { @question.required = true }
-      it { expect(@question.label_element).to eq("\n      <div class='field-name'>\n        <span class='text-danger'> * </span><label for=#{@question.name}>#{@question.label}</label>\n      </div>\n    ") }
-    end
-  end
-
-  describe '#html_element' do
-    let(:select_one_element) {
-      "\n        <div class='radio'>\n          <label><input type='radio' name='choice' value='choice'>label</label>\n        </div>\n      "
-    }
-
-    let(:card_element) {
-      "\n      <div class='card'>\n        <img class='card-img-top' src='#{FileUtil.image_url(@question.bot, @question.media_image)}' alt='Card image cap'>\n        <div class='card-body carousel-title'>\n          <h5 class='card-title'></h5>\n          <p class='card-text'></p>\n        </div>\n        <ul class='list-group list-group-flush card-list'>\n          \n        <li class='list-group-item'>label</li>\n      \n        </ul>\n      </div>\n    "
-    }
-    context 'without media image' do
-      it{ expect(@question.html_element).to eq(select_one_element)  }
-    end
-
-    context 'with media image' do
-      before { @question.media_image = "test.png" }
-      it{ expect(@question.html_element).to eq(card_element) }
+        question.html_tag
+      }
     end
   end
 
   describe '#to_fb_params' do
+    context 'it should call options_template if no media image provided' do
+      let(:question) { build(:select_one_question, media_image: nil) }
+      
+      it {
+        expect(question).to receive(:options_template).once
 
-    let(:button_template_params) {
-      {
-        'message' => {
-          'attachment' => {
-            'type' => 'template',
-            'payload' => {
-              'template_type' => 'button',
-              'text' => @question.label,
-              'buttons' => [
-                {
-                  'type' => 'postback',
-                  'title' => 'label',
-                  'payload' => 'choice'
-                }
-              ]
-            }
-          }
-        }
+        question.to_fb_params
       }
-    }
-
-    let(:generic_template_params){
-      {
-        "message" => {
-          "attachment" => {
-            "type" => "template",
-            "payload" => {
-              "template_type" => "generic",
-              "elements" => [
-                 {
-                  "title" => @question.label,
-                  "image_url" => FileUtil.image_url(@question.bot, @question.media_image),
-                  "subtitle" => @question.description,
-                  "buttons" => [
-                      {
-                        'type' => 'postback',
-                        'title' => @choice.label,
-                        'payload' => @choice.name
-                      }
-                    ]
-                  }
-                ]
-            }
-          }
-        }
-      }
-    }
-
-    context 'without media image' do
-      it { expect(@question.to_fb_params).to eq(button_template_params) }
     end
 
-    context 'with media image' do
-      before { @question.media_image = "test.png" }
-      it { expect(@question.to_fb_params).to eq(generic_template_params) }
-    end
+    context 'it should call generic_template if media image provided' do
+      let(:question) { build(:select_one_question, media_image: 'abc.png') }
+      
+      it {
+        expect(question).to receive(:generic_template).once
 
+        question.to_fb_params
+      }
+    end
   end
 
 end
