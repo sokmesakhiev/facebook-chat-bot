@@ -24,12 +24,8 @@ class Questions::NoteQuestion < Question
     :note
   end
 
-  def html_element
-    media_image ? card_element : list_element
-  end
-
-  def label_element
-    return
+  def html_tag
+    media_image ? card_tag : bullet_tag
   end
 
   def to_fb_params
@@ -37,54 +33,15 @@ class Questions::NoteQuestion < Question
   end
 
   private
-  def list_element
-
-    list = label.split("\n").map do |labelRow|
-      "
-        <div class='#{kind}'>
-          <label>#{labelRow}</label>
-        </div>
-      "
-    end.join('')
-  end
-
-  def card_element
+  def card_tag
     "
       <div class='card'>
-        <img class='card-img-top' src='#{FileUtil.image_url(bot,media_image)}' alt='Card image cap'>
+        <img class='card-img-top' src='#{FileUtil.image_url(bot, media_image)}' alt='Card image cap'>
         <ul class='list-group list-group-flush card-list'>
-          #{render_options}
+          #{bullet_tag}
         </ul>
       </div>
     "
-  end
-
-  def render_options
-    list = label.split("\n").map do |labelRow|
-      "
-        <li class='list-group-item'>#{labelRow}</li>
-      "
-    end.join('')
-  end
-
-  def to_fb_generic_template
-    {
-      "message" => {
-        "attachment" => {
-          "type" => "template",
-          "payload" => {
-            "template_type" => "generic",
-            "elements" => [
-               {
-                "title" => label,
-                "image_url" => FileUtil.image_url(bot, media_image),
-                "subtitle" => description
-                }
-              ]
-          }
-        }
-      }
-    }
   end
 
 end

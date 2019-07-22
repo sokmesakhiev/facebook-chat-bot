@@ -20,8 +20,11 @@
 #
 
 require 'rails_helper'
+require Rails.root.join 'spec/models/concerns/questions/facebook_parameterizable_concern_spec.rb'
 
 RSpec.describe Question do
+  it_behaves_like 'Questions::FacebookParameterizableConcern'
+
   it { is_expected.to belong_to(:bot) }
   it { is_expected.to belong_to(:relevant).class_name('Question').with_foreign_key(:relevant_id) }
   it { is_expected.to have_many(:choices).dependent(:destroy) }

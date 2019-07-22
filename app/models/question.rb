@@ -20,6 +20,9 @@
 #
 
 class Question < ApplicationRecord
+  include Questions::HtmlElementerizableConcern
+  include Questions::FacebookParameterizableConcern
+
   belongs_to :bot
   belongs_to :relevant, class_name: 'Question', foreign_key: 'relevant_id'
   has_many :choices, dependent: :destroy
@@ -40,34 +43,6 @@ class Question < ApplicationRecord
 
   def value_of text
     text
-  end
-
-  def html_element
-    "<input id='#{name}' name='#{name}' type=#{kind} class='form-control' />"
-  end
-
-  def html_template
-    "
-      #{label_element}
-      #{html_element}
-    "
-  end
-
-  def label_element
-    "
-      <div class='field-name'>
-        #{"<span class='text-danger'> * </span>" if required}<label for=#{name}>#{label}</label>
-      </div>
-    "
-  end
-
-  def to_fb_params
-    {
-      'message' => {
-        'text' => label,
-        'metadata' => 'DEVELOPER_DEFINED_METADATA'
-      }
-    }
   end
 
   def has_choices?
@@ -96,5 +71,4 @@ class Question < ApplicationRecord
       update_attributes(params)
     end
   end
-
 end
