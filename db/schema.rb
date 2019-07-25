@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725070748) do
+ActiveRecord::Schema.define(version: 20190725075122) do
 
   create_table "aggregations", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -63,6 +63,8 @@ ActiveRecord::Schema.define(version: 20190725070748) do
     t.text     "relevants",   limit: 65535
   end
 
+  add_index "questions", ["bot_id", "name"], name: "index_questions_on_bot_id_and_name", unique: true, using: :btree
+
   create_table "respondents", force: :cascade do |t|
     t.string   "user_session_id",     limit: 255
     t.integer  "current_question_id", limit: 4
@@ -73,6 +75,8 @@ ActiveRecord::Schema.define(version: 20190725070748) do
     t.string   "state",               limit: 255
   end
 
+  add_index "respondents", ["user_session_id", "bot_id"], name: "index_respondents_on_user_session_id_and_bot_id", unique: true, using: :btree
+
   create_table "surveys", force: :cascade do |t|
     t.integer  "question_id",   limit: 4
     t.string   "value",         limit: 255
@@ -81,6 +85,7 @@ ActiveRecord::Schema.define(version: 20190725070748) do
     t.integer  "respondent_id", limit: 4
   end
 
+  add_index "surveys", ["question_id", "respondent_id"], name: "index_surveys_on_question_id_and_respondent_id", unique: true, using: :btree
   add_index "surveys", ["respondent_id"], name: "index_surveys_on_respondent_id", using: :btree
 
   create_table "users", force: :cascade do |t|
