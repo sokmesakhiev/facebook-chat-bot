@@ -56,7 +56,7 @@ class Question < ApplicationRecord
   end
 
   def matched? respondent, condition
-    user_response = last_response respondent, self
+    user_response = Survey.last_response respondent, self
 
     return false if user_response.nil?
 
