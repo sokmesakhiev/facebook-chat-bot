@@ -8,9 +8,6 @@
 #  select_name    :string(255)
 #  name           :string(255)
 #  label          :text
-#  relevant_id    :integer
-#  operator       :string(255)
-#  relevant_value :string(255)
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  media_image    :string(255)
@@ -26,7 +23,6 @@ RSpec.describe Question do
   it_behaves_like 'Questions::FacebookParameterizableConcern'
 
   it { is_expected.to belong_to(:bot) }
-  it { is_expected.to belong_to(:relevant).class_name('Question').with_foreign_key(:relevant_id) }
   it { is_expected.to have_many(:choices).dependent(:destroy) }
   it { is_expected.to have_many(:respondents).with_foreign_key(:current_question_id).dependent(:nullify) }
   it { is_expected.to have_many(:surveys).dependent(:nullify) }

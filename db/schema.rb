@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725032449) do
+ActiveRecord::Schema.define(version: 20190725070748) do
 
   create_table "aggregations", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -49,21 +49,18 @@ ActiveRecord::Schema.define(version: 20190725032449) do
   end
 
   create_table "questions", force: :cascade do |t|
-    t.integer  "bot_id",         limit: 4
-    t.string   "type",           limit: 255
-    t.string   "select_name",    limit: 255
-    t.string   "name",           limit: 255
-    t.text     "label",          limit: 65535
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
-    t.string   "media_image",    limit: 255
-    t.text     "description",    limit: 65535
-    t.boolean  "required",                     default: false
-    t.string   "uuid",           limit: 255
-    t.string   "relevant_value", limit: 255
-    t.string   "operator",       limit: 255
-    t.integer  "relevant_id",    limit: 4
-    t.text     "relevants",      limit: 65535
+    t.integer  "bot_id",      limit: 4
+    t.string   "type",        limit: 255
+    t.string   "select_name", limit: 255
+    t.string   "name",        limit: 255
+    t.text     "label",       limit: 65535
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.string   "media_image", limit: 255
+    t.text     "description", limit: 65535
+    t.boolean  "required",                  default: false
+    t.string   "uuid",        limit: 255
+    t.text     "relevants",   limit: 65535
   end
 
   create_table "respondents", force: :cascade do |t|

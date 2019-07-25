@@ -12,9 +12,6 @@ require 'condition'
 #  select_name    :string(255)
 #  name           :string(255)
 #  label          :text
-#  relevant_id    :integer
-#  operator       :string(255)
-#  relevant_value :string(255)
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  media_image    :string(255)
@@ -28,7 +25,6 @@ class Question < ApplicationRecord
   include Questions::FacebookParameterizableConcern
 
   belongs_to :bot
-  belongs_to :relevant, class_name: 'Question', foreign_key: 'relevant_id'
   has_many :choices, dependent: :destroy
   has_many :respondents, foreign_key: :current_question_id, dependent: :nullify
   has_many :surveys, dependent: :nullify
