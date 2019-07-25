@@ -59,21 +59,11 @@ class SurveyService
   end
 
   def skip_question(respondent, question)
-    return false if question.nil? || !question.has_relevant?
+    return false if question.nil? || !question.has_relevants?
 
-    user_response = Survey.where(respondent: respondent, question: question.relevant).last
+    expression = YAML.load question.relevants
 
-    return true if user_response.nil?
-
-    if question.operator == 'selected'
-      arr = user_response.value.split(',')
-      return !(arr.include?(question.relevant_value) || arr.include?(question.relevant.value_of(question.relevant_value)))
-    end
-
-    condition = eval("user_response.value #{question.operator} question.relevant_value")
-    condition = eval("user_response.value #{question.operator} question.relevant.value_of(question.relevant_value)") unless condition
-
-    !condition
+    !Survey.matched?(respondent, expression)
   end
 
   def finish respondent

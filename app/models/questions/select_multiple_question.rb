@@ -23,4 +23,8 @@ class Questions::SelectMultipleQuestion < Questions::SelectOneQuestion
   def kind
     :checkbox
   end
+
+  def matched? user_response, relevant
+    user_response.value.split(',').include? value_of(relevant.value)
+  end
 end

@@ -24,4 +24,20 @@ class Survey < ApplicationRecord
   def self.score_of respondent, questions
     where(question_id: questions.select(&:id), respondent: respondent).sum(:value)
   end
+
+  def self.last_response respondent, question
+    where(respondent: respondent, question: question).last
+  end
+
+  def self.matched? respondent, expression
+    matches = false
+
+    expression.conditions.each do |condition|
+      matches = condition.matched? respondent
+      return matches if (matches == expression.exit_value)
+    end
+
+    matches
+  end
+
 end

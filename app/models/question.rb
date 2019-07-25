@@ -1,3 +1,7 @@
+require 'expressions/or_expression'
+require 'expressions/and_expression'
+require 'condition'
+
 # == Schema Information
 #
 # Table name: questions
@@ -31,6 +35,8 @@ class Question < ApplicationRecord
 
   validates :name, uniqueness: { case_sensitive: false, scope: :bot_id }
 
+  serialize :relevants
+
   QUESTION_GET_STARTED = 'get_started'
 
   def self.types
@@ -49,26 +55,13 @@ class Question < ApplicationRecord
     choices.size > 0
   end
 
-  def has_relevant?
-    relevant.present?
+  def has_relevants?
+    relevants.present?
   end
 
-  def add_relevant(relevant)
-    return unless relevant.present?
-
-    relevant_field = relevant[/\$\{(\w+)\}/, 1]
-    relevant_question = Question.find_by(bot_id: bot.id, name: relevant_field)
-    relevant_value = relevant[/[‘|'|"](\w+)[’|'|"]/, 1]
-
-    if relevant_question
-      params = {
-        relevant_id: relevant_question.id,
-        operator: relevant[/(\>\=|\<\=|\!\=|[\+\-\*\>\<\=\|]|div|or|and|mod|selected)/, 1],
-        relevant_value: relevant_question.value_of(relevant_value)
-      }
-      params[:operator] = '==' if params[:operator] == '='
-
-      update_attributes(params)
-    end
+  def matched? user_response, relevant
+    operator = ComparativeOperator::OPERATORS[relevant.operator]
+    eval("'#{user_response.value}' #{operator} '#{value_of(relevant.value)}'")
   end
+
 end

@@ -14,6 +14,6 @@ FactoryBot.define do
   factory :survey do
     respondent
     question
-    value
+    value { 'foo' }
   end
 end
