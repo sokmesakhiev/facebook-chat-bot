@@ -33,7 +33,10 @@ class Survey < ApplicationRecord
     matches = false
 
     expression.conditions.each do |condition|
-      matches = condition.matched? respondent
+      relevant_question = Question.find_by(bot_id: respondent.bot.id, name: condition.field)
+      
+      matches = relevant_question.matched?(respondent, condition) if relevant_question
+      
       return matches if (matches == expression.exit_value)
     end
 

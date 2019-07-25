@@ -55,9 +55,13 @@ class Question < ApplicationRecord
     relevants.present?
   end
 
-  def matched? user_response, relevant
-    operator = ComparativeOperator::OPERATORS[relevant.operator]
-    eval("'#{user_response.value}' #{operator} '#{value_of(relevant.value)}'")
+  def matched? respondent, condition
+    user_response = last_response respondent, self
+
+    return false if user_response.nil?
+
+    operator = ComparativeOperator::OPERATORS[condition.operator]
+    eval("'#{user_response.value}' #{operator} '#{value_of(condition.value)}'")
   end
 
 end
