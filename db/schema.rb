@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725075122) do
+ActiveRecord::Schema.define(version: 20190725074646) do
 
   create_table "aggregations", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -74,8 +74,6 @@ ActiveRecord::Schema.define(version: 20190725075122) do
     t.integer  "version",             limit: 4
     t.string   "state",               limit: 255
   end
-
-  add_index "respondents", ["user_session_id", "bot_id"], name: "index_respondents_on_user_session_id_and_bot_id", unique: true, using: :btree
 
   create_table "surveys", force: :cascade do |t|
     t.integer  "question_id",   limit: 4
