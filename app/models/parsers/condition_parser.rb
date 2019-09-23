@@ -4,7 +4,7 @@ class Parsers::ConditionParser
     raise 'Argument condition is missing' if condition.nil?
 
     field = condition[/\$\{(.+)\}/, 1]
-    operator = condition[/(\>\=|\<\=|\!\=|[\+\-\*\>\<\=\|]|div|or|and|mod|selected)/, 1]
+    operator = condition[/(\>\=|\<\=|\!\=|[\+\-\*\>\<\=\|]|div|mod|selected)/, 1]
     value = condition[/[‘|'|"](\w+)[’|'|"]/, 1]
 
     Condition.new field: field, operator: operator, value: value
