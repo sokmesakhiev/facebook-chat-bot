@@ -10,10 +10,10 @@ class Expression
   end
 
   def kind; raise 'you have to implement in subclass' end
-  def exit_value; 'you have to implement in subclass' end
+  def exit_value; raise 'you have to implement in subclass' end
 
   def append_conditions! relevant_attr
-    relevant_attr.downcase.split(kind.to_s).each do |condition|
+    relevant_attr.downcase.split(" #{kind.to_s} ").each do |condition|
       conditions << Parsers::ConditionParser.parse(condition.strip)
     end
   end
