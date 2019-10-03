@@ -105,7 +105,7 @@ RSpec.describe Facebook::Session do
       expect(respondent).to receive(:mark_as_completed!)
       expect(session).to receive(:send_text).with('completing')
       expect(session).to receive(:send_aggregate_result).with(respondent)
-      expect(session).to receive(:send_text).with('restart')
+      expect(session).to receive(:send_text).with('restart', kind_of(Array))
 
       session.terminate respondent
     }
