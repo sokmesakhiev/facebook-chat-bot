@@ -24,6 +24,8 @@ class Question < ApplicationRecord
   include Questions::HtmlElementerizableConcern
   include Questions::FacebookParameterizableConcern
 
+  default_scope { order(id: :asc) }
+
   belongs_to :bot
   has_many :choices, dependent: :destroy
   has_many :respondents, foreign_key: :current_question_id, dependent: :nullify
