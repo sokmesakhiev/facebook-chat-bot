@@ -61,7 +61,7 @@ class Facebook::Session
 
     send_aggregate_result respondent
 
-    send_text bot.message_for(:restart_msg)
+    send_text bot.message_for(:restart_msg), restart_buttons
   end
 
   protected
