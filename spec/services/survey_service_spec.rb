@@ -89,16 +89,16 @@ RSpec.describe SurveyService do
     context 'should send greeting message when the survey is finished but user response no on restart action' do
       let!(:session) { Facebook::Session.new(user_session_id, page_id, 'no') }
       let(:survey_service) { SurveyService.new(session) }
-      let(:greeting_msg) { 'សូមអរគុណចំពោះការចំណាយពេលវេលាធ្វើតេស្តសុខភាពផ្លូវចិត្តបឋមរបស់លោកអ្នក។សូមមកធ្វើតេស្តម្តងទៀតនៅរយៈពេល៣ខែក្រោយ' }
 
       before(:each) do
         allow(survey_service).to receive(:find_or_initialize_respondent).and_return(nil)
+        allow(session.bot).to receive(:message_for).with(:greeting_msg).and_return('greeting')
       end
 
       it { expect(session.response_text).to eq('no') }
 
       it {
-        expect(session).to receive(:send_greeting_message)
+        expect(session).to receive(:send_text).with('greeting')
 
         survey_service.move_next()
       }

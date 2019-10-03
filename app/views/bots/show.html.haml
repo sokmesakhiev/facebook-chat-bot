@@ -6,6 +6,8 @@
     %p= link_to 'Back', bots_path, class: 'btn btn-default'
 
     %h2{style: 'text-align: center'}= @bot.name
-    %h6{style: 'text-align: center'}= "Ending message: `#{@bot.restart_msg || Bot::DEFAULT_RESTART_MSG}`"
+    %h6{style: 'text-align: center'}= "Greeting message: `#{@bot.message_for(:greeting_msg)}`"
+    %h6{style: 'text-align: center'}= "Finish message: `#{@bot.message_for(:completing_msg)}`"
+    %h6{style: 'text-align: center'}= "Restart message: `#{@bot.message_for(:restart_msg)}`"
 
     = render 'tab', bot: @bot

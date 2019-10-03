@@ -7,7 +7,7 @@ class BotsController < ApplicationController
   end
 
   def create
-    @bot = current_user.bots.new(data_params)
+    @bot = current_user.bots.new(protected_params)
     authorize @bot
 
     if @bot.save
@@ -93,8 +93,8 @@ class BotsController < ApplicationController
     @bot = Bot.includes(:questions => [:choices]).find(params[:id])
   end
 
-  def data_params
-    params.require(:bot).permit(:name, :restart_msg, :greeting_msg, :facebook_page_id, :facebook_page_access_token)
+  def protected_params
+    params.require(:bot).permit(:name, :language, :greeting_msg, :completing_msg, :restart_msg, :facebook_page_id, :facebook_page_access_token)
   end
 
   def facebook_params

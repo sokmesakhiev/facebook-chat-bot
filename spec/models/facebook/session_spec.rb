@@ -56,8 +56,6 @@ RSpec.describe Facebook::Session do
     let(:page_id) { '1512165178836125' }
 
     context 'text field' do
-      # let!(:bot) { create(:bot, facebook_page_id: page_id) }
-      # let(:session) { Facebook::Session.new('1612943458742093', page_id) }
       let(:question) { create(:question, :text) }
       let!(:params) { Hash.new }
 
@@ -98,10 +96,16 @@ RSpec.describe Facebook::Session do
     let!(:session) { Facebook::Session.new('1612943458742093', bot.facebook_page_id) }
     let(:respondent) { create(:respondent) }
 
+    before(:each) do
+      allow(session.bot).to receive(:message_for).with(:completing_msg).and_return('completing')
+      allow(session.bot).to receive(:message_for).with(:restart_msg).and_return('restart')
+    end
+
     it {
       expect(respondent).to receive(:mark_as_completed!)
-      expect(session).to receive(:send_aggregate_result)
-      expect(session).to receive(:send_restart_message)
+      expect(session).to receive(:send_text).with('completing')
+      expect(session).to receive(:send_aggregate_result).with(respondent)
+      expect(session).to receive(:send_text).with('restart')
 
       session.terminate respondent
     }
