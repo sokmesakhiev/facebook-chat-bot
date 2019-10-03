@@ -28,6 +28,18 @@ class Bot < ApplicationRecord
 
   validates :name, presence: true
 
+  DEFAULT_MESSAGES = {
+    en: {
+      greeting_msg: 'Thank for your valuable time with our Facebook Page.',
+      completing_msg: 'Thank you!',
+      restart_msg: 'Do you want to restart again?'
+    },
+    kh: {
+      greeting_msg: 'សូមអរគុណសម្រាប់ពេលវេលាដ៏មានតម្លៃរបស់អ្នកជាមួយទំព័រហ្វេសប៊ុករបស់យើង',
+      completing_msg: 'សូមអរគុណ',
+      restart_msg: 'តើអ្នកចង់ចាប់ផ្តើមម្តងទៀតទេ?'
+    }
+  }
   DEFAULT_RESTART_MSG = 'Do you want to restart this survey again?'
   DEFAULT_GREETING_MSG = 'Thank for your time to take basic mental health test. Please try again in next 3 months.'
 
@@ -89,6 +101,10 @@ class Bot < ApplicationRecord
 
   def clean_dependency_media
     FileUtils.remove_dir("public/upload/survey/bot_#{id}",true)
+  end
+
+  def message_for field = :greeting_msg
+    send(field) || DEFAULT_MESSAGES[language.to_sym][field]
   end
 
 end

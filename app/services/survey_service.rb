@@ -15,7 +15,7 @@ class SurveyService
     respondent = find_or_initialize_respondent session
     if respondent.nil?
       if session.response_no?
-        session.send_greeting_message
+        session.send_text session.bot.message_for(:greeting_msg)
         return
       else
         respondent = initial_respondent session

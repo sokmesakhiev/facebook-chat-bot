@@ -44,17 +44,8 @@ class Facebook::Session
     end
 
     params = request_params(message_params)
-
     Facebook::Client.send_api(params)
   end
-
-  def send_question question
-    return if question.nil?
-
-    params = request_params(question.to_fb_params)
-    Facebook::Client.send_api(params)
-  end
-
 
   def send_question question
     return if question.nil?
@@ -66,27 +57,18 @@ class Facebook::Session
   def terminate respondent
     respondent.mark_as_completed!
 
-    send_aggregate_result
+    send_text bot.message_for(:completing_msg)
 
-    send_restart_message
-  end
+    send_aggregate_result respondent
 
-  def send_greeting_message
-    send_text bot.greeting_msg || Bot::DEFAULT_GREETING_MSG
+    send_text bot.message_for(:restart_msg)
   end
 
   protected
 
-  def send_aggregate_result msg = 'Thank you!'
+  def send_aggregate_result respondent
     aggregation = bot.has_aggregate? ? bot.get_aggregation(Survey.score_of(respondent, bot.scorable_questionnaires)) : nil
-    msg = aggregation.result if aggregation
-
-    send_text msg
-  end
-
-  def send_restart_message
-    restart_msg = bot.restart_msg || Bot::DEFAULT_RESTART_MSG
-    send_text restart_msg, restart_buttons
+    send_text aggregation.result if aggregation
   end
 
   def request_params options = {}

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190725074646) do
+ActiveRecord::Schema.define(version: 20191003070623) do
 
   create_table "aggregations", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -38,6 +38,8 @@ ActiveRecord::Schema.define(version: 20190725074646) do
     t.datetime "updated_at",                                               null: false
     t.string   "restart_msg",                limit: 255
     t.text     "greeting_msg",               limit: 65535
+    t.text     "completing_msg",             limit: 65535
+    t.string   "language",                   limit: 2,     default: "kh"
   end
 
   create_table "choices", force: :cascade do |t|
