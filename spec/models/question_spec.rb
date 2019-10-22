@@ -35,4 +35,42 @@ RSpec.describe Question do
     expect(validate_uniqueness_of(:name).scoped_to(:bot_id).case_insensitive)
   end
 
+  describe 'match?' do
+    let(:question) { create(:question, :text) }
+    let(:respondent) { create(:respondent) }
+    let(:condition) { Condition.new field: 'foo', operator: '=', value: '2' }
+
+    context 'matched?' do
+      let(:user_response) { build(:survey, respondent: respondent, question: question, value: '2')}
+      
+      before(:each) do
+        allow(Survey).to receive(:last_response).with(respondent, question).and_return(user_response)
+      end
+
+      it { expect(question.matched?(respondent, condition)).to eq(true) }
+    end
+
+    context 'dones not matched?' do
+      context 'no special character' do
+        let(:user_response) { build(:survey, respondent: respondent, question: question, value: '1')}
+
+        before(:each) do
+          allow(Survey).to receive(:last_response).with(respondent, question).and_return(user_response)
+        end
+
+        it { expect(question.matched?(respondent, condition)).to eq(false) }
+      end
+
+      context 'contain quote(single or double) character' do
+        let(:user_response) { build(:survey, respondent: respondent, question: question, value: "it's \" me")}
+
+        before(:each) do
+          allow(Survey).to receive(:last_response).with(respondent, question).and_return(user_response)
+        end
+
+        it { expect(question.matched?(respondent, condition)).to eq(false) }
+      end
+    end
+  end
+
 end
