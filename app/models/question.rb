@@ -35,6 +35,8 @@ class Question < ApplicationRecord
 
   serialize :relevants
 
+  QUOTE_CHAR_REGEX = /'|"/
+
   QUESTION_GET_STARTED = 'get_started'
 
   def self.types
@@ -62,8 +64,9 @@ class Question < ApplicationRecord
 
     return false if user_response.nil?
 
+    response_value_escape_quote = user_response.value.gsub(QUOTE_CHAR_REGEX, '')
     operator = ComparativeOperator::OPERATORS[condition.operator]
-    eval("'#{user_response.value}' #{operator} '#{value_of(condition.value)}'")
+    eval("'#{response_value_escape_quote}' #{operator} '#{value_of(condition.value)}'")
   end
 
 end
