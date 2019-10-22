@@ -4,5 +4,6 @@ staging:
 production:
   :concurrency: 10
 
+:max_retries: 10
 :queues:
   - default
