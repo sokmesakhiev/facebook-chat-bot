@@ -91,7 +91,7 @@ gem "bootstrap-sass", ">= 3.4.1"
 gem 'autoprefixer-rails'
 
 gem "devise", ">= 4.6.0"
-gem 'omniauth-facebook', '~> 4.0.0'
+gem 'omniauth-facebook', '~> 6.0.0'
 gem 'koala', '3.0.0'
 gem 'pundit', '~> 1.1.0'
 
