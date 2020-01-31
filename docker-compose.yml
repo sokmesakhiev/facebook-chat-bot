@@ -31,14 +31,9 @@ services:
       - redis:/data
 
   sidekiq:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    env_file: .env
+    <<: *rails
     command: bundle exec sidekiq -C config/sidekiq.yml
-    volumes:
-      - '.:/app'
-      - bundle:/usr/local/bundle
+    ports: []
     depends_on:
       - db
       - redis

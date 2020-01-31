@@ -1,4 +1,4 @@
-FROM ruby:2.4
+FROM ruby:2.4.3
 
 LABEL maintainer="Kakada Chheang <kakada@instedd.org>"
 
