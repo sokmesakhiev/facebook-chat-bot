@@ -52,7 +52,7 @@ group :test do
   gem 'simplecov', '~> 0.14.1',  require: false
 
   ## Http
-  gem 'vcr',       '~> 4.0.0'
+  gem 'vcr',       '~> 5.1.0'
   gem 'webmock',   '~> 3.3.0'
 
   # Spec
