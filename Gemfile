@@ -53,7 +53,7 @@ group :test do
 
   ## Http
   gem 'vcr',       '~> 4.0.0'
-  gem 'webmock',   '~> 3.3.0'
+  gem 'webmock',   '~> 3.9.4'
 
   # Spec
   gem 'shoulda-matchers',       '~> 3.1.2'
